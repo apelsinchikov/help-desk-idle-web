@@ -50,3 +50,14 @@ export async function verifyInitData(
     return null
   }
 }
+
+/**
+ * Аккаунт Supabase принадлежит этому Telegram-пользователю, только если так записано в app_metadata
+ * (её меняет лишь сервер). Защита от заранее зарегистрированного кем-то `tg<id>@telegram.local`.
+ */
+export function ownsAccount(
+  user: { app_metadata?: Record<string, unknown>; [key: string]: unknown } | null | undefined,
+  telegramId: number,
+): boolean {
+  return user?.app_metadata?.telegram_id === telegramId
+}

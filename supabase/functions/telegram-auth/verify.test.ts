@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createHmac } from 'node:crypto'
-import { verifyInitData } from './verify.ts'
+import { ownsAccount, verifyInitData } from './verify.ts'
 
 const BOT = '123456:TEST-token'
 const NOW = 1_800_000_000
@@ -43,4 +43,12 @@ test('missing hash or user is rejected', async () => {
   const { user: _user, ...noUser } = fields
   assert.equal(await verifyInitData(sign(noUser), BOT, NOW), null)
   assert.equal(await verifyInitData('', BOT, NOW), null)
+})
+
+test('account belongs to the Telegram user only via app_metadata', () => {
+  assert.equal(ownsAccount({ app_metadata: { telegram_id: 42 } }, 42), true)
+  assert.equal(ownsAccount({ app_metadata: { telegram_id: 7 } }, 42), false)
+  assert.equal(ownsAccount({ app_metadata: {}, user_metadata: { telegram_id: 42 } }, 42), false, 'user_metadata пишет клиент')
+  assert.equal(ownsAccount({ app_metadata: { telegram_id: '42' } }, 42), false)
+  assert.equal(ownsAccount(undefined, 42), false)
 })

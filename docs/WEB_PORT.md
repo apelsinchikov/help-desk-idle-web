@@ -31,4 +31,5 @@
 - Команды (Терминал, папка `web/`): `npm install`, `npm test`, `npm run dev` (→ http://localhost:5173/help-desk-idle-web/), `npm run build`.
 - Ключи для локального запуска: `web/.env.local` по образцу `web/.env.example`. Вне Telegram облако выключено — это нормально.
 - Edge Function: `npx supabase login`, затем из корня репо `npx supabase functions deploy telegram-auth --project-ref <ref> --no-verify-jwt`. Секрет `TELEGRAM_BOT_TOKEN` — в Dashboard → Edge Functions → Secrets.
+- Supabase → Authentication → Sign In / Providers: **выключить** «Allow new users to sign up» и Anonymous sign-ins — игроки создаются только функцией `telegram-auth` (Admin API работает и при выключенной регистрации).
 - Бот: BotFather → `/mybots` → бот → Bot Settings → Configure Mini App → URL `https://apelsinchikov.github.io/help-desk-idle-web/`; `/setmenubutton` — тот же URL.

@@ -2,7 +2,7 @@
 // Деплой: npx supabase functions deploy telegram-auth --project-ref <ref> --no-verify-jwt
 // Секрет: TELEGRAM_BOT_TOKEN (Dashboard → Edge Functions → Secrets).
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { verifyInitData } from './verify.ts'
+import { ownsAccount, verifyInitData } from './verify.ts'
 
 const ALLOWED_ORIGINS = ['https://apelsinchikov.github.io', 'http://localhost:5173']
 
@@ -65,6 +65,8 @@ Deno.serve(async (req) => {
   const link = await admin.auth.admin.generateLink({ type: 'magiclink', email })
   const tokenHash = link.data?.properties?.hashed_token
   if (link.error || !tokenHash) return reply(500, { error: 'generate_link_failed' })
+  // Аккаунт с этим адресом мог создать не мы (обычная регистрация по email) — такой не выдаём.
+  if (!ownsAccount(link.data.user, user.id)) return reply(409, { error: 'account_conflict' })
 
   const client = createClient(url, key('publishable'), options)
   const verified = await client.auth.verifyOtp({ type: 'magiclink', token_hash: tokenHash })
