@@ -8,6 +8,7 @@ import { Managers } from './Managers.tsx'
 import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
 import { Toast } from './Toast.tsx'
+import { Tutorial } from './Tutorial.tsx'
 import { Upgrades } from './Upgrades.tsx'
 import { WelcomeBack } from './WelcomeBack.tsx'
 
@@ -30,6 +31,7 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'upgrades' && <Upgrades />}
       {route === 'achievements' && <Achievements />}
       <Toast />
+      {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}
       {badge}
     </GameContext.Provider>
