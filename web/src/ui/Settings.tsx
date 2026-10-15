@@ -12,7 +12,7 @@ export function Settings() {
 
   const setHaptics = (on: boolean) => game.act('purchase', () => engine.updateSettings({ haptics: on }))
   const reset = () => {
-    game.act('purchase', () => engine.reset(Date.now()))
+    void game.reset()
     setConfirmReset(false)
     close()
   }

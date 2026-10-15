@@ -62,10 +62,19 @@ export function createGame(o: {
       language.value = next
     },
 
+    /** «Начать заново»: локально и в облако сразу, иначе облачный сейв вернул бы старый прогресс. */
+    async reset(): Promise<void> {
+      game.act('purchase', () => engine.reset(Date.now()))
+      await scheduler.flush()
+    },
+
     startTicking(): void {
       if (timer !== null) return
       timer = setInterval(() => {
-        engine.advance(Date.now())
+        // resume, а не advance: большой разрыв между тиками (замороженный WebView, перевод часов)
+        // проходит через оффлайн-лимит и показывает «С возвращением».
+        const report = engine.resume(Date.now())
+        if (report) offlineReport.value = report
         bump()
         scheduler.changed('tick')
       }, TICK_MS)
