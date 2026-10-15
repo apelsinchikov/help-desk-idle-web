@@ -1,6 +1,6 @@
 # Web / Telegram Mini App — порт игры (план-набросок)
 
-Статус: **дизайн этапа 1 — `docs/superpowers/specs/2026-10-15-web-telegram-stage1-design.md`.** Этот репозиторий (`help-desk-idle-web`) — копия iOS-репо `apelsinchikov/help-desk-idle` на момент закрытия этапа 1 (2026-10-15); здесь делается веб / Telegram Mini App версия в папке `web/`.
+Статус: **этап 1 реализован в `web/`, идёт проверка в Telegram.** Дизайн — `docs/superpowers/specs/2026-10-15-web-telegram-stage1-design.md`, план — `docs/superpowers/plans/2026-10-15-web-telegram-stage1.md`. Этот репозиторий (`help-desk-idle-web`) — копия iOS-репо `apelsinchikov/help-desk-idle` на момент закрытия этапа 1 (2026-10-15); здесь делается веб / Telegram Mini App версия в папке `web/`.
 Механика, баланс и тексты должны совпадать с iOS-репо: меняешь баланс там — повтори здесь (и наоборот). iOS-код (`HelpDeskIdle/`, `Packages/`) здесь — справочник для порта, не трогать.
 
 ## Цель
@@ -15,14 +15,20 @@
 
 ## Что пишется заново
 - `web/` — Vite + TypeScript + Preact + `@preact/signals`.
-- `web/src/core/` — порт `HelpDeskCore` на TS 1:1 (Economy, MilestoneMath, форматтеры, GameState, GameEngine, оффлайн, SavePicker) + тесты (Vitest) **с теми же числами**, что в Swift-тестах.
+- `web/src/core/` — порт `HelpDeskCore` на TS 1:1 (Economy, MilestoneMath, форматтеры, GameState, GameEngine, оффлайн, SavePicker) + тесты (`node --test`) **с теми же числами**, что в Swift-тестах.
 - UI по макетам темы A; токены цветов — те же значения, что в `Theme.swift`.
 
 ## Решения, которые нужно принять в начале
-1. **Хостинг.** ✅ GitHub Pages (репо `help-desk-idle-web` публичный), деплой через GitHub Actions из `main`.
+1. **Хостинг.** ✅ GitHub Pages (репо `help-desk-idle-web` публичный), деплой через GitHub Actions при пуше в `dev` и `main` (`.github/workflows/pages.yml`).
 2. **Вход.** ✅ В Telegram — по `initData`: Supabase Edge Function проверяет подпись токеном бота и выдаёт сессию по Telegram ID (прогресс общий на всех устройствах). Вне Telegram — только локальный сейв для разработки, без анонимного входа. Сейвы с iOS не совместимы (и не нужны).
 3. **Платежи (этап 4).** В Telegram цифровые товары — только за Telegram Stars.
 4. **Паритет.** Каждая механика делается на обеих платформах; общий баланс в JSON и одинаковые тесты — гарантия одинаковой математики.
 
 ## Механика (кратко, детали — GAME_DESIGN)
 Без менеджера работа стартует только тапом → цикл → «Готово — собрать» → тап собирает и работа встаёт (idle). Менеджер сам стартует и собирает. Открытие работы: уровень 25 предыдущей + оплата baseCost. Оффлайн-доход только от работ с менеджером, лимит 24 ч.
+
+## Как работать с веб-версией
+- Команды (Терминал, папка `web/`): `npm install`, `npm test`, `npm run dev` (→ http://localhost:5173/help-desk-idle-web/), `npm run build`.
+- Ключи для локального запуска: `web/.env.local` по образцу `web/.env.example`. Вне Telegram облако выключено — это нормально.
+- Edge Function: `npx supabase login`, затем из корня репо `npx supabase functions deploy telegram-auth --project-ref <ref> --no-verify-jwt`. Секрет `TELEGRAM_BOT_TOKEN` — в Dashboard → Edge Functions → Secrets.
+- Бот: BotFather → `/mybots` → бот → Bot Settings → Configure Mini App → URL `https://apelsinchikov.github.io/help-desk-idle-web/`; `/setmenubutton` — тот же URL.

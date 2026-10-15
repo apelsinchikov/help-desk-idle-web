@@ -51,3 +51,16 @@ tools/fetch_assets.sh              — скачивает иконки Fluent 3D
 
 ## Ошибки
 Ошибки облака не блокируют игру: статус в Настройках + повтор при следующем сохранении. Повреждённый локальный сейв → бэкап-копия `save.prev.json`.
+
+## Веб / Telegram Mini App (`web/`)
+```
+web/src/core/       порт HelpDeskCore на TS без зависимостей (тесты: node --test)
+web/src/app/        store (signals), планировщик сохранений, i18n из .xcstrings, иконки
+web/src/platform/   telegram.ts (SDK), storage.ts (localStorage + prev), cloud.ts (supabase-js)
+web/src/ui/         экраны Preact по iOS-версии; цвета — web/src/theme/tokens.css
+supabase/functions/telegram-auth/   initData → сессия Supabase по Telegram ID
+.github/workflows/pages.yml         тесты + сборка + GitHub Pages
+```
+- Баланс, строки, иконки и шрифты веб берёт из iOS-папок этого репо (импорт, не копия).
+- Сейв: localStorage `hdi.save` (+ `hdi.save.prev`), облако — отдельный проект Supabase, таблица `game_saves`; формат `payload` — веб-`GameState` (время в мс).
+- Вход только в Telegram; вне Telegram — локальная игра (для разработки).
