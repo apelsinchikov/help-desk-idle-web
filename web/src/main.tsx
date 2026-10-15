@@ -1,9 +1,10 @@
 import { render } from 'preact'
-import { signal } from '@preact/signals'
+import { effect, signal } from '@preact/signals'
 import { bundledContent } from './core/bundled.ts'
 import { GameEngine } from './core/engine.ts'
 import { newGame } from './core/state.ts'
 import { createLocalSave } from './platform/storage.ts'
+import { telegram } from './platform/telegram.ts'
 import { createSaveScheduler } from './app/saveScheduler.ts'
 import { createGame } from './app/store.ts'
 import type { CloudStatus } from './app/store.ts'
@@ -17,9 +18,11 @@ import './ui/styles.css'
 
 const MIN_LOADING_MS = 1400
 
+telegram.init(getComputedStyle(document.documentElement).getPropertyValue('--background').trim())
+
 const content = bundledContent
 const localSave = createLocalSave()
-const state = localSave.load() ?? newGame(content, Date.now(), detectLanguage(navigator.language))
+const state = localSave.load() ?? newGame(content, Date.now(), detectLanguage(telegram.languageCode ?? navigator.language))
 const engine = new GameEngine(content, state)
 const cloudStatus = signal<CloudStatus>({ kind: 'disabled' })
 const scheduler = createSaveScheduler({
@@ -29,7 +32,13 @@ const scheduler = createSaveScheduler({
   cloudIntervalMs: 30_000,
   now: Date.now,
 })
-const game = createGame({ engine, scheduler, cloudStatus, language: uiLanguage })
+const game = createGame({ engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic })
+
+// Кнопка «Назад» Telegram закрывает меню и листы.
+effect(() => {
+  const route = game.route.value
+  telegram.onBack(route === 'jobs' ? null : () => (game.route.value = route === 'menu' ? 'jobs' : 'menu'))
+})
 const phase = signal<Phase>('loading')
 
 render(<App game={game} phase={phase} />, document.getElementById('app')!)
@@ -45,6 +54,11 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') void game.onHidden()
   else game.onVisible()
 })
+// Telegram 8.0+: Mini App свернули в «плашку» / развернули обратно.
+telegram.onLifecycle(
+  () => { if (phase.value === 'playing') void game.onHidden() },
+  () => { if (phase.value === 'playing') game.onVisible() },
+)
 window.addEventListener('pagehide', () => {
   if (phase.value === 'playing') void game.onHidden()
 })
