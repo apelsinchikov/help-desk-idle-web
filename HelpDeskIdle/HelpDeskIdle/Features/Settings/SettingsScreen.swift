@@ -25,6 +25,14 @@ struct SettingsScreen: View {
                     }
                 }
                 Section {
+                    HStack {
+                        Text(verbatim: l10n.t("settings.cloud"))
+                        Spacer()
+                        Text(verbatim: cloudText(l10n))
+                            .foregroundStyle(cloudColor)
+                    }
+                }
+                Section {
                     Button(role: .destructive) {
                         confirmReset = true
                     } label: {
@@ -51,6 +59,24 @@ struct SettingsScreen: View {
             }
         }
         .tint(theme.accent)
+    }
+
+    private func cloudText(_ l10n: LocalizationManager) -> String {
+        switch model.cloudStatus {
+        case .disabled: return l10n.t("cloud.disabled")
+        case .syncing: return l10n.t("cloud.syncing")
+        case .synced(let date):
+            return l10n.t("cloud.synced", date.formatted(.dateTime.hour().minute().locale(l10n.locale)))
+        case .offline: return l10n.t("cloud.offline")
+        }
+    }
+
+    private var cloudColor: Color {
+        switch model.cloudStatus {
+        case .synced: return theme.positive
+        case .offline: return theme.upgrades
+        default: return theme.muted
+        }
     }
 
     private var languageBinding: Binding<AppLanguage> {
