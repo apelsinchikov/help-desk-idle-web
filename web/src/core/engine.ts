@@ -230,7 +230,7 @@ export class GameEngine {
 /** В сейве есть запись для каждой работы из контента (новые работы в jobs.json, старые сейвы). */
 function withAllJobs(content: GameContent, state: GameState): GameState {
   for (const job of content.jobs) {
-    state.jobs[job.id] ??= { level: 0, hasManager: false, startedAt: null }
+    state.jobs[job.id] ??= { level: 0, rank: 0, hasManager: false, startedAt: null }
   }
   return state
 }

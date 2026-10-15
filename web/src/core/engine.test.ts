@@ -94,7 +94,7 @@ test('manager auto-collects', () => {
 
 test('fast cycle is batched', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 300, hasManager: true, startedAt: c.t } })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 300, rank: 0, hasManager: true, startedAt: c.t } })
   const cycle = 0.6 / 32
   assert.equal(e.cycle('reboot'), cycle)
   assert.deepEqual(e.status('reboot'), { kind: 'streaming', perSecond: 300 / cycle })
@@ -104,7 +104,7 @@ test('fast cycle is batched', () => {
 
 test('clock moved backwards', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, rank: 0, hasManager: true, startedAt: c.t } })
   assert.equal(e.advance(c.t - 3_600_000), 0)
   assert.equal(e.state.money, 0)
   const st = e.status('reboot')
@@ -122,7 +122,7 @@ test('quote max when broke shows next price', () => {
 
 test('income per second counts only managed jobs', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, rank: 0, hasManager: true, startedAt: c.t } })
   near(e.incomePerSecond, 10 / 0.6, 1e-9)
 })
 

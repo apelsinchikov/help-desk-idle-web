@@ -4,6 +4,8 @@ import type { AppLanguage } from './format.ts'
 
 export type JobState = {
   level: number
+  /** Последний оплаченный порог (повышение). Награды порогов считаются по нему. */
+  rank: number
   hasManager: boolean
   /** Начало текущего цикла (мс); null — работа стоит (ждёт тапа). */
   startedAt: number | null
@@ -22,15 +24,30 @@ export type GameState = {
   jobs: Record<string, JobState>
   lastActiveAt: number
   settings: PlayerSettings
+  /** Купленные улучшения (id из upgrades.json). */
+  upgrades: string[]
+  ui: UiState
 }
 
-export const CURRENT_SCHEMA = 1
+/** Обучение и разделы меню — в сейве, чтобы не повторялись на другом устройстве. */
+export type UiState = {
+  tutorialDone: boolean
+  tutorialStep: number
+  /** Открытые разделы меню. */
+  sections: string[]
+  /** Разделы, подсказку которых игрок уже видел. */
+  hintsSeen: string[]
+}
+
+export const CURRENT_SCHEMA = 2
+
+export const newUiState = (): UiState => ({ tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [] })
 
 /** Новая игра: первая работа открыта (уровень 1), остальные закрыты. */
 export function newGame(content: GameContent, now: number, language: AppLanguage): GameState {
   const jobs: Record<string, JobState> = {}
   content.jobs.forEach((job, index) => {
-    jobs[job.id] = { level: index === 0 ? 1 : 0, hasManager: false, startedAt: null }
+    jobs[job.id] = { level: index === 0 ? 1 : 0, rank: 0, hasManager: false, startedAt: null }
   })
   return {
     schemaVersion: CURRENT_SCHEMA,
@@ -39,6 +56,8 @@ export function newGame(content: GameContent, now: number, language: AppLanguage
     jobs,
     lastActiveAt: now,
     settings: { language, haptics: true },
+    upgrades: [],
+    ui: newUiState(),
   }
 }
 
