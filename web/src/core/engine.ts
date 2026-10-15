@@ -283,9 +283,13 @@ export class GameEngine {
 
   /** Начать заново (настройки сохраняются). */
   reset(now: number): void {
-    const settings = this.current.settings
+    const { settings, ui } = this.current
     this.current = newGame(this.content, now, settings.language)
     this.current.settings = settings
+    // Пройденное обучение и просмотренные подсказки не повторяем («и больше никогда»).
+    this.current.ui.tutorialDone = ui.tutorialDone
+    this.current.ui.tutorialStep = ui.tutorialDone ? ui.tutorialStep : 0
+    this.current.ui.hintsSeen = [...ui.hintsSeen]
   }
 
   /** Подменить состояние целиком (загрузка из облака). */

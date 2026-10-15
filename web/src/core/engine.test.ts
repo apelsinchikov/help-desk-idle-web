@@ -147,3 +147,19 @@ test('save without an entry for some job does not break buying', () => {
   assert.equal(e.level('plug_mouse'), 1)
   assert.equal(e.state.money, 1e6 - 60)
 })
+
+test('starting over keeps the finished tutorial and seen hints', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => {
+    s.money = 500
+    s.ui.tutorialDone = true
+    s.ui.tutorialStep = 8
+    s.ui.hintsSeen = ['managers', 'upgrades']
+    s.ui.sections = ['settings', 'managers', 'upgrades']
+  })
+  e.reset(c.t)
+  assert.equal(e.state.money, 0)
+  assert.equal(e.state.ui.tutorialDone, true)
+  assert.deepEqual(e.state.ui.hintsSeen, ['managers', 'upgrades'])
+  assert.deepEqual(e.state.ui.sections, ['settings'], 'разделы откроются заново по прогрессу')
+})

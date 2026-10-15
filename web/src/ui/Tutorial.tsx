@@ -18,22 +18,22 @@ function selector(target: TutorialTarget): string | null {
  */
 export function Tutorial() {
   const game = useGame()
-  const view = tutorialView(game.engine, game.route.value)
+  const view = tutorialView(game.engine, game.route.value, game.buyMode.value)
   const sel = view ? selector(view.target) : null
   const [rect, setRect] = useState<Rect | null>(null)
+  /** Подсвеченный элемент выключен (например, кнопка без денег) — не блокируем экран, только подсказка. */
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     if (!sel) { setRect(null); return }
     let frame = 0
-    let scrolled = false
     const tick = () => {
       const el = document.querySelector(sel)
       if (el) {
         const r = el.getBoundingClientRect()
-        if (!scrolled && (r.top < 0 || r.bottom > window.innerHeight)) {
-          el.scrollIntoView({ block: 'center' })
-          scrolled = true
-        }
+        // экран вне подсветки заблокирован — если цель уехала за край, возвращаем её сами
+        if (r.top < 0 || r.bottom > window.innerHeight) el.scrollIntoView({ block: 'center' })
+        setDisabled((el as HTMLButtonElement).disabled === true)
         setRect((old) => old && old.top === r.top && old.left === r.left && old.width === r.width && old.height === r.height
           ? old : { top: r.top, left: r.left, width: r.width, height: r.height })
       } else {
@@ -47,6 +47,7 @@ export function Tutorial() {
 
   if (!view) return null
   if (sel && !rect) return null
+  if (disabled && !view.needsAck) return null
 
   const hole = rect && { top: rect.top - PAD, left: rect.left - PAD, width: rect.width + PAD * 2, height: rect.height + PAD * 2 }
   const below = !hole || hole.top + hole.height < window.innerHeight * 0.6

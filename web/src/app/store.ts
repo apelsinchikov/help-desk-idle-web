@@ -44,7 +44,7 @@ export function createGame(o: {
   /** После любого изменения: разделы меню, шаги обучения, перерисовка. */
   const bump = () => {
     refreshSections(engine)
-    tutorialAdvance(engine, route.value)
+    tutorialAdvance(engine, route.value, buyMode.value)
     version.value++
   }
 
@@ -84,7 +84,7 @@ export function createGame(o: {
     },
 
     ackTutorial(): void {
-      game.act('purchase', () => tutorialAck(engine, route.value))
+      game.act('purchase', () => tutorialAck(engine, route.value, buyMode.value))
     },
 
     markHintSeen(section: string): void {

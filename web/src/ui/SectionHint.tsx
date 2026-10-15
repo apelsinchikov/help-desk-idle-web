@@ -9,7 +9,7 @@ export function SectionHint({ section }: { section: string }) {
   const game = useGame()
   const { engine } = game
   if (engine.state.ui.hintsSeen.includes(section)) return null
-  if (tutorialView(engine, game.route.value)) return null
+  if (tutorialView(engine, game.route.value, game.buyMode.value)) return null
   if (!engine.state.ui.tutorialDone && section === 'managers' && engine.state.ui.tutorialStep >= 6) return null
   return (
     <div class="hint-backdrop">
