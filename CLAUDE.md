@@ -10,8 +10,9 @@ iOS idle-игра в духе AdVenture Capitalist, сеттинг — IT-под
 ## Карта документации
 | Файл | Когда читать |
 |---|---|
-| `docs/GAME_DESIGN.md` | правила игры, core loop, экраны, скоуп MVP / v2 |
+| `docs/GAME_DESIGN.md` | правила игры, core loop, экраны, этапы |
 | `docs/ECONOMY.md` | формулы, таблица баланса, milestones, менеджеры, оффлайн-доход |
+| `docs/PROGRESSION.md` | задания и звёзды, временные перки, гардероб, донат-валюта, сундуки, поздняя игра |
 | `docs/CONTENT.md` | названия работ RU/EN, менеджеры, шутки, банк клише |
 | `docs/ARCHITECTURE.md` | стек, структура папок, данные, Supabase, ассеты, локализация |
 | `docs/CONVENTIONS.md` | стиль кода, git-флоу, коммиты |
