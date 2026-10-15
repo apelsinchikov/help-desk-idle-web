@@ -44,7 +44,7 @@ public final class GameEngine {
 
     /// Доход в секунду от работ с менеджерами.
     public var incomePerSecond: Double {
-        content.jobs.reduce(0) { sum, job in
+        content.jobs.reduce(0.0) { sum, job in
             guard let js = state.jobs[job.id], js.level > 0, js.hasManager else { return sum }
             return sum + payout(of: job.id) / cycle(of: job.id)
         }
@@ -62,19 +62,19 @@ public final class GameEngine {
         }
         if js.level == 0 { return .locked(requirementMet: requirementMet(jobId)) }
 
-        let cycle = cycle(of: jobId)
-        if js.hasManager && cycle < content.config.fastCycleThreshold {
-            return .streaming(perSecond: payout(of: jobId) / cycle)
+        let duration = cycle(of: jobId)
+        if js.hasManager && duration < content.config.fastCycleThreshold {
+            return .streaming(perSecond: payout(of: jobId) / duration)
         }
         guard let start = js.startedAt else { return .idle }
 
         let elapsed = max(0, now.timeIntervalSince(start))
-        if elapsed >= cycle {
+        if elapsed >= duration {
             if !js.hasManager { return .ready }
-            let into = elapsed.truncatingRemainder(dividingBy: cycle)
-            return .running(progress: into / cycle, remaining: cycle - into)
+            let into = elapsed.truncatingRemainder(dividingBy: duration)
+            return .running(progress: into / duration, remaining: duration - into)
         }
-        return .running(progress: elapsed / cycle, remaining: cycle - elapsed)
+        return .running(progress: elapsed / duration, remaining: duration - elapsed)
     }
 
     private func requirementMet(_ jobId: String) -> Bool {
@@ -172,11 +172,11 @@ public final class GameEngine {
             if start > now { start = now }                       // часы перевели назад
             if let cap { start = max(start, now.addingTimeInterval(-cap)) }
 
-            let cycle = cycle(of: job.id)
-            let completed = floor(now.timeIntervalSince(start) / cycle)
+            let duration = cycle(of: job.id)
+            let completed = floor(now.timeIntervalSince(start) / duration)
             if completed > 0 && completed.isFinite {
                 earned += payout(of: job.id) * completed
-                start = start.addingTimeInterval(completed * cycle)
+                start = start.addingTimeInterval(completed * duration)
             }
             js.startedAt = start
             state.jobs[job.id] = js
