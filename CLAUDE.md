@@ -5,6 +5,7 @@
 ## Что это
 iOS idle-игра в духе AdVenture Capitalist, сеттинг — IT-поддержка и разработка.
 Игрок выполняет «работы» (аналог бизнесов AdCap): полоска прогресса заполняется → деньги → прокачка уровней → открытие следующей работы.
+Платформы: iOS (Xcode-проект `HelpDeskIdle/`, логика в `Packages/HelpDeskCore`) и, в планах, веб / Telegram Mini App (`web/`, см. `docs/WEB_PORT.md`).
 Рабочее название: **Help Desk Idle**. Репозиторий: `help-desk-idle`. Папка на маке: `~/Documents/TechRun` (имя папки не важно).
 
 ## Карта документации
@@ -17,6 +18,7 @@ iOS idle-игра в духе AdVenture Capitalist, сеттинг — IT-под
 | `docs/ARCHITECTURE.md` | стек, структура папок, данные, Supabase, ассеты, локализация |
 | `docs/CONVENTIONS.md` | стиль кода, git-флоу, коммиты |
 | `docs/MONETIZATION.md` | заметки на будущее (v2), как тестировать до релиза |
+| `docs/WEB_PORT.md` | веб / Telegram Mini App версия: что общее с iOS, что писать заново, решения |
 | `docs/DECISIONS.md` | журнал принятых решений — дописывай сюда новые |
 
 ## Ключевые правила (кратко)
