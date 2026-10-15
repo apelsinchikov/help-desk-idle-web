@@ -6,10 +6,14 @@ import type { GameState } from '../core/state.ts'
 
 export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 
-const CURRENT = 'hdi.save'
-const BACKUP = 'hdi.save.prev'
+/**
+ * `account` — пространство имён (Telegram ID): несколько аккаунтов в одном клиенте не делят сейв.
+ * Без него — `hdi.save` (браузер вне Telegram).
+ */
+export function createLocalSave(storage: KeyValueStorage = defaultStorage(), account?: string) {
+  const CURRENT = account ? `hdi.${account}.save` : 'hdi.save'
+  const BACKUP = `${CURRENT}.prev`
 
-export function createLocalSave(storage: KeyValueStorage = defaultStorage()) {
   const read = (key: string): string | null => {
     try {
       return storage.getItem(key)
@@ -40,7 +44,7 @@ function defaultStorage(): KeyValueStorage {
   try {
     const ls = globalThis.localStorage
     if (ls) {
-      ls.getItem(CURRENT)
+      ls.getItem('hdi.save')
       return ls
     }
   } catch {

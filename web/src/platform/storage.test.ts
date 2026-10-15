@@ -74,3 +74,14 @@ test('missing global localStorage works as empty', () => {
   assert.equal(store.load(), null)
   assert.doesNotThrow(() => store.save(game(1)))
 })
+
+test('saves of different Telegram accounts are kept apart', () => {
+  const mem = memory()
+  const a = createLocalSave(mem, 'tg1')
+  const b = createLocalSave(mem, 'tg2')
+  a.save(game(111))
+  assert.equal(b.load(), null)
+  b.save(game(222))
+  assert.equal(a.load()!.money, 111)
+  assert.equal(b.load()!.money, 222)
+})

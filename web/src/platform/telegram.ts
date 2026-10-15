@@ -26,6 +26,8 @@ export const telegram = {
   isTelegram: inside,
   initData: inside ? webApp!.initData : '',
   languageCode: inside ? webApp!.initDataUnsafe.user?.language_code : undefined,
+  /** Telegram ID игрока (не проверен — для разделения локальных сейвов; проверяет сервер). */
+  userId: inside ? webApp!.initDataUnsafe.user?.id : undefined,
 
   /** Готовность, весь экран, свайп вниз не закрывает игру, цвета шапки под тему A. */
   init(background: string): void {

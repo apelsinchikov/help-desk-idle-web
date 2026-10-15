@@ -2,12 +2,13 @@ import { render } from 'preact'
 import { effect, signal } from '@preact/signals'
 import { bundledContent } from './core/bundled.ts'
 import { GameEngine } from './core/engine.ts'
-import { pickSave } from './core/savePicker.ts'
 import { newGame } from './core/state.ts'
+import type { GameState } from './core/state.ts'
 import { createCloud } from './platform/cloud.ts'
 import { createLocalSave } from './platform/storage.ts'
 import { telegram } from './platform/telegram.ts'
 import { createSaveScheduler } from './app/saveScheduler.ts'
+import { createCloudGate } from './app/cloudGate.ts'
 import { createGame } from './app/store.ts'
 import type { CloudStatus } from './app/store.ts'
 import { uiLanguage } from './app/strings.ts'
@@ -25,24 +26,32 @@ const CLOUD_TIMEOUT_MS = 4000
 telegram.init(getComputedStyle(document.documentElement).getPropertyValue('--background').trim())
 
 const content = bundledContent
-const localSave = createLocalSave()
-const local = localSave.load()
-const state = local ?? newGame(content, Date.now(), detectLanguage(telegram.languageCode ?? navigator.language))
+const localSave = createLocalSave(undefined, telegram.userId !== undefined ? `tg${telegram.userId}` : undefined)
+const state = localSave.load() ?? newGame(content, Date.now(), detectLanguage(telegram.languageCode ?? navigator.language))
 const engine = new GameEngine(content, state)
 
 // Облако — только в Telegram и только если сборка знает адрес и ключ проекта.
 const cloud = createCloud(
   { url: import.meta.env.VITE_SUPABASE_URL, key: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-  telegram.initData,
+  { initData: telegram.initData, userId: telegram.userId },
 )
 const cloudStatus = signal<CloudStatus>({ kind: cloud ? 'syncing' : 'disabled' })
+
+/** Облачный сейв оказался лучше (новое устройство, очищенный WebView) — играем им. */
+function adopt(remote: GameState): void {
+  engine.replaceState(remote)
+  uiLanguage.value = remote.settings.language
+  localSave.save(remote)
+  game.version.value++
+}
+const gate = cloud && createCloudGate({ cloud, current: () => engine.state, adopt })
 
 const scheduler = createSaveScheduler({
   saveLocal: () => localSave.save(engine.state),
   uploadCloud: async () => {
-    if (!cloud) return
+    if (!gate) return
     try {
-      await cloud.upload(engine.state)
+      await gate.upload()
       cloudStatus.value = { kind: 'synced', at: Date.now() }
     } catch (error) {
       cloudStatus.value = { kind: 'offline' }
@@ -64,17 +73,14 @@ effect(() => {
 
 render(<App game={game} phase={phase} />, document.getElementById('app')!)
 
-/** При запуске берём облачный сейв, если в нём заработано больше (pickSave). Плохая сеть не держит загрузку. */
+/**
+ * При запуске берём облачный сейв, если в нём заработано больше. Плохая сеть не держит загрузку дольше 4 с:
+ * загрузка продолжится в фоне, а выгрузки в облако подождут её (cloudGate).
+ */
 async function syncFromCloud(): Promise<void> {
-  if (!cloud) return
+  if (!gate) return
   try {
-    const remote = await withTimeout(cloud.signIn().then(() => cloud.download()), CLOUD_TIMEOUT_MS)
-    const chosen = pickSave(local, remote)
-    if (chosen && chosen !== local) {
-      engine.replaceState(chosen)
-      uiLanguage.value = chosen.settings.language
-      localSave.save(chosen)
-    }
+    await withTimeout(gate.reconcile(), CLOUD_TIMEOUT_MS)
     cloudStatus.value = { kind: 'synced', at: Date.now() }
   } catch {
     cloudStatus.value = { kind: 'offline' }
