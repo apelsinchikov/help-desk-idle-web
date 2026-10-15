@@ -1,4 +1,6 @@
-# Help Desk Idle — контекст проекта для ИИ-ассистента
+# Help Desk Idle (WEB) — контекст проекта для ИИ-ассистента
+
+> **Этот репозиторий — веб / Telegram Mini App версия.** Начинай с `docs/WEB_PORT.md`. iOS-версия живёт в `apelsinchikov/help-desk-idle`; папки `HelpDeskIdle/` и `Packages/` здесь — эталон логики для порта на TypeScript.
 
 > Читай этот файл в начале каждой сессии. Подробности — в `docs/` (читай только нужный файл).
 

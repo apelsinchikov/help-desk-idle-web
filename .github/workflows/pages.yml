@@ -1,0 +1,73 @@
+name: Deploy web to GitHub Pages
+
+# Один сайт GitHub Pages, две сборки:
+#   main → https://apelsinchikov.github.io/help-desk-idle-web/      (Telegram-бот, облако Supabase)
+#   dev  → https://apelsinchikov.github.io/help-desk-idle-web/dev/  (только браузер, без облака)
+# Пуш в любую из веток пересобирает обе.
+
+on:
+  push:
+    branches: [dev, main]
+    paths: ['web/**', 'supabase/functions/**', 'Packages/HelpDeskCore/Sources/HelpDeskCore/Resources/**', 'HelpDeskIdle/HelpDeskIdle/Localization/**', 'HelpDeskIdle/HelpDeskIdle/Assets.xcassets/Icons/**', 'HelpDeskIdle/HelpDeskIdle/Fonts/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          path: main
+      - uses: actions/checkout@v5
+        with:
+          ref: dev
+          path: dev
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Build main (production)
+        if: hashFiles('main/web/package.json') != ''
+        working-directory: main/web
+        run: npm ci && npm test && npm run build
+        env:
+          BASE_PATH: /help-desk-idle-web/
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      - name: Build dev (browser only, no cloud)
+        working-directory: dev/web
+        run: npm ci && npm test && npm run build
+        env:
+          BASE_PATH: /help-desk-idle-web/dev/
+          VITE_CHANNEL: dev
+
+      - name: Assemble site
+        run: |
+          mkdir -p site/dev
+          if [ -d main/web/dist ]; then cp -r main/web/dist/. site/; fi
+          cp -r dev/web/dist/. site/dev/
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
