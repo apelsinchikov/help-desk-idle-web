@@ -47,7 +47,8 @@ export const newUiState = (): UiState => ({ tutorialDone: false, tutorialStep: 0
 export function newGame(content: GameContent, now: number, language: AppLanguage): GameState {
   const jobs: Record<string, JobState> = {}
   content.jobs.forEach((job, index) => {
-    jobs[job.id] = { level: index === 0 ? 1 : 0, rank: 0, hasManager: false, startedAt: null }
+    // первая работа открыта и уже идёт (без менеджера работа запускается сама, деньги собираются тапом)
+    jobs[job.id] = { level: index === 0 ? 1 : 0, rank: 0, hasManager: false, startedAt: index === 0 ? now : null }
   })
   return {
     schemaVersion: CURRENT_SCHEMA,

@@ -19,8 +19,7 @@ test('at the cap the manager stops: no auto income, no offline income', () => {
 test('at the cap the job can still be worked by hand — no dead end', () => {
   const c = makeClock()
   const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 50, rank: 25, hasManager: true, startedAt: null } })
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' })
-  e.tap('reboot')
+  assert.equal(e.status('reboot').kind, 'running', 'работа идёт и без менеджера')
   c.t += 300
   assert.deepEqual(e.status('reboot'), { kind: 'ready' })
   e.tap('reboot')

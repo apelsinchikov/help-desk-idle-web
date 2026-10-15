@@ -15,6 +15,16 @@ export class GameEngine {
     this.content = content
     this.current = withAllJobs(content, state)
     this.now = now
+    this.startIdleJobs()
+  }
+
+  /** Открытые работы не простаивают: без менеджера цикл идёт сам, ждём только сбора денег. */
+  private startIdleJobs(): void {
+    const now = this.now()
+    for (const job of this.content.jobs) {
+      const js = this.current.jobs[job.id]
+      if (js && js.level > 0 && js.startedAt === null) js.startedAt = now
+    }
   }
 
   get state(): GameState {
@@ -149,8 +159,9 @@ export class GameEngine {
         js.startedAt = now
         break
       case 'ready':
+        // один тап: забрать деньги — и следующий цикл стартует сам
         this.credit(this.payout(jobId))
-        js.startedAt = null
+        js.startedAt = now
         break
     }
   }
@@ -232,6 +243,7 @@ export class GameEngine {
     if (!job || !this.canUnlock(jobId)) return false
     this.current.money -= job.baseCost
     this.current.jobs[jobId].level = 1
+    this.current.jobs[jobId].startedAt = this.now()
     return true
   }
 
@@ -312,6 +324,7 @@ export class GameEngine {
   /** Подменить состояние целиком (загрузка из облака). */
   replaceState(state: GameState): void {
     this.current = withAllJobs(this.content, state)
+    this.startIdleJobs()
   }
 
   private credit(amount: number): void {

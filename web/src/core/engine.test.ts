@@ -4,33 +4,39 @@ import { makeClock, makeEngine } from './testkit.ts'
 
 const near = (a: number, b: number, eps: number) => assert.ok(Math.abs(a - b) <= eps, `${a} ≉ ${b}`)
 
-test('tap starts, then ready, then collect', () => {
+test('without a manager the job runs by itself; one tap collects and restarts it', () => {
   const c = makeClock()
   const e = makeEngine(c)
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' })
-  e.tap('reboot')
-  assert.equal(e.status('reboot').kind, 'running')
+  assert.equal(e.status('reboot').kind, 'running', 'новая игра — работа уже идёт')
   c.t += 600
   assert.deepEqual(e.status('reboot'), { kind: 'ready' })
-  assert.equal(e.state.money, 0)
+  assert.equal(e.state.money, 0, 'деньги ждут сбора')
   e.tap('reboot')
   assert.equal(e.state.money, 1)
   assert.equal(e.state.lifetimeEarnings, 1)
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' }, 'после сбора работа стоит до нового тапа')
-  c.t += 5000
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' }, 'сама не стартует')
-  e.tap('reboot')
-  assert.equal(e.status('reboot').kind, 'running', 'старт только по тапу')
+  assert.equal(e.status('reboot').kind, 'running', 'после сбора следующий цикл стартует сам')
 })
 
-test('ready job is collected only once', () => {
+test('a tap while the job is running does nothing', () => {
   const c = makeClock()
   const e = makeEngine(c)
-  e.tap('reboot')
   c.t += 600
   e.tap('reboot')
-  e.tap('reboot') // второй тап — это уже новый старт, не второй сбор
+  e.tap('reboot')
   assert.equal(e.state.money, 1)
+  assert.equal(e.status('reboot').kind, 'running')
+})
+
+test('an unlocked job starts by itself', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 25; s.money = 1e6 })
+  e.unlock('plug_mouse')
+  assert.equal(e.status('plug_mouse').kind, 'running')
+})
+
+test('an old save with an idle job gets it started', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot.startedAt = null })
   assert.equal(e.status('reboot').kind, 'running')
 })
 

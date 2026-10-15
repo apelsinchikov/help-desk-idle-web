@@ -3,18 +3,20 @@ import assert from 'node:assert/strict'
 import { makeClock, makeEngine } from './testkit.ts'
 import { refreshSections, tutorialAck, tutorialAdvance, tutorialView } from './progress.ts'
 
-test('fresh game starts the tutorial on the first job icon', () => {
-  const e = makeEngine(makeClock())
+test('fresh game: the job runs by itself, the tutorial first asks to collect', () => {
+  const c = makeClock()
+  const e = makeEngine(c)
+  tutorialAdvance(e, 'jobs')
+  assert.equal(tutorialView(e, 'jobs'), null, 'пока работа идёт — подсказки нет')
+  c.t += 600
   const v = tutorialView(e, 'jobs')!
-  assert.equal(v.step, 0)
-  assert.equal(v.textKey, 'tutorial.0')
+  assert.equal(v.textKey, 'tutorial.1')
   assert.deepEqual(v.target, { kind: 'job-icon', jobId: 'reboot' })
 })
 
 test('tutorial waits for the job to be ready, then asks to collect', () => {
   const c = makeClock()
   const e = makeEngine(c)
-  e.tap('reboot')
   tutorialAdvance(e, 'jobs')
   assert.equal(e.state.ui.tutorialStep, 1)
   assert.equal(tutorialView(e, 'jobs'), null, 'пока работа идёт — подсказки нет')
