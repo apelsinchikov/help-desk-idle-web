@@ -51,6 +51,11 @@ export class GameEngine {
     return level >= 1 && level >= this.cap(jobId)
   }
 
+  /** Менеджер нанят, но стоит: работа на пороге ждёт повышения. */
+  managerWaiting(jobId: string): boolean {
+    return (this.current.jobs[jobId]?.hasManager ?? false) && this.atCap(jobId)
+  }
+
   /** Повышение стоит как `promotionLevels` следующих уровней этой работы. */
   promotionCost(jobId: string): number {
     const job = this.content.job(jobId)
@@ -91,7 +96,7 @@ export class GameEngine {
     let sum = 0
     for (const job of this.content.jobs) {
       const js = this.current.jobs[job.id]
-      if (js && js.level > 0 && js.hasManager) sum += this.payout(job.id) / this.cycle(job.id)
+      if (js && js.level > 0 && js.hasManager && !this.atCap(job.id)) sum += this.payout(job.id) / this.cycle(job.id)
     }
     return sum
   }
@@ -104,14 +109,16 @@ export class GameEngine {
     if (js.level === 0) return { kind: 'locked', requirementMet: this.requirementMet(jobId) }
 
     const duration = this.cycle(jobId)
-    if (js.hasManager && duration < this.content.config.fastCycleThreshold) {
+    // на пороге менеджер ждёт повышения — работа идёт только вручную
+    const managed = js.hasManager && !this.atCap(jobId)
+    if (managed && duration < this.content.config.fastCycleThreshold) {
       return { kind: 'streaming', perSecond: this.payout(jobId) / duration }
     }
     if (js.startedAt === null) return { kind: 'idle' }
 
     const elapsed = Math.max(0, (at - js.startedAt) / 1000)
     if (elapsed >= duration) {
-      if (!js.hasManager) return { kind: 'ready' }
+      if (!managed) return { kind: 'ready' }
       const into = elapsed % duration
       return { kind: 'running', progress: into / duration, remaining: duration - into }
     }
@@ -166,6 +173,7 @@ export class GameEngine {
     if (this.level(jobId) < 1) return false
     const q = this.quote(jobId, mode)
     if (q.count <= 0 || !Number.isFinite(q.cost) || q.cost > this.current.money) return false
+    this.advance(this.now()) // менеджер дособирает завершённые циклы, пока не упёрся в порог
     this.current.money -= q.cost
     this.current.jobs[jobId].level += q.count
     return true
@@ -181,7 +189,10 @@ export class GameEngine {
     if (!Number.isFinite(cost) || cost > this.current.money) return null
     const before = new Set(this.activeMilestones())
     this.current.money -= cost
-    this.current.jobs[jobId].rank = this.cap(jobId)
+    const js = this.current.jobs[jobId]
+    js.rank = this.cap(jobId)
+    // менеджер снова работает сам
+    if (js.hasManager && js.startedAt === null) js.startedAt = this.now()
     return this.activeMilestones().filter((m) => !before.has(m))
   }
 
@@ -251,6 +262,7 @@ export class GameEngine {
     for (const job of this.content.jobs) {
       const js = this.current.jobs[job.id]
       if (!js || js.level <= 0 || !js.hasManager) continue
+      if (this.atCap(job.id)) continue // на пороге менеджер ждёт повышения
       let start = js.startedAt ?? now
       if (start > now) start = now // часы перевели назад
       if (capSeconds !== undefined) start = Math.max(start, now - capSeconds * 1000)

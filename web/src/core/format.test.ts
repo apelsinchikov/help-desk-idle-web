@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { formatDuration, formatMoney } from './format.ts'
+import { formatDuration, formatMoney, formatTimer } from './format.ts'
 
 test('numbers', () => {
   assert.equal(formatMoney(186_420, 'ru'), '186 420')
@@ -22,4 +22,11 @@ test('durations', () => {
   assert.equal(formatDuration(1.5, 'ru'), '1,5 с')
   assert.equal(formatDuration(-5, 'ru'), '0 с')
   assert.equal(formatDuration(30 * 86_400, 'ru'), '30 д')
+})
+
+test('timer keeps one decimal under a minute', () => {
+  assert.equal(formatTimer(0, 'ru'), '0,0 с')
+  assert.equal(formatTimer(3, 'en'), '3.0 s')
+  assert.equal(formatTimer(0.42, 'ru'), '0,4 с')
+  assert.equal(formatTimer(702, 'ru'), '11 мин 42 с')
 })

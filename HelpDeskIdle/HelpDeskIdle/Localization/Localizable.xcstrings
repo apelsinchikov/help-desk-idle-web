@@ -889,6 +889,23 @@
         }
       }
     },
+    "job.managerWaiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The manager awaits a promotion — tap the icon yourself"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Менеджер ждёт повышения — пока тапай сам"
+          }
+        }
+      }
+    },
     "job.perSecond": {
       "extractionState": "manual",
       "localizations": {

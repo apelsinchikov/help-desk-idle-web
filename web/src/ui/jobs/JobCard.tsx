@@ -6,9 +6,12 @@ import type { JobDefinition } from '../../core/content.ts'
 import { money, useGame } from '../context.ts'
 import { Icon } from '../Icon.tsx'
 import { LockedJobCard } from './LockedJobCard.tsx'
-import { ProgressBar } from './ProgressBar.tsx'
+import { ProgressBar, TimeBox } from './ProgressBar.tsx'
 
-/** Карточка работы: иконка — старт/сбор, вся правая панель — покупка уровней (на пороге — повышение). */
+/**
+ * Карточка работы (по образцу AdCap): иконка с уровнем — старт/сбор; справа название, полоса работы с суммой,
+ * под ней кнопка покупки уровней (на пороге — повышение) и блок с оставшимся временем.
+ */
 export function JobCard({ job }: { job: JobDefinition }) {
   const game = useGame()
   const { engine } = game
@@ -38,6 +41,7 @@ export function JobCard({ job }: { job: JobDefinition }) {
         <button
           class={`card__icon-btn ${ready ? 'card__icon-btn--ready' : ''}`}
           data-tutorial={`job-icon:${job.id}`}
+          aria-label={t(`job.${job.id}.title`)}
           onClick={onIcon}
         >
           <Icon src={iconUrl(job.iconKey)} class="card__icon" />
@@ -46,56 +50,52 @@ export function JobCard({ job }: { job: JobDefinition }) {
         <span class="card__level">{Number.isFinite(cap) ? `${level} / ${cap}` : `${level}`}</span>
         {float && <div class="card__float" key={float.id}>{float.text}</div>}
       </div>
-      {engine.atCap(job.id) ? <PromotePanel job={job} /> : <BuyPanel job={job} />}
+      <div class="card__main">
+        <div class="card__title">{t(`job.${job.id}.title`)}</div>
+        <ProgressBar jobId={job.id} status={status} />
+        {engine.managerWaiting(job.id) && <div class="card__waiting">{t('job.managerWaiting')}</div>}
+        <div class="card__row">
+          {engine.atCap(job.id) ? <PromoteButton job={job} /> : <BuyButton job={job} />}
+          <TimeBox jobId={job.id} status={status} />
+        </div>
+      </div>
     </div>
   )
 }
 
-function BuyPanel({ job }: { job: JobDefinition }) {
+function BuyButton({ job }: { job: JobDefinition }) {
   const game = useGame()
   const { engine } = game
   const quote = engine.quote(job.id, game.buyMode.value)
-  const canBuy = quote.count > 0 && quote.cost <= engine.state.money
-  const onBuy = () => game.act('purchase', () => engine.buy(job.id, game.buyMode.value))
+  const can = quote.count > 0 && quote.cost <= engine.state.money
   return (
     <button
-      class={`card__panel ${canBuy ? '' : 'card__panel--off'}`}
+      class={`card__action ${can ? '' : 'card__action--off'}`}
       data-tutorial={`job-panel:${job.id}`}
-      disabled={!canBuy}
-      onClick={onBuy}
+      disabled={!can}
+      onClick={() => game.act('purchase', () => engine.buy(job.id, game.buyMode.value))}
     >
-      <span class="card__title">{t(`job.${job.id}.title`)}</span>
-      <ProgressBar jobId={job.id} status={engine.status(job.id)} />
-      <span class="card__buy">
-        <span>{t('buy.button', Math.max(quote.count, 1))}</span>
-        <span>{money(quote.cost)}</span>
-      </span>
+      <span class="card__action-label">{t('buy.button', Math.max(quote.count, 1))}</span>
+      <span class="card__action-price">{money(quote.cost)}</span>
     </button>
   )
 }
 
-function PromotePanel({ job }: { job: JobDefinition }) {
+function PromoteButton({ job }: { job: JobDefinition }) {
   const game = useGame()
   const { engine } = game
   const cost = engine.promotionCost(job.id)
-  const canPay = cost <= engine.state.money
-  const cap = engine.cap(job.id)
-  const index = engine.content.milestoneLevels(job.id).indexOf(cap)
-  const reward = engine.content.milestones.find((m) => m.jobId === job.id && m.level === cap)
+  const can = cost <= engine.state.money
+  const index = engine.content.milestoneLevels(job.id).indexOf(engine.cap(job.id))
   return (
     <button
-      class={`card__panel card__panel--promote ${canPay ? '' : 'card__panel--off'}`}
+      class={`card__action card__action--promote ${can ? '' : 'card__action--off'}`}
       data-tutorial={`job-panel:${job.id}`}
-      disabled={!canPay}
+      disabled={!can}
       onClick={() => game.promote(job.id)}
     >
-      <span class="card__title">{t(`job.${job.id}.title`)}</span>
-      <ProgressBar jobId={job.id} status={engine.status(job.id)} />
-      <span class="card__buy">
-        <span>{t(promotionLabelKey(index))}</span>
-        <span>{money(cost)}</span>
-      </span>
-      {reward && <span class="card__reward">{t('job.promote.reward', t(`effect.${reward.effect}`), reward.value)}</span>}
+      <span class="card__action-label">{t(promotionLabelKey(index))}</span>
+      <span class="card__action-price">{money(cost)}</span>
     </button>
   )
 }

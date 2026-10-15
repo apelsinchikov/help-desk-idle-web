@@ -81,3 +81,11 @@ export function formatDuration(seconds: number, language: AppLanguage): string {
   if (ru) text = text.replace('.', ',')
   return `${text} ${sec}`
 }
+
+/** Таймер работы: до минуты — всегда с одним знаком («0,0 с», «3,0 с»), чтобы цифры не прыгали. */
+export function formatTimer(seconds: number, language: AppLanguage): string {
+  const s = Number.isFinite(seconds) ? Math.max(0, seconds) : 0
+  if (s >= 60) return formatDuration(s, language)
+  const text = s.toFixed(1)
+  return language === 'ru' ? `${text.replace('.', ',')} с` : `${text} s`
+}

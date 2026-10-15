@@ -30,16 +30,6 @@ button:disabled { cursor: default; }
 .card__icon-btn { position: relative; padding: 0; border-radius: 18px; background: transparent; }
 .card__icon-btn--ready { animation: pulse 1s ease-in-out infinite; box-shadow: 0 0 0 3px var(--positive); }
 .card__collect { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); padding: 1px 8px; border-radius: 99px; background: var(--positive); color: var(--on-accent); font-size: 11px; font-weight: 800; white-space: nowrap; }
-.card__panel { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; border-radius: 16px; border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--card)); color: var(--ink); text-align: left; transition: transform .08s; }
-.card__panel:active:not(:disabled) { transform: scale(.98); }
-.card__panel .card__buy { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; font-size: 14px; font-weight: 800; color: var(--accent); }
-.card__panel--off { border-color: var(--line); background: var(--card); }
-.card__panel--off .card__buy { color: var(--muted); }
-.card__panel--promote { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 18%, var(--card)); }
-.card__panel--promote .card__buy { color: var(--ink); }
-.card__panel--promote.card__panel--off { border-color: var(--line); background: var(--card); }
-.card__panel--promote.card__panel--off .card__buy { color: var(--muted); }
-.card__reward { font-size: 12px; font-weight: 700; color: var(--muted); }
 .card--locked { background: transparent; box-shadow: none; border: 2px dashed var(--locked-border); cursor: default; }
 @keyframes pulse { 50% { transform: scale(1.06); } }
 .card__side { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: none; }
@@ -55,11 +45,6 @@ button:disabled { cursor: default; }
 .card__float { position: absolute; top: -4px; left: -20px; right: -20px; text-align: center; color: var(--positive); font-weight: 800; font-size: 15px; pointer-events: none; animation: float 1s ease-out forwards; }
 @keyframes float { from { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-16px); } }
 
-.bar { position: relative; height: 28px; border-radius: 10px; background: var(--track); overflow: hidden; }
-.bar__fill { position: absolute; inset: 0 auto 0 0; background: var(--amber); border-radius: 10px; }
-.bar--ready .bar__fill { background: var(--positive); }
-.bar__text { position: relative; height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 10px; font-size: 13px; font-weight: 800; white-space: nowrap; }
-.bar--ready .bar__text { color: var(--on-accent); }
 
 .buy, .unlock { height: 36px; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 800; }
 .buy { background: var(--accent); color: var(--on-accent); }
@@ -197,3 +182,24 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .tutorial__bubble { position: fixed; left: 16px; right: 16px; max-width: 420px; margin: 0 auto; padding: 14px 16px; border-radius: 18px; background: var(--card); color: var(--ink); font-size: 15px; font-weight: 700; pointer-events: auto; display: flex; flex-direction: column; gap: 10px; }
 .tutorial__bubble p { margin: 0; }
 .manager__hire--upgrades.manager__hire--off { background: var(--track-strong); color: var(--muted); }
+
+/* Карточка по образцу AdCap: полоса-стрелка, кнопка покупки и блок времени */
+.card__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.card__title { font-size: 13px; font-weight: 800; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar { position: relative; height: 34px; background: var(--track); overflow: hidden; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 8px 50%); }
+.bar__fill { position: absolute; inset: 0 auto 0 0; background: var(--amber); }
+.bar--ready .bar__fill { background: var(--positive); }
+.bar--streaming .bar__fill { background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, var(--amber-stripe) 14px 28px); background-size: 40px 40px; animation: stripes 0.8s linear infinite; }
+@keyframes stripes { to { background-position: 40px 0; } }
+.bar__text { position: relative; height: 100%; display: flex; align-items: center; padding: 0 22px 0 16px; font-size: 15px; font-weight: 800; white-space: nowrap; }
+.bar--ready .bar__text { color: var(--on-accent); }
+.card__waiting { font-size: 11px; font-weight: 800; color: var(--upgrades); }
+.card__row { display: flex; gap: 6px; }
+.card__action { flex: 1; min-width: 0; min-height: 44px; border-radius: 12px; padding: 4px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--accent); color: var(--on-accent); line-height: 1.15; }
+.card__action-label { font-size: 14px; font-weight: 800; }
+.card__action-price { font-size: 12px; font-weight: 700; opacity: .9; }
+.card__action--promote { background: var(--amber); color: var(--ink); }
+.card__action--off { background: var(--track-strong); color: var(--muted); }
+.card__action:active:not(:disabled) { transform: scale(.97); }
+.card__time { flex: none; width: 64px; border-radius: 12px; background: var(--track-strong); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
+.card__side { gap: 10px; }

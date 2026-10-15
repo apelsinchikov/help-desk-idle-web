@@ -91,12 +91,12 @@ test('manager needs job level 50', () => {
 
 test('manager auto-collects', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 50; s.money = 1000 })
+  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 50; s.jobs.reboot.rank = 50; s.money = 1000 })
   assert.equal(e.hireManager('reboot'), true)
   assert.equal(e.state.money, 0)
   c.t += 6000
   const earned = e.advance(c.t)
-  assert.equal(earned, 50 * Math.floor(6 / 0.6))
+  assert.equal(earned, 50 * Math.floor(6 / 0.15))
   assert.equal(e.state.money, earned)
   assert.equal(e.hireManager('reboot'), false, 'второй раз нанять нельзя')
 })
