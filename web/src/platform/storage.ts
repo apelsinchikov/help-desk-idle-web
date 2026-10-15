@@ -1,6 +1,7 @@
 // Локальный сейв в localStorage. Порт LocalSaveStore.swift:
 // перед записью предыдущая валидная копия становится `hdi.save.prev`;
 // битый или «из будущего» сейв не роняет игру — пробуем копию, иначе null (новая игра).
+import { bundledContent } from '../core/bundled.ts'
 import { decodeState, encodeState } from '../core/serialize.ts'
 import type { GameState } from '../core/state.ts'
 
@@ -24,13 +25,13 @@ export function createLocalSave(storage: KeyValueStorage = defaultStorage(), acc
 
   return {
     load(): GameState | null {
-      return decodeState(read(CURRENT)) ?? decodeState(read(BACKUP))
+      return decodeState(read(CURRENT), bundledContent) ?? decodeState(read(BACKUP), bundledContent)
     },
 
     save(state: GameState): void {
       try {
         const previous = read(CURRENT)
-        if (previous !== null && decodeState(previous) !== null) storage.setItem(BACKUP, previous)
+        if (previous !== null && decodeState(previous, bundledContent) !== null) storage.setItem(BACKUP, previous)
         storage.setItem(CURRENT, encodeState(state))
       } catch {
         // Хранилище недоступно или переполнено — играем дальше, облако остаётся бэкапом.

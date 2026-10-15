@@ -4,6 +4,10 @@ import type { Signal } from '@preact/signals'
 import type { GameEngine } from '../core/engine.ts'
 import type { AppLanguage } from '../core/format.ts'
 import type { BuyMode, OfflineReport } from '../core/state.ts'
+import { achievementText } from '../core/achievements.ts'
+import type { AchievementText } from '../core/achievements.ts'
+import type { Milestone } from '../core/content.ts'
+import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
 
 export type CloudStatus =
@@ -12,7 +16,7 @@ export type CloudStatus =
   | { kind: 'synced'; at: number }
   | { kind: 'offline' }
 
-export type Route = 'jobs' | 'menu' | 'managers' | 'settings'
+export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements'
 
 const TICK_MS = 100
 
@@ -33,9 +37,16 @@ export function createGame(o: {
   const route = signal<Route>('jobs')
   const language = o.language
   language.value = engine.state.settings.language
+  /** Очередь тостов достижений; UI показывает первый и снимает dismissToast(). */
+  const toasts = signal<AchievementText[]>([])
   let timer: ReturnType<typeof setInterval> | null = null
 
-  const bump = () => { version.value++ }
+  /** После любого изменения: разделы меню, шаги обучения, перерисовка. */
+  const bump = () => {
+    refreshSections(engine)
+    tutorialAdvance(engine, route.value, buyMode.value)
+    version.value++
+  }
 
   const game = {
     engine,
@@ -45,12 +56,46 @@ export function createGame(o: {
     route,
     language,
     cloudStatus: o.cloudStatus,
+    toasts,
 
     /** Действие игрока: покупки сохраняются сразу, тапы — по интервалу автосейва. */
     act(kind: 'purchase' | 'tap', fn: () => void): void {
       fn()
       bump()
       scheduler.changed(kind === 'purchase' ? 'purchase' : 'tick')
+    },
+
+    /** Повышение на пороге: тост с наградой, сохранение сразу. */
+    promote(jobId: string): void {
+      const gained: Milestone[] = []
+      game.act('purchase', () => { gained.push(...(engine.promote(jobId) ?? [])) })
+      if (gained.length === 0) return
+      game.haptic('success')
+      const index = engine.content.jobs.findIndex((j) => j.id === jobId)
+      toasts.value = [...toasts.value, ...gained.map((m) => achievementText(m, m.jobId === null ? -1 : index))]
+    },
+
+    buyUpgrade(upgradeId: string): void {
+      game.act('purchase', () => { if (engine.buyUpgrade(upgradeId)) game.haptic('success') })
+    },
+
+    dismissToast(): void {
+      toasts.value = toasts.value.slice(1)
+    },
+
+    ackTutorial(): void {
+      game.act('purchase', () => tutorialAck(engine, route.value, buyMode.value))
+    },
+
+    markHintSeen(section: string): void {
+      if (engine.state.ui.hintsSeen.includes(section)) return
+      game.act('purchase', () => engine.state.ui.hintsSeen.push(section))
+    },
+
+    /** Смена экрана тоже двигает обучение (шаги «Нажми Меню» → «Менеджеры»). */
+    navigate(next: Route): void {
+      route.value = next
+      bump()
     },
 
     haptic(kind: 'light' | 'success'): void {

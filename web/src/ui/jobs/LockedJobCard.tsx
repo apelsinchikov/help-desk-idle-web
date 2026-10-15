@@ -32,7 +32,7 @@ export function LockedJobCard({ job, requirementMet }: { job: JobDefinition; req
             {requirementMet && <span class="card__req-done"> — {t('job.locked.done')}</span>}
           </div>
         )}
-        <button class={`unlock ${canUnlock ? '' : 'unlock--off'}`} disabled={!canUnlock} onClick={onUnlock}>
+        <button class={`unlock ${canUnlock ? '' : 'unlock--off'}`} data-tutorial={`job-unlock:${job.id}`} disabled={!canUnlock} onClick={onUnlock}>
           <span>{t('job.unlock')}</span>
           <span>{money(job.baseCost)}</span>
         </button>

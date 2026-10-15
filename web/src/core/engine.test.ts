@@ -4,33 +4,39 @@ import { makeClock, makeEngine } from './testkit.ts'
 
 const near = (a: number, b: number, eps: number) => assert.ok(Math.abs(a - b) <= eps, `${a} ≉ ${b}`)
 
-test('tap starts, then ready, then collect', () => {
+test('without a manager the job runs by itself; one tap collects and restarts it', () => {
   const c = makeClock()
   const e = makeEngine(c)
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' })
-  e.tap('reboot')
-  assert.equal(e.status('reboot').kind, 'running')
+  assert.equal(e.status('reboot').kind, 'running', 'новая игра — работа уже идёт')
   c.t += 600
   assert.deepEqual(e.status('reboot'), { kind: 'ready' })
-  assert.equal(e.state.money, 0)
+  assert.equal(e.state.money, 0, 'деньги ждут сбора')
   e.tap('reboot')
   assert.equal(e.state.money, 1)
   assert.equal(e.state.lifetimeEarnings, 1)
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' }, 'после сбора работа стоит до нового тапа')
-  c.t += 5000
-  assert.deepEqual(e.status('reboot'), { kind: 'idle' }, 'сама не стартует')
-  e.tap('reboot')
-  assert.equal(e.status('reboot').kind, 'running', 'старт только по тапу')
+  assert.equal(e.status('reboot').kind, 'running', 'после сбора следующий цикл стартует сам')
 })
 
-test('ready job is collected only once', () => {
+test('a tap while the job is running does nothing', () => {
   const c = makeClock()
   const e = makeEngine(c)
-  e.tap('reboot')
   c.t += 600
   e.tap('reboot')
-  e.tap('reboot') // второй тап — это уже новый старт, не второй сбор
+  e.tap('reboot')
   assert.equal(e.state.money, 1)
+  assert.equal(e.status('reboot').kind, 'running')
+})
+
+test('an unlocked job starts by itself', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 25; s.money = 1e6 })
+  e.unlock('plug_mouse')
+  assert.equal(e.status('plug_mouse').kind, 'running')
+})
+
+test('an old save with an idle job gets it started', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot.startedAt = null })
   assert.equal(e.status('reboot').kind, 'running')
 })
 
@@ -80,21 +86,30 @@ test('unlock requires level 25 and money', () => {
   assert.equal(broke.unlock('plug_mouse'), false)
 })
 
+test('manager needs job level 100', () => {
+  const c = makeClock()
+  const low = makeEngine(c, (s) => { s.jobs.reboot.level = 99; s.jobs.reboot.rank = 50; s.money = 1e6 })
+  assert.equal(low.canHireManager('reboot'), false)
+  assert.equal(low.hireManager('reboot'), false)
+  const ok = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 50; s.money = 1e6 })
+  assert.equal(ok.hireManager('reboot'), true)
+})
+
 test('manager auto-collects', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 10; s.money = 1000 })
+  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 100; s.money = 1000 })
   assert.equal(e.hireManager('reboot'), true)
   assert.equal(e.state.money, 0)
   c.t += 6000
   const earned = e.advance(c.t)
-  assert.equal(earned, 10 * Math.floor(6 / 0.6))
+  assert.equal(earned, 100 * Math.floor(6 / 0.075))
   assert.equal(e.state.money, earned)
   assert.equal(e.hireManager('reboot'), false, 'второй раз нанять нельзя')
 })
 
 test('fast cycle is batched', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 300, hasManager: true, startedAt: c.t } })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 300, rank: 300, hasManager: true, startedAt: c.t } })
   const cycle = 0.6 / 32
   assert.equal(e.cycle('reboot'), cycle)
   assert.deepEqual(e.status('reboot'), { kind: 'streaming', perSecond: 300 / cycle })
@@ -104,7 +119,7 @@ test('fast cycle is batched', () => {
 
 test('clock moved backwards', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, rank: 0, hasManager: true, startedAt: c.t } })
   assert.equal(e.advance(c.t - 3_600_000), 0)
   assert.equal(e.state.money, 0)
   const st = e.status('reboot')
@@ -122,7 +137,7 @@ test('quote max when broke shows next price', () => {
 
 test('income per second counts only managed jobs', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, rank: 0, hasManager: true, startedAt: c.t } })
   near(e.incomePerSecond, 10 / 0.6, 1e-9)
 })
 
@@ -137,4 +152,20 @@ test('save without an entry for some job does not break buying', () => {
   assert.equal(e.unlock('plug_mouse'), true)
   assert.equal(e.level('plug_mouse'), 1)
   assert.equal(e.state.money, 1e6 - 60)
+})
+
+test('starting over keeps the finished tutorial and seen hints', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => {
+    s.money = 500
+    s.ui.tutorialDone = true
+    s.ui.tutorialStep = 8
+    s.ui.hintsSeen = ['managers', 'upgrades']
+    s.ui.sections = ['settings', 'managers', 'upgrades']
+  })
+  e.reset(c.t)
+  assert.equal(e.state.money, 0)
+  assert.equal(e.state.ui.tutorialDone, true)
+  assert.deepEqual(e.state.ui.hintsSeen, ['managers', 'upgrades'])
+  assert.deepEqual(e.state.ui.sections, ['settings'], 'разделы откроются заново по прогрессу')
 })

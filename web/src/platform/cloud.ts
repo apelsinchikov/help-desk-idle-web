@@ -2,6 +2,7 @@
 // сессию выдаёт Edge Function telegram-auth по подписанной initData.
 import { createClient } from '@supabase/supabase-js'
 import type { RemoteSave } from '../app/cloudGate.ts'
+import { bundledContent } from '../core/bundled.ts'
 import { decodeState, encodeState } from '../core/serialize.ts'
 import type { GameState } from '../core/state.ts'
 
@@ -45,7 +46,7 @@ export function createCloud(
       const { data, error } = await supabase.from('game_saves').select('payload').eq('user_id', id).maybeSingle()
       if (error) throw error
       if (!data) return { kind: 'none' }
-      const state = decodeState(data.payload)
+      const state = decodeState(data.payload, bundledContent)
       return state ? { kind: 'ok', state } : { kind: 'unreadable' }
     },
 

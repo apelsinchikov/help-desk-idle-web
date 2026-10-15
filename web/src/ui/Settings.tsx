@@ -8,7 +8,7 @@ export function Settings() {
   const game = useGame()
   const { engine } = game
   const [confirmReset, setConfirmReset] = useState(false)
-  const close = () => (game.route.value = 'jobs')
+  const close = () => game.navigate('jobs')
 
   const setHaptics = (on: boolean) => game.act('purchase', () => engine.updateSettings({ haptics: on }))
   const reset = () => {

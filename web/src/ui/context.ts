@@ -1,7 +1,7 @@
 import { createContext } from 'preact'
 import { useContext } from 'preact/hooks'
 import type { Game } from '../app/store.ts'
-import { formatDuration, formatMoney } from '../core/format.ts'
+import { formatDuration, formatMoney, formatTimer } from '../core/format.ts'
 import { uiLanguage } from '../app/strings.ts'
 
 export const GameContext = createContext<Game | null>(null)
@@ -16,3 +16,4 @@ export function useGame(): Game {
 
 export const money = (value: number) => '$ ' + formatMoney(value, uiLanguage.value)
 export const duration = (seconds: number) => formatDuration(seconds, uiLanguage.value)
+export const timer = (seconds: number) => formatTimer(seconds, uiLanguage.value)

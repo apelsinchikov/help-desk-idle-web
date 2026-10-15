@@ -1,6 +1,6 @@
 # Web / Telegram Mini App — порт игры (план-набросок)
 
-Статус: **этап 1 реализован в `web/`, идёт проверка в Telegram.** Дизайн — `docs/superpowers/specs/2026-10-15-web-telegram-stage1-design.md`, план — `docs/superpowers/plans/2026-10-15-web-telegram-stage1.md`. Этот репозиторий (`help-desk-idle-web`) — копия iOS-репо `apelsinchikov/help-desk-idle` на момент закрытия этапа 1 (2026-10-15); здесь делается веб / Telegram Mini App версия в папке `web/`.
+Статус: **этап 1 в `main` (бот); этап 2a (повышения, улучшения, достижения, обучение) — в `dev`.** Дизайн — `docs/superpowers/specs/2026-10-15-web-telegram-stage1-design.md`, план — `docs/superpowers/plans/2026-10-15-web-telegram-stage1.md`. Этот репозиторий (`help-desk-idle-web`) — копия iOS-репо `apelsinchikov/help-desk-idle` на момент закрытия этапа 1 (2026-10-15); здесь делается веб / Telegram Mini App версия в папке `web/`.
 Механика, баланс и тексты должны совпадать с iOS-репо: меняешь баланс там — повтори здесь (и наоборот). iOS-код (`HelpDeskIdle/`, `Packages/`) здесь — справочник для порта, не трогать.
 
 ## Цель

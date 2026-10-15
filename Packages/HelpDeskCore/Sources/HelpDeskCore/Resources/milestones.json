@@ -42,6 +42,42 @@
     "value": 4
   },
   {
+    "jobId": "reboot",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "reboot",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "reboot",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "reboot",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "reboot",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "reboot",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
     "jobId": "plug_mouse",
     "level": 25,
     "effect": "speed",
@@ -80,6 +116,42 @@
   {
     "jobId": "plug_mouse",
     "level": 500,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "plug_mouse",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "plug_mouse",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "plug_mouse",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "plug_mouse",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "plug_mouse",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "plug_mouse",
+    "level": 1250,
     "effect": "profit",
     "value": 4
   },
@@ -126,6 +198,42 @@
     "value": 4
   },
   {
+    "jobId": "accounting_printer",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "accounting_printer",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "accounting_printer",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "accounting_printer",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "accounting_printer",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "accounting_printer",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
     "jobId": "escalate",
     "level": 25,
     "effect": "speed",
@@ -164,6 +272,42 @@
   {
     "jobId": "escalate",
     "level": 500,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "escalate",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "escalate",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "escalate",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "escalate",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "escalate",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "escalate",
+    "level": 1250,
     "effect": "profit",
     "value": 4
   },
@@ -210,6 +354,42 @@
     "value": 4
   },
   {
+    "jobId": "works_on_my_machine",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "works_on_my_machine",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "works_on_my_machine",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "works_on_my_machine",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "works_on_my_machine",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "works_on_my_machine",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
     "jobId": "button_color_call",
     "level": 25,
     "effect": "speed",
@@ -248,6 +428,42 @@
   {
     "jobId": "button_color_call",
     "level": 500,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "button_color_call",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "button_color_call",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "button_color_call",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "button_color_call",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "button_color_call",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "button_color_call",
+    "level": 1250,
     "effect": "profit",
     "value": 4
   },
@@ -294,6 +510,42 @@
     "value": 4
   },
   {
+    "jobId": "accounting_1c",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "accounting_1c",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "accounting_1c",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "accounting_1c",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "accounting_1c",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "accounting_1c",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
     "jobId": "friday_deploy",
     "level": 25,
     "effect": "speed",
@@ -332,6 +584,42 @@
   {
     "jobId": "friday_deploy",
     "level": 500,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "friday_deploy",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "friday_deploy",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "friday_deploy",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "friday_deploy",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "friday_deploy",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "friday_deploy",
+    "level": 1250,
     "effect": "profit",
     "value": 4
   },
@@ -378,6 +666,42 @@
     "value": 4
   },
   {
+    "jobId": "spec_like_apple",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "spec_like_apple",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "spec_like_apple",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "spec_like_apple",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "spec_like_apple",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "spec_like_apple",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
     "jobId": "regression",
     "level": 25,
     "effect": "speed",
@@ -416,6 +740,66 @@
   {
     "jobId": "regression",
     "level": 500,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "regression",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "regression",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "regression",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "regression",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "regression",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "regression",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "regression",
+    "level": 1500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "regression",
+    "level": 1750,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "regression",
+    "level": 2000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "regression",
+    "level": 2250,
     "effect": "profit",
     "value": 4
   },
@@ -462,6 +846,90 @@
     "value": 4
   },
   {
+    "jobId": "ai_everything",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 1500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 1750,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 2000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 2250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 2500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 2750,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 3000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ai_everything",
+    "level": 3250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
     "jobId": "ddos_rivals",
     "level": 25,
     "effect": "speed",
@@ -500,6 +968,126 @@
   {
     "jobId": "ddos_rivals",
     "level": 500,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 600,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 700,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 800,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 900,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 1000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 1250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 1500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 1750,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 2000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 2250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 2500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 2750,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 3000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 3250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 3500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 3750,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 4000,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 4250,
+    "effect": "profit",
+    "value": 4
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 4500,
+    "effect": "speed",
+    "value": 2
+  },
+  {
+    "jobId": "ddos_rivals",
+    "level": 4750,
     "effect": "profit",
     "value": 4
   },
