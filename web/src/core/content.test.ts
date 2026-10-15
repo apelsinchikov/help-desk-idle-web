@@ -26,8 +26,8 @@ test('every job has a level-25 milestone', () => {
 
 test('stage 2a balance config and cash upgrades', () => {
   const c = bundledContent
-  assert.equal(c.config.managerMinLevel, 50)
-  assert.equal(c.config.promotionLevels, 50)
+  assert.equal(c.config.managerMinLevel, 100)
+  assert.equal(c.config.promotionFactor, 2)
   assert.equal(c.upgrades.length, 13)
   assert.deepEqual(
     { id: c.upgrades[0].id, jobId: c.upgrades[0].jobId, cost: c.upgrades[0].cost },

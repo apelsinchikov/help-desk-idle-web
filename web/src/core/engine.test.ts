@@ -80,23 +80,23 @@ test('unlock requires level 25 and money', () => {
   assert.equal(broke.unlock('plug_mouse'), false)
 })
 
-test('manager needs job level 50', () => {
+test('manager needs job level 100', () => {
   const c = makeClock()
-  const low = makeEngine(c, (s) => { s.jobs.reboot.level = 49; s.money = 1e6 })
+  const low = makeEngine(c, (s) => { s.jobs.reboot.level = 99; s.jobs.reboot.rank = 50; s.money = 1e6 })
   assert.equal(low.canHireManager('reboot'), false)
   assert.equal(low.hireManager('reboot'), false)
-  const ok = makeEngine(c, (s) => { s.jobs.reboot.level = 50; s.money = 1e6 })
+  const ok = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 50; s.money = 1e6 })
   assert.equal(ok.hireManager('reboot'), true)
 })
 
 test('manager auto-collects', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 50; s.jobs.reboot.rank = 50; s.money = 1000 })
+  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 100; s.money = 1000 })
   assert.equal(e.hireManager('reboot'), true)
   assert.equal(e.state.money, 0)
   c.t += 6000
   const earned = e.advance(c.t)
-  assert.equal(earned, 50 * Math.floor(6 / 0.15))
+  assert.equal(earned, 100 * Math.floor(6 / 0.075))
   assert.equal(e.state.money, earned)
   assert.equal(e.hireManager('reboot'), false, 'второй раз нанять нельзя')
 })

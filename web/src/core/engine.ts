@@ -56,11 +56,16 @@ export class GameEngine {
     return (this.current.jobs[jobId]?.hasManager ?? false) && this.atCap(jobId)
   }
 
-  /** Повышение стоит как `promotionLevels` следующих уровней этой работы. */
+  /**
+   * Повышение стоит как `promotionFactor` × пройденный отрезок уровней (от прошлого порога до текущего) —
+   * соразмерно кривой цен этой работы (Pecorella, Part I: множители держат доход рядом с ценами).
+   */
   promotionCost(jobId: string): number {
     const job = this.content.job(jobId)
     if (!job) return Infinity
-    return bulkCost(job.baseCost, job.growthRate, this.level(jobId), this.content.config.promotionLevels)
+    const from = this.rank(jobId)
+    const to = Math.min(this.cap(jobId), this.level(jobId))
+    return this.content.config.promotionFactor * bulkCost(job.baseCost, job.growthRate, from, to - from)
   }
 
   /** Множитель прибыли от купленных улучшений (своё ×3, «Кофемашина» ×3 всем). */

@@ -28,8 +28,8 @@ export type GameConfig = {
   fastCycleThreshold: number
   /** С какого уровня работы можно нанять менеджера. */
   managerMinLevel: number
-  /** Повышение на пороге стоит как столько следующих уровней работы. */
-  promotionLevels: number
+  /** Повышение на пороге стоит как столько раз пройденный отрезок уровней (от прошлого порога до этого). */
+  promotionFactor: number
 }
 
 /** Разовое улучшение за деньги: прибыль работы (или всех, jobId = null) ×value. */

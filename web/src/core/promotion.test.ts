@@ -20,7 +20,7 @@ test('at the cap the quote is the promotion price', () => {
   const c = makeClock()
   const e = makeEngine(c, (s) => { s.jobs.reboot.level = 25; s.money = 1e12 })
   assert.equal(e.atCap('reboot'), true)
-  const expected = bulkCost(4, 1.07, 25, 50)
+  const expected = 2 * bulkCost(4, 1.07, 0, 25)
   assert.deepEqual(e.quote('reboot', 'one'), { count: 0, cost: expected })
   assert.equal(e.promotionCost('reboot'), expected)
 })
@@ -45,7 +45,7 @@ test('promotion grants the milestone reward and opens the next segment', () => {
   assert.equal(e.rank('reboot'), 25)
   assert.equal(e.cap('reboot'), 50)
   assert.equal(e.cycle('reboot'), 0.3)
-  assert.equal(e.state.money, 1e12 - bulkCost(4, 1.07, 25, 50))
+  assert.equal(e.state.money, 1e12 - 2 * bulkCost(4, 1.07, 0, 25))
 })
 
 test('global milestone needs every job promoted', () => {

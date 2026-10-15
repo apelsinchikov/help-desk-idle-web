@@ -52,7 +52,7 @@ test('manager steps lead through menu, managers, hire, then finish', () => {
   const c = makeClock()
   const e = makeEngine(c, (s) => {
     s.lifetimeEarnings = 1e5
-    s.jobs.reboot = { level: 50, rank: 25, hasManager: false, startedAt: null }
+    s.jobs.reboot = { level: 100, rank: 50, hasManager: false, startedAt: null }
     s.jobs.plug_mouse.level = 1
     s.money = 5000
   })
@@ -75,7 +75,7 @@ test('sections open by progress and only once', () => {
   const c = makeClock()
   const e = makeEngine(c)
   assert.deepEqual(refreshSections(e), [])
-  e.state.jobs.reboot.level = 50
+  e.state.jobs.reboot.level = 100
   e.state.jobs.reboot.rank = 25
   e.state.lifetimeEarnings = 25_000_000
   assert.deepEqual(refreshSections(e).sort(), ['achievements', 'managers', 'upgrades'])
