@@ -71,7 +71,7 @@ const phase = signal<Phase>('loading')
 // Кнопка «Назад» Telegram закрывает меню и листы.
 effect(() => {
   const route = game.route.value
-  telegram.onBack(route === 'jobs' ? null : () => (game.route.value = route === 'menu' ? 'jobs' : 'menu'))
+  telegram.onBack(route === 'jobs' ? null : () => game.navigate(route === 'menu' ? 'jobs' : 'menu'))
 })
 
 render(<App game={game} phase={phase} devBuild={isDevBuild} />, document.getElementById('app')!)

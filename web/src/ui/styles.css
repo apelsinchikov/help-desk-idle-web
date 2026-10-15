@@ -154,3 +154,32 @@ button:disabled { cursor: default; }
 
 /* Метка тестовой сборки (ветка dev) */
 .dev-badge { position: fixed; top: calc(4px + var(--safe-top)); left: 50%; transform: translateX(-50%); z-index: 100; padding: 2px 10px; border-radius: 99px; background: var(--upgrades); color: var(--on-accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; pointer-events: none; }
+
+/* Этап 2a: улучшения, достижения, подсказки, тосты */
+.badge--dot { width: 12px; height: 12px; padding: 0; top: -4px; right: 12px; }
+.menu__new { margin-left: auto; padding: 2px 8px; border-radius: 99px; background: var(--upgrades); color: var(--on-accent); font-size: 11px; }
+.sheet__head--upgrades { background: var(--upgrades); }
+.sheet__head--achievements { background: var(--achievements); }
+.tabs button { flex: 1; min-height: 36px; border-radius: 10px; background: transparent; font-weight: 800; font-size: 14px; }
+.tabs__active--upgrades { color: var(--upgrades); }
+.tabs__active--achievements { background: var(--card) !important; color: var(--achievements); }
+button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent); }
+.manager--done { opacity: .6; }
+.manager__hire--upgrades { background: var(--upgrades); }
+.goal__track { height: 8px; margin-top: 6px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.goal__fill { height: 100%; border-radius: 99px; background: var(--achievements); }
+.gallery { padding: 12px; border-radius: 16px; background: var(--card); }
+.gallery__title { display: flex; align-items: center; gap: 8px; font-weight: 800; margin-bottom: 8px; }
+.gallery__icon { width: 28px; height: 28px; object-fit: contain; }
+.gallery__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.gallery__item { min-height: 52px; border-radius: 12px; background: var(--track); color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; text-align: center; padding: 4px; }
+.gallery__item b { font-size: 14px; color: var(--ink); }
+.gallery__item--got { background: color-mix(in srgb, var(--achievements) 25%, var(--card)); color: var(--ink); }
+.toast { position: fixed; left: 16px; right: 16px; bottom: calc(76px + var(--safe-bottom)); max-width: 528px; margin: 0 auto; z-index: 40; padding: 12px 14px; border-radius: 14px; background: var(--ink); color: var(--on-accent); font-size: 14px; font-weight: 700; text-align: center; animation: toast-in .25s ease-out; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(12px); } }
+.hint-backdrop { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 55%, transparent); display: flex; align-items: flex-end; justify-content: center; padding: 16px 16px calc(24px + var(--safe-bottom)); }
+.hint { width: 100%; max-width: 420px; padding: 16px; border-radius: 20px; background: var(--card); display: flex; flex-direction: column; gap: 10px; }
+.hint__who { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.hint__avatar { width: 40px; height: 40px; border-radius: 12px; background: var(--track); object-fit: contain; }
+.hint__text { margin: 0; font-size: 15px; font-weight: 600; }
+.hint__ok { height: 48px; border-radius: 14px; background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: 16px; }

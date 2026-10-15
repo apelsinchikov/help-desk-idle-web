@@ -3,6 +3,7 @@ import { t } from '../app/strings.ts'
 import type { JobDefinition } from '../core/content.ts'
 import { money, useGame } from './context.ts'
 import { Icon } from './Icon.tsx'
+import { SectionHint } from './SectionHint.tsx'
 
 export function Managers() {
   const game = useGame()
@@ -12,7 +13,7 @@ export function Managers() {
       <div class="sheet__head sheet__head--managers">
         <div class="sheet__title-row">
           <h1 class="sheet__title">{t('menu.managers')}</h1>
-          <button class="sheet__close" aria-label={t('common.close')} onClick={() => (game.route.value = 'jobs')}>✕</button>
+          <button class="sheet__close" aria-label={t('common.close')} onClick={() => game.navigate('jobs')}>✕</button>
         </div>
         <div class="tabs">
           <span class="tabs__active">{t('managers.tab.cash')}</span>
@@ -27,6 +28,7 @@ export function Managers() {
         <p class="managers__intro">{t('managers.intro')}</p>
         {engine.content.jobs.map((job) => <ManagerRow key={job.id} job={job} />)}
       </div>
+      <SectionHint section="managers" />
     </div>
   )
 }
@@ -36,7 +38,9 @@ function ManagerRow({ job }: { job: JobDefinition }) {
   const { engine } = game
   const js = engine.state.jobs[job.id]
   const hired = js?.hasManager ?? false
-  const open = (js?.level ?? 0) > 0
+  const level = js?.level ?? 0
+  const open = level > 0
+  const minLevel = engine.content.config.managerMinLevel
   const canHire = engine.canHireManager(job.id)
 
   const hire = () => game.act('purchase', () => {
@@ -55,8 +59,15 @@ function ManagerRow({ job }: { job: JobDefinition }) {
         <span class="manager__working">{t('managers.working')}</span>
       ) : !open ? (
         <span class="manager__locked">{t('managers.lockedJob')}</span>
+      ) : level < minLevel ? (
+        <span class="manager__locked">{t('managers.needLevel', minLevel, level)}</span>
       ) : (
-        <button class={`manager__hire ${canHire ? '' : 'manager__hire--off'}`} disabled={!canHire} onClick={hire}>
+        <button
+          class={`manager__hire ${canHire ? '' : 'manager__hire--off'}`}
+          data-tutorial={`manager-hire:${job.id}`}
+          disabled={!canHire}
+          onClick={hire}
+        >
           {t('managers.hire')}
         </button>
       )}
