@@ -2,91 +2,91 @@
   {
     "id": "reboot_x3",
     "jobId": "reboot",
-    "cost": 250000,
+    "cost": 25000000,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "plug_mouse_x3",
     "jobId": "plug_mouse",
-    "cost": 500000,
+    "cost": 50000000,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "accounting_printer_x3",
     "jobId": "accounting_printer",
-    "cost": 1000000.0,
+    "cost": 100000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "escalate_x3",
     "jobId": "escalate",
-    "cost": 5000000.0,
+    "cost": 500000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "works_on_my_machine_x3",
     "jobId": "works_on_my_machine",
-    "cost": 10000000.0,
+    "cost": 1000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "button_color_call_x3",
     "jobId": "button_color_call",
-    "cost": 25000000.0,
+    "cost": 2500000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "accounting_1c_x3",
     "jobId": "accounting_1c",
-    "cost": 500000000.0,
+    "cost": 50000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "friday_deploy_x3",
     "jobId": "friday_deploy",
-    "cost": 10000000000.0,
+    "cost": 1000000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "spec_like_apple_x3",
     "jobId": "spec_like_apple",
-    "cost": 50000000000.0,
+    "cost": 5000000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "regression_x3",
     "jobId": "regression",
-    "cost": 250000000000.0,
+    "cost": 25000000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "ai_everything_x3",
     "jobId": "ai_everything",
-    "cost": 1000000000000.0,
+    "cost": 100000000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "ddos_rivals_x3",
     "jobId": "ddos_rivals",
-    "cost": 20000000000000.0,
+    "cost": 2000000000000000.0,
     "effect": "profit",
     "value": 3
   },
   {
     "id": "coffee_machine",
     "jobId": null,
-    "cost": 10000000000.0,
+    "cost": 1000000000000.0,
     "effect": "profit",
     "value": 3
   }
