@@ -13,7 +13,7 @@ export class GameEngine {
 
   constructor(content: GameContent, state: GameState, now: () => number = Date.now) {
     this.content = content
-    this.current = state
+    this.current = withAllJobs(content, state)
     this.now = now
   }
 
@@ -191,7 +191,8 @@ export class GameEngine {
       js.startedAt = start
     }
     this.credit(earned)
-    if (now > this.current.lastActiveAt) this.current.lastActiveAt = now
+    // Следуем за часами и назад: иначе после «назад, потом вперёд» скачок прошёл бы мимо оффлайн-лимита.
+    this.current.lastActiveAt = now
     return earned
   }
 
@@ -216,7 +217,7 @@ export class GameEngine {
 
   /** Подменить состояние целиком (загрузка из облака). */
   replaceState(state: GameState): void {
-    this.current = state
+    this.current = withAllJobs(this.content, state)
   }
 
   private credit(amount: number): void {
@@ -224,4 +225,12 @@ export class GameEngine {
     this.current.money += amount
     this.current.lifetimeEarnings += amount
   }
+}
+
+/** В сейве есть запись для каждой работы из контента (новые работы в jobs.json, старые сейвы). */
+function withAllJobs(content: GameContent, state: GameState): GameState {
+  for (const job of content.jobs) {
+    state.jobs[job.id] ??= { level: 0, hasManager: false, startedAt: null }
+  }
+  return state
 }

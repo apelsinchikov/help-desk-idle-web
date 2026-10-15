@@ -38,3 +38,24 @@ test('short absence and clock backwards give no report', () => {
   c.t -= 3_600_000
   assert.equal(e.resume(c.t), null)
 })
+
+test('clock moved back then forward pays at most the 24 h cap', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
+  c.t -= 30 * 86_400_000
+  e.resume(c.t)
+  c.t += 30 * 86_400_000 + 10_000
+  const report = e.resume(c.t)
+  assert.ok(e.state.money <= 10 * Math.floor(86_400 / 0.6), `money ${e.state.money}`)
+  assert.notEqual(report, null, 'большой скачок вперёд показывает «С возвращением»')
+})
+
+test('a long gap between ticks goes through the cap too', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
+  c.t += 100
+  e.resume(c.t)
+  c.t += 3 * 86_400_000
+  e.resume(c.t)
+  assert.ok(e.state.money <= 10 * Math.floor(86_400 / 0.6) + 10, `money ${e.state.money}`)
+})

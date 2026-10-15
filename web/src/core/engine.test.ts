@@ -125,3 +125,16 @@ test('income per second counts only managed jobs', () => {
   const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, hasManager: true, startedAt: c.t } })
   near(e.incomePerSecond, 10 / 0.6, 1e-9)
 })
+
+test('save without an entry for some job does not break buying', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => {
+    s.money = 1e6
+    s.jobs.reboot.level = 25
+    delete s.jobs.plug_mouse
+  })
+  assert.deepEqual(e.status('plug_mouse'), { kind: 'locked', requirementMet: true })
+  assert.equal(e.unlock('plug_mouse'), true)
+  assert.equal(e.level('plug_mouse'), 1)
+  assert.equal(e.state.money, 1e6 - 60)
+})
