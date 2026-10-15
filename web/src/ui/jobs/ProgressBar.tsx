@@ -41,7 +41,8 @@ export function ProgressBar({ jobId, status }: { jobId: string; status: JobStatu
       <div class="bar__fill" ref={fillRef} style={{ width: `${fill * 100}%` }} />
       <div class="bar__text">
         <span>{left}</span>
-        <span ref={rightRef}>{right}</span>
+        {/* key: при смене статуса — новый span, иначе Preact пишет в текстовый узел, заменённый из rAF */}
+        <span ref={rightRef} key={status.kind}>{right}</span>
       </div>
     </div>
   )
