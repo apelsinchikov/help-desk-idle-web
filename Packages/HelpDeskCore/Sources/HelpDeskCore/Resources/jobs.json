@@ -1,0 +1,134 @@
+[
+  {
+    "id": "reboot",
+    "order": 1,
+    "baseCost": 4,
+    "growthRate": 1.07,
+    "time": 0.6,
+    "revenue": 1,
+    "unlockLevel": 25,
+    "managerCost": 1000.0,
+    "iconKey": "reboot"
+  },
+  {
+    "id": "plug_mouse",
+    "order": 2,
+    "baseCost": 60,
+    "growthRate": 1.15,
+    "time": 3,
+    "revenue": 60,
+    "unlockLevel": 25,
+    "managerCost": 15000.0,
+    "iconKey": "plug_mouse"
+  },
+  {
+    "id": "accounting_printer",
+    "order": 3,
+    "baseCost": 720,
+    "growthRate": 1.14,
+    "time": 6,
+    "revenue": 540,
+    "unlockLevel": 25,
+    "managerCost": 100000.0,
+    "iconKey": "accounting_printer"
+  },
+  {
+    "id": "escalate",
+    "order": 4,
+    "baseCost": 8640,
+    "growthRate": 1.13,
+    "time": 12,
+    "revenue": 4320,
+    "unlockLevel": 25,
+    "managerCost": 500000.0,
+    "iconKey": "escalate"
+  },
+  {
+    "id": "works_on_my_machine",
+    "order": 5,
+    "baseCost": 103680,
+    "growthRate": 1.12,
+    "time": 24,
+    "revenue": 51840,
+    "unlockLevel": 25,
+    "managerCost": 1200000.0,
+    "iconKey": "works_on_my_machine"
+  },
+  {
+    "id": "button_color_call",
+    "order": 6,
+    "baseCost": 1244160,
+    "growthRate": 1.11,
+    "time": 48,
+    "revenue": 622080,
+    "unlockLevel": 25,
+    "managerCost": 10000000.0,
+    "iconKey": "button_color_call"
+  },
+  {
+    "id": "accounting_1c",
+    "order": 7,
+    "baseCost": 14929920,
+    "growthRate": 1.1,
+    "time": 96,
+    "revenue": 7464960,
+    "unlockLevel": 25,
+    "managerCost": 111000000.0,
+    "iconKey": "accounting_1c"
+  },
+  {
+    "id": "friday_deploy",
+    "order": 8,
+    "baseCost": 179159040,
+    "growthRate": 1.1,
+    "time": 192,
+    "revenue": 89579520,
+    "unlockLevel": 25,
+    "managerCost": 555000000.0,
+    "iconKey": "friday_deploy"
+  },
+  {
+    "id": "spec_like_apple",
+    "order": 9,
+    "baseCost": 2149908480,
+    "growthRate": 1.09,
+    "time": 384,
+    "revenue": 1074954240,
+    "unlockLevel": 25,
+    "managerCost": 10000000000.0,
+    "iconKey": "spec_like_apple"
+  },
+  {
+    "id": "regression",
+    "order": 10,
+    "baseCost": 25798901760,
+    "growthRate": 1.08,
+    "time": 1536,
+    "revenue": 12899450880,
+    "unlockLevel": 25,
+    "managerCost": 100000000000.0,
+    "iconKey": "regression"
+  },
+  {
+    "id": "ai_everything",
+    "order": 11,
+    "baseCost": 309586821120,
+    "growthRate": 1.08,
+    "time": 6144,
+    "revenue": 154793410560,
+    "unlockLevel": 25,
+    "managerCost": 1000000000000.0,
+    "iconKey": "ai_everything"
+  },
+  {
+    "id": "ddos_rivals",
+    "order": 12,
+    "baseCost": 3715041853440,
+    "growthRate": 1.07,
+    "time": 36864,
+    "revenue": 4272298131456,
+    "unlockLevel": 25,
+    "managerCost": 10000000000000.0,
+    "iconKey": "ddos_rivals"
+  }
+]

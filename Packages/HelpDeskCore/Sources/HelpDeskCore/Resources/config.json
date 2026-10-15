@@ -1,0 +1,5 @@
+{
+  "offlineCapHours": 24,
+  "autosaveSeconds": 30,
+  "fastCycleThreshold": 0.0333
+}
