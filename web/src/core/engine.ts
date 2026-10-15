@@ -27,9 +27,44 @@ export class GameEngine {
     return this.current.jobs[jobId]?.level ?? 0
   }
 
-  private levels(): Record<string, number> {
+  /** Последний оплаченный порог работы. */
+  rank(jobId: string): number {
+    return this.current.jobs[jobId]?.rank ?? 0
+  }
+
+  /** Ранги всех работ (закрытая = 0): от них зависят награды порогов, в том числе глобальные. */
+  private ranks(): Record<string, number> {
     const result: Record<string, number> = {}
-    for (const job of this.content.jobs) result[job.id] = this.level(job.id)
+    for (const job of this.content.jobs) result[job.id] = this.rank(job.id)
+    return result
+  }
+
+  /** Потолок уровней: ближайший свой порог выше ранга; Infinity — порогов больше нет. */
+  cap(jobId: string): number {
+    const rank = this.rank(jobId)
+    return this.content.milestoneLevels(jobId).find((l) => l > rank) ?? Infinity
+  }
+
+  /** Уровень упёрся в порог — дальше только повышение. */
+  atCap(jobId: string): boolean {
+    const level = this.level(jobId)
+    return level >= 1 && level >= this.cap(jobId)
+  }
+
+  /** Повышение стоит как `promotionLevels` следующих уровней этой работы. */
+  promotionCost(jobId: string): number {
+    const job = this.content.job(jobId)
+    if (!job) return Infinity
+    return bulkCost(job.baseCost, job.growthRate, this.level(jobId), this.content.config.promotionLevels)
+  }
+
+  /** Множитель прибыли от купленных улучшений (своё ×3, «Кофемашина» ×3 всем). */
+  upgradeMultiplier(jobId: string): number {
+    let result = 1
+    for (const id of this.current.upgrades) {
+      const up = this.content.upgrade(id)
+      if (up && (up.jobId === null || up.jobId === jobId)) result *= up.value
+    }
     return result
   }
 
@@ -37,17 +72,18 @@ export class GameEngine {
   cycle(jobId: string): number {
     const job = this.content.job(jobId)
     if (!job) return Infinity
-    return cycle(job.time, speedMultiplier(jobId, this.levels(), this.content.milestones))
+    return cycle(job.time, speedMultiplier(jobId, this.ranks(), this.content.milestones))
   }
 
   payout(jobId: string): number {
     const job = this.content.job(jobId)
     if (!job) return 0
-    return payout(job.revenue, this.level(jobId), profitMultiplier(jobId, this.levels(), this.content.milestones))
+    const profit = profitMultiplier(jobId, this.ranks(), this.content.milestones) * this.upgradeMultiplier(jobId)
+    return payout(job.revenue, this.level(jobId), profit)
   }
 
   nextMilestone(jobId: string): Milestone | undefined {
-    return nextMilestone(jobId, this.level(jobId), this.content.milestones)
+    return nextMilestone(jobId, this.rank(jobId), this.content.milestones)
   }
 
   /** Доход в секунду от работ с менеджерами. */
@@ -110,7 +146,9 @@ export class GameEngine {
   quote(jobId: string, mode: BuyMode): { count: number; cost: number } {
     const job = this.content.job(jobId)
     if (!job) return { count: 0, cost: Infinity }
+    if (this.atCap(jobId)) return { count: 0, cost: this.promotionCost(jobId) }
     const owned = this.level(jobId)
+    const room = this.cap(jobId) - owned
     let count: number
     switch (mode) {
       case 'one': count = 1; break
@@ -120,6 +158,7 @@ export class GameEngine {
         count = maxAffordable(job.baseCost, job.growthRate, owned, this.current.money)
         if (count === 0) return { count: 0, cost: nextCost(job.baseCost, job.growthRate, owned) }
     }
+    count = Math.min(count, room)
     return { count, cost: bulkCost(job.baseCost, job.growthRate, owned, count) }
   }
 
@@ -129,6 +168,40 @@ export class GameEngine {
     if (q.count <= 0 || !Number.isFinite(q.cost) || q.cost > this.current.money) return false
     this.current.money -= q.cost
     this.current.jobs[jobId].level += q.count
+    return true
+  }
+
+  /**
+   * Повышение на пороге: списывает цену, ранг = потолок, открывает следующий отрезок уровней.
+   * Возвращает пороги, ставшие активными (свой и глобальные), или null, если повысить нельзя.
+   */
+  promote(jobId: string): Milestone[] | null {
+    if (!this.atCap(jobId)) return null
+    const cost = this.promotionCost(jobId)
+    if (!Number.isFinite(cost) || cost > this.current.money) return null
+    const before = new Set(this.activeMilestones())
+    this.current.money -= cost
+    this.current.jobs[jobId].rank = this.cap(jobId)
+    return this.activeMilestones().filter((m) => !before.has(m))
+  }
+
+  /** Пороги, чья награда сейчас действует. */
+  private activeMilestones(): Milestone[] {
+    const ranks = this.ranks()
+    const lowest = Math.min(...Object.values(ranks))
+    return this.content.milestones.filter((m) => (m.jobId === null ? lowest >= m.level : (ranks[m.jobId] ?? 0) >= m.level))
+  }
+
+  canBuyUpgrade(upgradeId: string): boolean {
+    const up = this.content.upgrade(upgradeId)
+    return !!up && !this.current.upgrades.includes(upgradeId) && this.current.money >= up.cost
+  }
+
+  buyUpgrade(upgradeId: string): boolean {
+    const up = this.content.upgrade(upgradeId)
+    if (!up || !this.canBuyUpgrade(upgradeId)) return false
+    this.current.money -= up.cost
+    this.current.upgrades.push(upgradeId)
     return true
   }
 
@@ -150,7 +223,7 @@ export class GameEngine {
     const job = this.content.job(jobId)
     const js = this.current.jobs[jobId]
     if (!job || !js) return false
-    return js.level >= 1 && !js.hasManager && this.current.money >= job.managerCost
+    return js.level >= this.content.config.managerMinLevel && !js.hasManager && this.current.money >= job.managerCost
   }
 
   hireManager(jobId: string): boolean {
