@@ -8,7 +8,7 @@
 оффлайн-доход + «С возвращением», экран загрузки, сохранение (локально + Supabase), RU/EN, тема A.
 
 **Готово, когда:**
-1. Ядро на TS даёт те же числа, что Swift: тесты Vitest повторяют `Packages/HelpDeskCore/Tests` с теми же входами и ожиданиями.
+1. Ядро на TS даёт те же числа, что Swift: тесты (`node --test`) повторяют `Packages/HelpDeskCore/Tests` с теми же входами и ожиданиями.
 2. В Telegram прогресс общий для всех устройств одного Telegram-аккаунта (телефон, десктоп).
 3. Игра работает без сети; облако — бэкап.
 4. Автор проверил на телефоне и десктопе в Telegram.
@@ -18,9 +18,9 @@
 ## Принятые решения
 | Вопрос | Решение |
 |---|---|
-| Хостинг | GitHub Pages (репо публичный), деплой GitHub Actions при пуше в `main` |
+| Хостинг | GitHub Pages (репо публичный), деплой GitHub Actions при пуше в `dev` и `main` (на время проверки бот смотрит на `dev`) |
 | UI | Vite + TypeScript + Preact + `@preact/signals` |
-| Тесты | Vitest |
+| Тесты | встроенный `node --test` (Node 22, без зависимостей — ядро проверяется где угодно) |
 | Supabase | **Отдельный новый проект**; схема `game_saves` — та же миграция, без изменений |
 | Вход в Telegram | `initData` → Edge Function `telegram-auth` → сессия Supabase по Telegram ID |
 | Вне Telegram | Только локальный сейв, облако выключено (режим разработки). Анонимного входа нет |
@@ -101,7 +101,7 @@ supabase/functions/telegram-auth/index.ts
 - Язык: при первом запуске из `Telegram.WebApp.initDataUnsafe.user.language_code` или `navigator.language` (`ru*` → RU, иначе EN); дальше — переключатель в Настройках.
 
 ## Тесты
-- Vitest на всё `src/core/`: перенос кейсов `EconomyTests, FormattingTests, GameEngineTests, OfflineTests, SavePickerTests, StateTests, ContentTests` с теми же числами; `LocalSaveStoreTests` → тесты `storage.ts` на фейковом localStorage.
+- `node --test` на всё `src/core/`: перенос кейсов `EconomyTests, FormattingTests, GameEngineTests, OfflineTests, SavePickerTests, StateTests, ContentTests` с теми же числами; `LocalSaveStoreTests` → тесты `storage.ts` на фейковом localStorage.
 - Edge Function: юнит-тест проверки подписи на заранее посчитанном примере.
 - UI — ручная проверка автором.
 
