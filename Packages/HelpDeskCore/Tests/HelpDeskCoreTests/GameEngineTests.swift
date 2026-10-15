@@ -28,7 +28,21 @@ final class GameEngineTests: XCTestCase {
         e.tap(jobId: "reboot")
         XCTAssertEqual(e.state.money, 1)
         XCTAssertEqual(e.state.lifetimeEarnings, 1)
-        guard case .running = e.status(of: "reboot") else { return XCTFail("новый цикл должен начаться") }
+        XCTAssertEqual(e.status(of: "reboot"), .idle, "после сбора работа стоит до нового тапа")
+        t += 5
+        XCTAssertEqual(e.status(of: "reboot"), .idle, "сама не стартует")
+        e.tap(jobId: "reboot")
+        guard case .running = e.status(of: "reboot") else { return XCTFail("старт только по тапу") }
+    }
+
+    func testReadyJobIsCollectedOnlyOnce() {
+        let e = engine()
+        e.tap(jobId: "reboot")
+        t += 0.6
+        e.tap(jobId: "reboot")
+        e.tap(jobId: "reboot")   // второй тап — это уже новый старт, не второй сбор
+        XCTAssertEqual(e.state.money, 1)
+        guard case .running = e.status(of: "reboot") else { return XCTFail("второй тап запускает цикл") }
     }
 
     func testWithoutManagerJobWaitsWhenReady() {

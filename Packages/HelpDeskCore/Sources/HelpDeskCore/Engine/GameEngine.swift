@@ -85,7 +85,8 @@ public final class GameEngine {
 
     // MARK: - Действия игрока
 
-    /// Тап по строке работы: idle → старт; ready → сбор и новый цикл.
+    /// Тап по строке работы (без менеджера): idle → старт цикла; ready → сбор денег, работа встаёт.
+    /// Следующий цикл начнётся только после нового тапа.
     public func tap(jobId: String) {
         let now = clock()
         switch status(of: jobId, at: now) {
@@ -93,7 +94,7 @@ public final class GameEngine {
             state.jobs[jobId]?.startedAt = now
         case .ready:
             credit(payout(of: jobId))
-            state.jobs[jobId]?.startedAt = now
+            state.jobs[jobId]?.startedAt = nil
         default:
             break
         }
