@@ -25,11 +25,20 @@ button:disabled { cursor: default; }
 /* Список работ */
 .jobs { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
 
-.card { position: relative; display: flex; gap: 12px; padding: 10px 12px; border-radius: 20px; background: var(--card); box-shadow: 0 2px 0 var(--line); border: 2px solid transparent; cursor: pointer; }
-.card--ready { border-color: var(--positive); animation: pulse 1.2s ease-in-out infinite; }
+.card { position: relative; display: flex; gap: 12px; padding: 10px 12px; border-radius: 20px; background: var(--card); box-shadow: 0 2px 0 var(--line); border: 2px solid transparent; }
+.card--ready { border-color: var(--positive); }
+.card__icon-btn { position: relative; padding: 0; border-radius: 18px; background: transparent; }
+.card__icon-btn--ready { animation: pulse 1s ease-in-out infinite; box-shadow: 0 0 0 3px var(--positive); }
+.card__collect { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); padding: 1px 8px; border-radius: 99px; background: var(--positive); color: var(--on-accent); font-size: 11px; font-weight: 800; white-space: nowrap; }
+.card__panel { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 0; background: transparent; color: var(--ink); text-align: left; }
+.card__panel .card__buy { height: 36px; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 800; background: var(--accent); color: var(--on-accent); }
+.card__panel--off .card__buy { background: var(--track-strong); color: var(--muted); }
+.card__panel--promote .card__buy { background: var(--amber); color: var(--ink); }
+.card__panel--promote.card__panel--off .card__buy { background: var(--track-strong); color: var(--muted); }
+.card__reward { font-size: 12px; font-weight: 700; color: var(--muted); }
 .card--locked { background: transparent; box-shadow: none; border: 2px dashed var(--locked-border); cursor: default; }
-@keyframes pulse { 50% { transform: scale(1.012); } }
-.card__side { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: none; }
+@keyframes pulse { 50% { transform: scale(1.06); } }
+.card__side { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; flex: none; }
 .card__icon { width: 68px; height: 68px; padding: 8px; border-radius: 18px; background: var(--track); object-fit: contain; display: block; }
 .card__icon--locked { position: relative; padding: 10px; background: var(--track-strong); }
 .card__icon-img--locked { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1); opacity: .45; }
@@ -39,7 +48,7 @@ button:disabled { cursor: default; }
 .card__title { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card__req { font-size: 12px; }
 .card__req-done { color: var(--positive); }
-.card__float { position: absolute; top: 6px; right: 16px; color: var(--positive); font-weight: 800; font-size: 15px; pointer-events: none; animation: float 1s ease-out forwards; }
+.card__float { position: absolute; top: -4px; left: -20px; right: -20px; text-align: center; color: var(--positive); font-weight: 800; font-size: 15px; pointer-events: none; animation: float 1s ease-out forwards; }
 @keyframes float { from { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-16px); } }
 
 .bar { position: relative; height: 28px; border-radius: 10px; background: var(--track); overflow: hidden; }
