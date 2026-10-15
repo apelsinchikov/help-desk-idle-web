@@ -22,6 +22,8 @@ export function createGame(o: {
   cloudStatus: Signal<CloudStatus>
   /** Общий сигнал языка интерфейса (strings.ts). */
   language: Signal<AppLanguage>
+  /** Вибро платформы (Telegram); вызывается, только если включено в настройках. */
+  haptic?: (kind: 'light' | 'success') => void
 }) {
   const { engine, scheduler } = o
   /** Растёт после любого изменения состояния: компоненты читают его, затем данные из engine. */
@@ -49,6 +51,10 @@ export function createGame(o: {
       fn()
       bump()
       scheduler.changed(kind === 'purchase' ? 'purchase' : 'tick')
+    },
+
+    haptic(kind: 'light' | 'success'): void {
+      if (engine.state.settings.haptics) o.haptic?.(kind)
     },
 
     setLanguage(next: AppLanguage): void {

@@ -1,0 +1,74 @@
+/* Раскладка по iOS-версии (Features/*). Цвета — только var(--…) из tokens.css. */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-display: 'Unbounded', ui-rounded, system-ui, sans-serif;
+  --font-body: 'Manrope', ui-rounded, system-ui, sans-serif;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: var(--background); color: var(--ink); }
+body { font-family: var(--font-body); font-weight: 600; overscroll-behavior: none; user-select: none; -webkit-user-select: none; }
+button { font: inherit; border: 0; cursor: pointer; }
+button:disabled { cursor: default; }
+#app { height: 100%; }
+
+.screen { height: 100%; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; padding-top: var(--safe-top); }
+
+/* Шапка */
+.header { display: flex; align-items: center; gap: 12px; padding: 8px 16px 10px; }
+.header__avatar { width: 64px; height: 64px; padding: 6px; border-radius: 18px; background: var(--track); border: 3px solid var(--card); object-fit: contain; flex: none; }
+.header__money { flex: 1; min-width: 0; }
+.header__balance { font-family: var(--font-display); font-weight: 700; font-size: 26px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header__income { color: var(--positive); font-size: 13px; font-weight: 800; }
+.header__buy { width: 68px; height: 52px; border-radius: 14px; background: var(--accent); color: var(--on-accent); font-size: 13px; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; flex: none; }
+
+/* Список работ */
+.jobs { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.card { position: relative; display: flex; gap: 12px; padding: 10px 12px; border-radius: 20px; background: var(--card); box-shadow: 0 2px 0 var(--line); border: 2px solid transparent; cursor: pointer; }
+.card--ready { border-color: var(--positive); animation: pulse 1.2s ease-in-out infinite; }
+.card--locked { background: transparent; box-shadow: none; border: 2px dashed var(--locked-border); cursor: default; }
+@keyframes pulse { 50% { transform: scale(1.012); } }
+.card__side { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: none; }
+.card__icon { width: 68px; height: 68px; padding: 8px; border-radius: 18px; background: var(--track); object-fit: contain; display: block; }
+.card__icon--locked { position: relative; padding: 10px; background: var(--track-strong); }
+.card__icon-img--locked { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1); opacity: .45; }
+.card__lock { position: absolute; right: 4px; bottom: 4px; width: 20px; height: 20px; }
+.card__level { font-size: 11px; font-weight: 800; }
+.card__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.card__title { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card__req { font-size: 12px; }
+.card__req-done { color: var(--positive); }
+.card__float { position: absolute; top: 6px; right: 16px; color: var(--positive); font-weight: 800; font-size: 15px; pointer-events: none; animation: float 1s ease-out forwards; }
+@keyframes float { from { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-16px); } }
+
+.bar { position: relative; height: 28px; border-radius: 10px; background: var(--track); overflow: hidden; }
+.bar__fill { position: absolute; inset: 0 auto 0 0; background: var(--amber); border-radius: 10px; }
+.bar--ready .bar__fill { background: var(--positive); }
+.bar__text { position: relative; height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 10px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.bar--ready .bar__text { color: var(--on-accent); }
+
+.buy, .unlock { height: 36px; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 800; }
+.buy { background: var(--accent); color: var(--on-accent); }
+.buy--off { background: var(--track-strong); color: var(--muted); }
+.unlock { background: var(--card); color: var(--accent); border: 2px solid var(--accent); }
+.unlock--off { color: var(--muted); border-color: var(--locked-border); }
+
+/* Нижняя панель */
+.bottom { display: flex; gap: 10px; padding: 8px 16px calc(4px + var(--safe-bottom)); background: var(--background); }
+.bottom__menu, .bottom__shop { position: relative; flex: 1; min-height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 800; }
+.bottom__menu { background: var(--ink); color: var(--on-accent); }
+.bottom__shop { background: var(--track-strong); color: var(--muted); }
+.bottom__shop small { font-size: 12px; }
+.badge { position: absolute; top: -8px; right: 8px; padding: 2px 7px; border-radius: 99px; background: var(--upgrades); color: var(--on-accent); font-size: 12px; font-weight: 800; }
+
+/* Загрузка */
+.loading { height: 100%; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 24px; padding: calc(70px + var(--safe-top)) 32px calc(40px + var(--safe-bottom)); background: radial-gradient(ellipse 560px 440px at 50% calc(100% + 80px), var(--accent-dark), var(--accent) 70%); color: var(--on-accent); }
+.loading__logo { font-family: var(--font-display); font-weight: 700; font-size: 44px; text-align: center; line-height: 1.1; }
+.loading__idle { color: var(--amber); }
+.loading__tagline { margin-top: -12px; padding: 4px 12px; border-radius: 10px; background: var(--card); color: var(--accent); font-size: 13px; font-weight: 800; }
+.loading__avatar { width: 210px; height: 230px; padding: 28px; margin-top: 24px; border-radius: 48px; background: var(--background); object-fit: contain; }
+.loading__bottom { margin-top: auto; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px; text-align: center; font-size: 16px; font-weight: 800; }
+.loading__track { height: 16px; border-radius: 99px; background: var(--accent-dark); border: 2px solid var(--card); overflow: hidden; }
+.loading__fill { height: 100%; width: 8%; border-radius: 99px; background: var(--amber); animation: load 1.3s ease-in-out forwards; }
+@keyframes load { to { width: 96%; } }
