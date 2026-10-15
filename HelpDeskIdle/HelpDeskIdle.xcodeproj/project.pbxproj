@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7A7452163081089200343832 /* HelpDeskCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7A7452153081089200343832 /* HelpDeskCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		7A745188308101C900343832 /* HelpDeskIdle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelpDeskIdle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -22,6 +26,7 @@
 		7A745185308101C900343832 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				7A7452163081089200343832 /* HelpDeskCore in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -60,6 +65,9 @@
 				7A74518A308101C900343832 /* HelpDeskIdle */,
 			);
 			name = HelpDeskIdle;
+			packageProductDependencies = (
+				7A7452153081089200343832 /* HelpDeskCore */,
+			);
 			productName = HelpDeskIdle;
 			productReference = 7A745188308101C900343832 /* HelpDeskIdle.app */;
 			productType = "com.apple.product-type.application";
@@ -89,6 +97,9 @@
 			);
 			mainGroup = 7A74517F308101C900343832;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				7A7452143081089200343832 /* XCLocalSwiftPackageReference "../Packages/HelpDeskCore" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7A745189308101C900343832 /* Products */;
 			projectDirPath = "";
@@ -247,12 +258,12 @@
 				DEVELOPMENT_TEAM = 7P8Y5L94W8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Help Desk Idle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_CFBundleDisplayName = "Help Desk Idle";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -281,12 +292,12 @@
 				DEVELOPMENT_TEAM = 7P8Y5L94W8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Help Desk Idle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_CFBundleDisplayName = "Help Desk Idle";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -325,6 +336,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		7A7452143081089200343832 /* XCLocalSwiftPackageReference "../Packages/HelpDeskCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/HelpDeskCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7A7452153081089200343832 /* HelpDeskCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HelpDeskCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7A745180308101C900343832 /* Project object */;
 	validationLevel = 1;
