@@ -8,14 +8,7 @@ struct LoadingScreen: View {
 
     var body: some View {
         let l10n = model.l10n
-        ZStack {
-            theme.accent.ignoresSafeArea()
-            Ellipse()
-                .fill(theme.accentDark.opacity(0.45))
-                .frame(width: 560, height: 440)
-                .offset(y: 300)
-
-            VStack(spacing: 24) {
+        VStack(spacing: 24) {
                 VStack(spacing: 2) {
                     Text(verbatim: "HELP DESK")
                         .foregroundStyle(theme.onAccent)
@@ -54,9 +47,20 @@ struct LoadingScreen: View {
                     .overlay(Capsule().stroke(theme.card, lineWidth: 2))
                 }
             }
-            .padding(.horizontal, 32)
-            .padding(.top, 70)
-            .padding(.bottom, 40)
+        .padding(.horizontal, 32)
+        .padding(.top, 70)
+        .padding(.bottom, 40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            // Декор не участвует в раскладке: раньше эллипс шириной 560 растягивал экран.
+            ZStack {
+                theme.accent
+                Ellipse()
+                    .fill(theme.accentDark.opacity(0.45))
+                    .frame(width: 560, height: 440)
+                    .offset(y: 300)
+            }
+            .ignoresSafeArea()
         }
         .onAppear {
             withAnimation(.easeInOut(duration: 1.3)) { progress = 0.96 }
