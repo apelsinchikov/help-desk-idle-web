@@ -1,5 +1,7 @@
 {
   "offlineCapHours": 24,
   "autosaveSeconds": 30,
-  "fastCycleThreshold": 0.0333
+  "fastCycleThreshold": 0.0333,
+  "managerMinLevel": 50,
+  "promotionLevels": 50
 }
