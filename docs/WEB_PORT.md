@@ -19,7 +19,10 @@
 - UI по макетам темы A; токены цветов — те же значения, что в `Theme.swift`.
 
 ## Решения, которые нужно принять в начале
-1. **Хостинг.** ✅ GitHub Pages (репо `help-desk-idle-web` публичный), деплой через GitHub Actions при пуше в `dev` и `main` (`.github/workflows/pages.yml`).
+1. **Хостинг.** ✅ GitHub Pages (репо публичный), одна выкладка с двумя сборками (`.github/workflows/pages.yml`, пуш в `dev` или `main` пересобирает обе):
+   - `main` → https://apelsinchikov.github.io/help-desk-idle-web/ — рабочая, к ней подключён @helpdeskidle_bot, облако Supabase;
+   - `dev` → https://apelsinchikov.github.io/help-desk-idle-web/dev/ — тестовая, только браузер, без облака, сейвы `hdi.dev.*`, метка DEV.
+   В бота попадает только то, что прошло PR `dev` → `main`.
 2. **Вход.** ✅ В Telegram — по `initData`: Supabase Edge Function проверяет подпись токеном бота и выдаёт сессию по Telegram ID (прогресс общий на всех устройствах). Вне Telegram — только локальный сейв для разработки, без анонимного входа. Сейвы с iOS не совместимы (и не нужны).
 3. **Платежи (этап 4).** В Telegram цифровые товары — только за Telegram Stars.
 4. **Паритет.** Каждая механика делается на обеих платформах; общий баланс в JSON и одинаковые тесты — гарантия одинаковой математики.

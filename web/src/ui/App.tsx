@@ -10,9 +10,11 @@ import { WelcomeBack } from './WelcomeBack.tsx'
 
 export type Phase = 'loading' | 'playing'
 
-export function App({ game, phase }: { game: Game; phase: Signal<Phase> }) {
+export function App({ game, phase, devBuild = false }: { game: Game; phase: Signal<Phase>; devBuild?: boolean }) {
+  // Техническая метка тестовой сборки, не переводится.
+  const badge = devBuild && <div class="dev-badge">DEV</div>
   if (phase.value === 'loading') {
-    return <GameContext.Provider value={game}><Loading /></GameContext.Provider>
+    return <GameContext.Provider value={game}><Loading />{badge}</GameContext.Provider>
   }
   const route = game.route.value
   const report = game.offlineReport.value
@@ -23,6 +25,7 @@ export function App({ game, phase }: { game: Game; phase: Signal<Phase> }) {
       {route === 'managers' && <Managers />}
       {route === 'settings' && <Settings />}
       {report && <WelcomeBack report={report} />}
+      {badge}
     </GameContext.Provider>
   )
 }

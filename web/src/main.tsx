@@ -26,7 +26,10 @@ const CLOUD_TIMEOUT_MS = 4000
 telegram.init(getComputedStyle(document.documentElement).getPropertyValue('--background').trim())
 
 const content = bundledContent
-const localSave = createLocalSave(undefined, telegram.userId !== undefined ? `tg${telegram.userId}` : undefined)
+const isDevBuild = import.meta.env.VITE_CHANNEL === 'dev'
+// Сейвы тестовой сборки отдельно от рабочих (один домен github.io); в Telegram — по аккаунту.
+const saveAccount = isDevBuild ? 'dev' : telegram.userId !== undefined ? `tg${telegram.userId}` : undefined
+const localSave = createLocalSave(undefined, saveAccount)
 const state = localSave.load() ?? newGame(content, Date.now(), detectLanguage(telegram.languageCode ?? navigator.language))
 const engine = new GameEngine(content, state)
 
@@ -71,7 +74,7 @@ effect(() => {
   telegram.onBack(route === 'jobs' ? null : () => (game.route.value = route === 'menu' ? 'jobs' : 'menu'))
 })
 
-render(<App game={game} phase={phase} />, document.getElementById('app')!)
+render(<App game={game} phase={phase} devBuild={isDevBuild} />, document.getElementById('app')!)
 
 /**
  * При запуске берём облачный сейв, если в нём заработано больше. Плохая сеть не держит загрузку дольше 4 с:
