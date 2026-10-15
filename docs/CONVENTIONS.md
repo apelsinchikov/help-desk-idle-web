@@ -13,6 +13,7 @@
 - Ветки: `main` (стабильная), `dev` (рабочая). Фичи можно коммитить прямо в `dev`; крупное — `feature/<коротко>` → PR в `dev`.
 - `dev` → `main` только через Pull Request.
 - Коммиты: Conventional Commits на английском: `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`, `refactor: ...`, `balance: ...` (правки чисел экономики).
+- Автор коммитов — `Evgeniy <evgenyassylov@gmail.com>`. Никаких трейлеров `Co-Authored-By: Claude` / `Claude-Session` и подписей «Generated with Claude» в коммитах и описаниях PR.
 - Не коммитить: `xcuserdata/`, `DerivedData/`, `.DS_Store`, `Secrets.xcconfig`.
 
 ## Работа с Claude
