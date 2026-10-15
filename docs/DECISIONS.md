@@ -25,4 +25,4 @@
 | 2026-10-15 | Веб: Vite + TS + Preact + signals, тесты Vitest | Лёгкий бандл для Mini App; signals ≈ `@Observable` |
 | 2026-10-15 | Веб: хостинг GitHub Pages, деплой из `main` через Actions | Репо публичный — бесплатно, всё в одном месте |
 | 2026-10-15 | Веб: отдельный проект Supabase, та же схема `game_saves` | Веб-игроки отдельно от iOS; перенос между платформами — не в этапе 1 |
-| 2026-10-15 | Вход в Telegram: `initData` → Edge Function `telegram-auth` → сессия по Telegram ID; в браузере — анонимный | Прогресс общий на всех устройствах одного Telegram |
+| 2026-10-15 | Вход в Telegram: `initData` → Edge Function `telegram-auth` → сессия по Telegram ID; вне Telegram — только локально, без анонимного входа; формат сейва свой | Все игроки идут через Telegram; совместимость с iOS-сейвами не нужна |

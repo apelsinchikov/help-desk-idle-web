@@ -11,7 +11,7 @@
 - Правила и формулы: `docs/GAME_DESIGN.md`, `docs/ECONOMY.md`, `docs/PROGRESSION.md`.
 - Тексты RU/EN: `HelpDeskIdle/HelpDeskIdle/Localization/Localizable.xcstrings` (JSON) — веб берёт строки оттуда же.
 - Макеты (HTML) — артефакт «Help Desk Idle — главный экран».
-- Схема `public.game_saves` (`supabase/migrations/`) — применена в отдельном проекте Supabase веб-версии; формат `payload` = тот же `GameState` (даты ISO-8601).
+- Схема `public.game_saves` (`supabase/migrations/`) — применена в отдельном проекте Supabase веб-версии; формат `payload` — веб-`GameState` (свой, не iOS).
 
 ## Что пишется заново
 - `web/` — Vite + TypeScript + Preact + `@preact/signals`.
@@ -20,7 +20,7 @@
 
 ## Решения, которые нужно принять в начале
 1. **Хостинг.** ✅ GitHub Pages (репо `help-desk-idle-web` публичный), деплой через GitHub Actions из `main`.
-2. **Вход.** ✅ В Telegram — по `initData`: Supabase Edge Function проверяет подпись токеном бота и выдаёт сессию по Telegram ID (прогресс общий на всех устройствах). В обычном браузере — анонимный вход, как в iOS.
+2. **Вход.** ✅ В Telegram — по `initData`: Supabase Edge Function проверяет подпись токеном бота и выдаёт сессию по Telegram ID (прогресс общий на всех устройствах). Вне Telegram — только локальный сейв для разработки, без анонимного входа. Сейвы с iOS не совместимы (и не нужны).
 3. **Платежи (этап 4).** В Telegram цифровые товары — только за Telegram Stars.
 4. **Паритет.** Каждая механика делается на обеих платформах; общий баланс в JSON и одинаковые тесты — гарантия одинаковой математики.
 

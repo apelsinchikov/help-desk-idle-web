@@ -3,7 +3,7 @@
 Дата: 2026-10-15 · Ветка: `dev` · Статус: на ревью у автора
 
 ## Цель
-Этап 1 iOS-версии (см. `GAME_DESIGN.md` → «Этапы», п. 1), запускаемый как Telegram Mini App и в обычном браузере:
+Этап 1 iOS-версии (см. `GAME_DESIGN.md` → «Этапы», п. 1) как Telegram Mini App. Все игроки — через Telegram; обычный браузер — только для разработки (без облака):
 12 работ, тап-старт / тап-сбор, покупка ×1/×10/×100/Max, достижения (порог → эффект), менеджеры за деньги,
 оффлайн-доход + «С возвращением», экран загрузки, сохранение (локально + Supabase), RU/EN, тема A.
 
@@ -11,7 +11,7 @@
 1. Ядро на TS даёт те же числа, что Swift: тесты Vitest повторяют `Packages/HelpDeskCore/Tests` с теми же входами и ожиданиями.
 2. В Telegram прогресс общий для всех устройств одного Telegram-аккаунта (телефон, десктоп).
 3. Игра работает без сети; облако — бэкап.
-4. Автор проверил на телефоне и десктопе в Telegram и в браузере.
+4. Автор проверил на телефоне и десктопе в Telegram.
 
 **Вне этапа:** всё из этапов 2–4, тёмная тема, перенос прогресса между iOS и вебом, платежи.
 
@@ -21,9 +21,10 @@
 | Хостинг | GitHub Pages (репо публичный), деплой GitHub Actions при пуше в `main` |
 | UI | Vite + TypeScript + Preact + `@preact/signals` |
 | Тесты | Vitest |
-| Supabase | **Отдельный новый проект**; схема `game_saves` — та же миграция, без изменений; анонимный вход включён |
+| Supabase | **Отдельный новый проект**; схема `game_saves` — та же миграция, без изменений |
 | Вход в Telegram | `initData` → Edge Function `telegram-auth` → сессия Supabase по Telegram ID |
-| Вход в браузере | `signInAnonymously()`, как в iOS |
+| Вне Telegram | Только локальный сейв, облако выключено (режим разработки). Анонимного входа нет |
+| Формат сейва | Свой, совместимость с iOS-сейвами не нужна |
 | Бот | новый, создаётся через BotFather (инструкция — шаг 10 плана) |
 
 ## Структура
@@ -38,12 +39,12 @@ web/
     state.ts         GameState, JobState, PlayerSettings, BuyMode, JobStatus, newGame()
     engine.ts        GameEngine: status, tap, quote, buy, unlock, hireManager, advance, resume, reset, replaceState
     savePicker.ts    pick(local, remote)
-    serialize.ts     GameState ⇄ JSON (даты ISO-8601), проверка schemaVersion
+    serialize.ts     GameState ⇄ JSON, проверка schemaVersion
     *.test.ts
   src/platform/
     telegram.ts      обёртка над window.Telegram.WebApp: isTelegram, initData, ready/expand, safe area, BackButton, haptics
     storage.ts       localStorage: save + save.prev (аналог LocalSaveStore)
-    cloud.ts         supabase-js: вход (Telegram / анонимный), upload, download(timeout)
+    cloud.ts         supabase-js: вход по Telegram, upload, download(timeout); вне Telegram — отключён
   src/app/
     store.ts         signals поверх GameEngine, тик, автосейв, жизненный цикл (visibilitychange/pagehide)
     i18n.ts          строки из Localizable.xcstrings, t(key, args), переключение языка
@@ -70,11 +71,11 @@ supabase/functions/telegram-auth/index.ts
 - `engine` — обычный класс без зависимостей от UI; реактивность добавляет `src/app/store.ts`: после каждого действия и тика кладёт новый снимок состояния в signal.
 
 ## Сейв
-- Формат `GameState` — те же ключи, что в Swift: `schemaVersion, money, lifetimeEarnings, jobs{id:{level,hasManager,startedAt?}}, lastActiveAt, settings{language,haptics}`. Даты — ISO-8601 строки (как в облачном `payload` iOS), `schemaVersion = 1`.
+- Формат `GameState` — свой (с iOS-сейвами не совместим и не должен): `schemaVersion, money, lifetimeEarnings, jobs{id:{level,hasManager,startedAt}}, lastActiveAt, settings{language,haptics}`. Даты — миллисекунды Unix (`number`), `startedAt: null` — работа стоит; `schemaVersion = 1`.
 - Локально: `localStorage['hdi.save']`, перед записью прошлая валидная копия → `hdi.save.prev`. Битый или «из будущего» сейв → пробуем prev → иначе новая игра.
 - Когда пишем: после каждой покупки/найма/открытия, каждые `autosaveSeconds` (30 с), на `visibilitychange: hidden` и `pagehide`, на событии закрытия Mini App.
 - Облако: таблица `public.game_saves` (одна строка на `auth.uid()`), upsert при каждом локальном сохранении, но не чаще раза в 30 с + принудительно при уходе в фон.
-- Старт: показываем загрузку → локальный сейв → вход + `download` с таймаутом 4 с → `SavePicker.pick` (больше `lifetimeEarnings`, при равенстве свежее `lastActiveAt`) → `resume` → «С возвращением», если есть отчёт.
+- Старт: показываем загрузку → локальный сейв → (в Telegram) вход + `download` с таймаутом 4 с → `SavePicker.pick` (больше `lifetimeEarnings`, при равенстве свежее `lastActiveAt`) → `resume` → «С возвращением», если есть отчёт.
 - Ошибки облака не блокируют игру: статус в Настройках («сохранено в облаке · время» / «нет связи»), повтор при следующем сохранении.
 
 ## Вход
@@ -86,11 +87,11 @@ supabase/functions/telegram-auth/index.ts
 5. Клиент: `supabase.auth.setSession(...)`. Дальше обычный supabase-js с RLS.
 Секреты функции: `TELEGRAM_BOT_TOKEN` (задан автором); `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` Supabase подставляет сам. Функция деплоится с `verify_jwt = false` (вызывается до входа).
 
-**Браузер:** если сессии нет — `signInAnonymously()`; сессия хранится в localStorage supabase-js.
+**Вне Telegram:** входа нет, облако выключено, в Настройках «Облако: только в Telegram». Нужно для `npm run dev` и быстрой проверки в браузере.
 
 ## Конфигурация
 - `web/.env.local` (в `.gitignore`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`. В репо — `web/.env.example`.
-- GitHub Actions secrets с теми же именами (заданы автором). Нет ключей → игра работает только локально, облако «выключено» в Настройках.
+- GitHub Actions secrets с теми же именами (заданы автором). Нет ключей → игра работает только локально.
 - `vite.config.ts`: `base: '/help-desk-idle-web/'`.
 
 ## UI
