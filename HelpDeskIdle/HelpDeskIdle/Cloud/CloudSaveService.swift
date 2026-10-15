@@ -46,7 +46,14 @@ actor CloudSaveService {
     private let client: SupabaseClient
 
     init(config: SupabaseConfig) {
-        client = SupabaseClient(supabaseURL: config.url, supabaseKey: config.key)
+        client = SupabaseClient(
+            supabaseURL: config.url,
+            supabaseKey: config.key,
+            options: SupabaseClientOptions(
+                // Новое поведение supabase-swift (станет дефолтом в v3); убирает предупреждение в консоли.
+                auth: SupabaseClientOptions.AuthOptions(emitLocalSessionAsInitialSession: true)
+            )
+        )
     }
 
     /// Сессия хранится в Keychain, поэтому после переустановки игрок остаётся тем же.
