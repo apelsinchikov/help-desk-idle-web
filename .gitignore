@@ -13,3 +13,6 @@ HelpDeskIdle/HelpDeskIdle/Secrets.plist
 web/node_modules/
 web/dist/
 web/.env.local
+
+# supabase cli
+supabase/.temp/
