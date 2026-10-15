@@ -16,14 +16,21 @@ export type Route = 'jobs' | 'menu' | 'managers' | 'settings'
 
 const TICK_MS = 100
 
-export function createGame(o: { engine: GameEngine; scheduler: SaveScheduler; cloudStatus: Signal<CloudStatus> }) {
+export function createGame(o: {
+  engine: GameEngine
+  scheduler: SaveScheduler
+  cloudStatus: Signal<CloudStatus>
+  /** Общий сигнал языка интерфейса (strings.ts). */
+  language: Signal<AppLanguage>
+}) {
   const { engine, scheduler } = o
   /** Растёт после любого изменения состояния: компоненты читают его, затем данные из engine. */
   const version = signal(0)
   const buyMode = signal<BuyMode>('one')
   const offlineReport = signal<OfflineReport | null>(null)
   const route = signal<Route>('jobs')
-  const language = signal<AppLanguage>(engine.state.settings.language)
+  const language = o.language
+  language.value = engine.state.settings.language
   let timer: ReturnType<typeof setInterval> | null = null
 
   const bump = () => { version.value++ }

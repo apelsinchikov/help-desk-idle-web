@@ -1,0 +1,26 @@
+/* Тема A «Офис и стикеры». Значения = ThemeTokens.officeA (Theme.swift).
+   Вью берут цвета ТОЛЬКО отсюда — тему C добавим заменой переменных. */
+:root {
+  --background: #F3EFE6;
+  --card: #FFFFFF;
+  --ink: #1D1B16;
+  --muted: #6B655A;
+  --line: #E2DACB;
+  --track: #EEE7D8;
+  --track-strong: #E7E0D2;
+  --locked-border: #CFC6B4;
+  --accent: #2350D8;
+  --accent-dark: #163A9E;
+  --amber: #F5B82E;
+  --positive: #1E7A3C;
+  --on-accent: #FFFFFF;
+  --managers: #3B7DD8;
+  --achievements: #E0A21B;
+  --upgrades: #E2572B;
+  --reorg: #8A4FC7;
+  --wardrobe: #C2417A;
+  --shop: #B4461A;
+  --night: #1D2440;
+  --night-accent: #8FB0FF;
+  --night-muted: #D6DDF2;
+}
