@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A7452163081089200343832 /* HelpDeskCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7A7452153081089200343832 /* HelpDeskCore */; };
+		7A74521C30810BA200343832 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 7A74521B30810BA200343832 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		7A745185308101C900343832 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				7A74521C30810BA200343832 /* Supabase in Frameworks */,
 				7A7452163081089200343832 /* HelpDeskCore in Frameworks */,
 			);
 		};
@@ -67,6 +69,7 @@
 			name = HelpDeskIdle;
 			packageProductDependencies = (
 				7A7452153081089200343832 /* HelpDeskCore */,
+				7A74521B30810BA200343832 /* Supabase */,
 			);
 			productName = HelpDeskIdle;
 			productReference = 7A745188308101C900343832 /* HelpDeskIdle.app */;
@@ -99,6 +102,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7A7452143081089200343832 /* XCLocalSwiftPackageReference "../Packages/HelpDeskCore" */,
+				7A74521A30810BA200343832 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7A745189308101C900343832 /* Products */;
@@ -344,10 +348,28 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		7A74521A30810BA200343832 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+			traits = (
+			);
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		7A7452153081089200343832 /* HelpDeskCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HelpDeskCore;
+		};
+		7A74521B30810BA200343832 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7A74521A30810BA200343832 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
