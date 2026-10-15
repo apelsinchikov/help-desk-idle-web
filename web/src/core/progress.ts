@@ -11,7 +11,7 @@ export function refreshSections(engine: GameEngine): Section[] {
   const cheapestUpgrade = content.upgrades[0]?.cost ?? Infinity
   const open: Record<Section, boolean> = {
     settings: true,
-    managers: jobs.some((j) => j.level >= content.config.managerMinLevel),
+    managers: jobs.some((j) => j.level >= content.config.managerMinLevel || j.hasManager),
     achievements: jobs.some((j) => j.rank > 0),
     upgrades: state.lifetimeEarnings >= cheapestUpgrade,
   }
@@ -109,5 +109,9 @@ export function tutorialView(engine: GameEngine, route: string): TutorialView | 
 function next(engine: GameEngine): void {
   const ui = engine.state.ui
   ui.tutorialStep += 1
-  if (ui.tutorialStep >= STEPS.length) ui.tutorialDone = true
+  if (ui.tutorialStep >= STEPS.length) {
+    ui.tutorialDone = true
+    // итог обучения уже рассказал про менеджеров — подсказку раздела не повторяем
+    if (!ui.hintsSeen.includes('managers')) ui.hintsSeen.push('managers')
+  }
 }

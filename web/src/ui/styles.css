@@ -192,3 +192,4 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 @keyframes tutorial-glow { 50% { box-shadow: 0 0 0 9999px color-mix(in srgb, var(--ink) 60%, transparent), 0 0 0 6px var(--amber); } }
 .tutorial__bubble { position: fixed; left: 16px; right: 16px; max-width: 420px; margin: 0 auto; padding: 14px 16px; border-radius: 18px; background: var(--card); color: var(--ink); font-size: 15px; font-weight: 700; pointer-events: auto; display: flex; flex-direction: column; gap: 10px; }
 .tutorial__bubble p { margin: 0; }
+.manager__hire--upgrades.manager__hire--off { background: var(--track-strong); color: var(--muted); }

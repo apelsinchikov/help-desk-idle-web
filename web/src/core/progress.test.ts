@@ -67,6 +67,7 @@ test('manager steps lead through menu, managers, hire, then finish', () => {
   assert.equal(tutorialView(e, 'managers')!.needsAck, true)
   tutorialAck(e, 'managers')
   assert.equal(e.state.ui.tutorialDone, true)
+  assert.ok(e.state.ui.hintsSeen.includes('managers'), 'подсказка раздела не повторяет итог обучения')
   assert.equal(tutorialView(e, 'jobs'), null)
 })
 
@@ -80,4 +81,9 @@ test('sections open by progress and only once', () => {
   assert.deepEqual(refreshSections(e).sort(), ['achievements', 'managers', 'upgrades'])
   assert.deepEqual(refreshSections(e), [])
   assert.deepEqual([...e.state.ui.sections].sort(), ['achievements', 'managers', 'settings', 'upgrades'])
+})
+
+test('managers section is open for a player who already has a manager', () => {
+  const e = makeEngine(makeClock(), (s) => { s.jobs.reboot = { level: 30, rank: 25, hasManager: true, startedAt: 0 } })
+  assert.ok(refreshSections(e).includes('managers'))
 })
