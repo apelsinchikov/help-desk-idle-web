@@ -1,0 +1,83 @@
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { makeClock, makeEngine } from './testkit.ts'
+import { refreshSections, tutorialAck, tutorialAdvance, tutorialView } from './progress.ts'
+
+test('fresh game starts the tutorial on the first job icon', () => {
+  const e = makeEngine(makeClock())
+  const v = tutorialView(e, 'jobs')!
+  assert.equal(v.step, 0)
+  assert.equal(v.textKey, 'tutorial.0')
+  assert.deepEqual(v.target, { kind: 'job-icon', jobId: 'reboot' })
+})
+
+test('tutorial waits for the job to be ready, then asks to collect', () => {
+  const c = makeClock()
+  const e = makeEngine(c)
+  e.tap('reboot')
+  tutorialAdvance(e, 'jobs')
+  assert.equal(e.state.ui.tutorialStep, 1)
+  assert.equal(tutorialView(e, 'jobs'), null, 'пока работа идёт — подсказки нет')
+  c.t += 600
+  assert.equal(tutorialView(e, 'jobs')!.textKey, 'tutorial.1')
+})
+
+test('buy-mode step needs an acknowledgement', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.lifetimeEarnings = 50; s.jobs.reboot.level = 4; s.money = 0 })
+  tutorialAdvance(e, 'jobs')
+  const v = tutorialView(e, 'jobs')!
+  assert.equal(v.step, 3)
+  assert.equal(v.needsAck, true)
+  assert.deepEqual(v.target, { kind: 'buy-mode' })
+  tutorialAck(e, 'jobs')
+  assert.equal(e.state.ui.tutorialStep, 4)
+  assert.equal(tutorialView(e, 'jobs'), null, 'работа 2 ещё не по карману')
+})
+
+test('an advanced save skips every step that is already done', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => {
+    s.lifetimeEarnings = 1e5
+    s.jobs.reboot = { level: 30, rank: 25, hasManager: false, startedAt: null }
+    s.jobs.plug_mouse.level = 5
+    s.money = 0
+  })
+  tutorialAdvance(e, 'jobs')
+  assert.equal(e.state.ui.tutorialStep, 6)
+  assert.equal(tutorialView(e, 'jobs'), null, 'менеджер ещё недоступен')
+})
+
+test('manager steps lead through menu, managers, hire, then finish', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => {
+    s.lifetimeEarnings = 1e5
+    s.jobs.reboot = { level: 50, rank: 25, hasManager: false, startedAt: null }
+    s.jobs.plug_mouse.level = 1
+    s.money = 5000
+  })
+  tutorialAdvance(e, 'jobs')
+  assert.deepEqual(tutorialView(e, 'jobs')!.target, { kind: 'menu' })
+  tutorialAdvance(e, 'menu')
+  assert.deepEqual(tutorialView(e, 'menu')!.target, { kind: 'menu-managers' })
+  tutorialAdvance(e, 'managers')
+  assert.deepEqual(tutorialView(e, 'managers')!.target, { kind: 'manager-hire', jobId: 'reboot' })
+  e.hireManager('reboot')
+  tutorialAdvance(e, 'managers')
+  assert.equal(tutorialView(e, 'managers')!.needsAck, true)
+  tutorialAck(e, 'managers')
+  assert.equal(e.state.ui.tutorialDone, true)
+  assert.equal(tutorialView(e, 'jobs'), null)
+})
+
+test('sections open by progress and only once', () => {
+  const c = makeClock()
+  const e = makeEngine(c)
+  assert.deepEqual(refreshSections(e), [])
+  e.state.jobs.reboot.level = 50
+  e.state.jobs.reboot.rank = 25
+  e.state.lifetimeEarnings = 250_000
+  assert.deepEqual(refreshSections(e).sort(), ['achievements', 'managers', 'upgrades'])
+  assert.deepEqual(refreshSections(e), [])
+  assert.deepEqual([...e.state.ui.sections].sort(), ['achievements', 'managers', 'settings', 'upgrades'])
+})
