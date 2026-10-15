@@ -30,11 +30,15 @@ button:disabled { cursor: default; }
 .card__icon-btn { position: relative; padding: 0; border-radius: 18px; background: transparent; }
 .card__icon-btn--ready { animation: pulse 1s ease-in-out infinite; box-shadow: 0 0 0 3px var(--positive); }
 .card__collect { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); padding: 1px 8px; border-radius: 99px; background: var(--positive); color: var(--on-accent); font-size: 11px; font-weight: 800; white-space: nowrap; }
-.card__panel { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 0; background: transparent; color: var(--ink); text-align: left; }
-.card__panel .card__buy { height: 36px; border-radius: 12px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 800; background: var(--accent); color: var(--on-accent); }
-.card__panel--off .card__buy { background: var(--track-strong); color: var(--muted); }
-.card__panel--promote .card__buy { background: var(--amber); color: var(--ink); }
-.card__panel--promote.card__panel--off .card__buy { background: var(--track-strong); color: var(--muted); }
+.card__panel { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; border-radius: 16px; border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--card)); color: var(--ink); text-align: left; transition: transform .08s; }
+.card__panel:active:not(:disabled) { transform: scale(.98); }
+.card__panel .card__buy { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; font-size: 14px; font-weight: 800; color: var(--accent); }
+.card__panel--off { border-color: var(--line); background: var(--card); }
+.card__panel--off .card__buy { color: var(--muted); }
+.card__panel--promote { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 18%, var(--card)); }
+.card__panel--promote .card__buy { color: var(--ink); }
+.card__panel--promote.card__panel--off { border-color: var(--line); background: var(--card); }
+.card__panel--promote.card__panel--off .card__buy { color: var(--muted); }
 .card__reward { font-size: 12px; font-weight: 700; color: var(--muted); }
 .card--locked { background: transparent; box-shadow: none; border: 2px dashed var(--locked-border); cursor: default; }
 @keyframes pulse { 50% { transform: scale(1.06); } }
