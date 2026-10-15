@@ -8,28 +8,23 @@
 
 ## Структура проекта
 ```
-HelpDeskIdle/
-  App/                  HelpDeskIdleApp.swift, RootView (TabView), AppEnvironment
-  Core/
-    Economy/            Formulas.swift (cost, bulk, max, payout), NumberFormatter+Game
-    Model/              JobDefinition, ManagerDefinition, Milestone (из JSON) ; JobState, GameState (сохраняемое)
-    Engine/             GameEngine (@Observable: тик, выплаты, покупки, оффлайн)
-    Content/            ContentLoader (jobs.json → definitions)
-    Persistence/        SaveStore (протокол), LocalSaveStore (JSON в Application Support), CloudSaveStore (Supabase), SaveCoordinator
-    Assets/             IconProvider (iconKey → Image)
-    Localization/       LanguageManager (переключение RU/EN в игре)
-  Features/
-    Jobs/               JobsScreen, JobCardView, ProgressBarView, BuyModePicker
-    Managers/           ManagersScreen, ManagerRow
-    Settings/           SettingsScreen
-    Offline/            OfflineEarningsSheet
-  Resources/
-    Content/jobs.json   баланс + iconKey + id (без текстов)
-    Localizable.xcstrings
-    Assets.xcassets/Icons/<pack>/<iconKey>.imageset
-  Config/
-    Secrets.xcconfig    (в .gitignore) SUPABASE_URL, SUPABASE_ANON_KEY
-    Secrets.example.xcconfig
+Packages/HelpDeskCore/            — вся логика, без UI; `swift test` на маке
+  Sources/HelpDeskCore/
+    Content/      JobDefinition, Milestone, GameConfig, GameContent (загрузка JSON)
+    Resources/    jobs.json, milestones.json, config.json — баланс
+    Economy/      Economy (формулы Part I), MilestoneMath
+    Formatting/   AppLanguage, GameNumberFormatter, GameDurationFormatter
+    State/        GameState, JobState, BuyMode, JobStatus
+    Engine/       GameEngine (@Observable), OfflineReport
+    Persistence/  SaveStore, LocalSaveStore
+  Tests/HelpDeskCoreTests/
+HelpDeskIdle/HelpDeskIdle.xcodeproj  — iOS-приложение (Xcode 27, синхронизированные папки)
+HelpDeskIdle/HelpDeskIdle/           — исходники приложения
+  App/ Theme/ Assets/ Localization/ Features/{Jobs,Menu,Managers,Settings,Loading,Offline}/ Cloud/
+  Assets.xcassets/Icons/fluent3d/<iconKey>.imageset
+Config/Secrets.xcconfig            — (в .gitignore) SUPABASE_URL, SUPABASE_ANON_KEY
+supabase/migrations/               — SQL
+tools/fetch_assets.sh              — скачивает иконки Fluent 3D и шрифты
 ```
 
 ## Поток данных

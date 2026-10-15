@@ -21,7 +21,7 @@ iOS idle-игра в духе AdVenture Capitalist, сеттинг — IT-под
 
 ## Ключевые правила (кратко)
 - **Стек:** Swift 5.10+/Swift 6, SwiftUI, iOS 17+, `@Observable`. Без SpriteKit/Unity. Зависимости — только SPM (`supabase-swift`).
-- **Экономика — только по формулам из `docs/ECONOMY.md`** (источник: Pecorella, *The Math of Idle Games* Part I и III). Числа баланса живут в `Resources/Content/jobs.json`, не в коде.
+- **Экономика — только по формулам из `docs/ECONOMY.md`** (источник: Pecorella, *The Math of Idle Games* Part I и III). Числа баланса живут в `Packages/HelpDeskCore/Sources/HelpDeskCore/Resources/jobs.json`, не в коде.
 - **Контент data-driven:** работы, менеджеры, milestones — JSON. Добавить работу = правка JSON + строки локализации + иконка.
 - **Локализация:** RU + EN, `Localizable.xcstrings`, переключатель языка внутри игры. Никаких захардкоженных строк в UI.
 - **Иконки:** Fluent Emoji 3D (MIT) сейчас; доступ только через `IconProvider` по `iconKey` — чтобы заменить пак без правок вью.
