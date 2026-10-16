@@ -89,3 +89,22 @@ test('frequent toasts do not starve support tickets', () => {
   game.checkTicket()
   assert.deepEqual(game.messages.value, [{ kind: 'ticket', index: 0 }], '3 минуты считаются от прошлой заявки, а не от любого тоста')
 })
+
+test('buying one upgrade buys only that one, even when two are affordable', () => {
+  const [a, b] = bundledContent.upgrades
+  const { engine, game } = setup((s) => { s.money = a.cost + b.cost; s.lifetimeEarnings = s.money })
+  game.buyUpgrade(a.id)
+  assert.deepEqual(engine.state.upgrades, [a.id])
+  assert.equal(engine.state.money, b.cost)
+  assert.equal(engine.canBuyUpgrade(b.id), true, 'на второе ещё хватает — его кнопка активна')
+})
+
+test('when money covers only one upgrade, the other button goes grey but nothing else is bought', () => {
+  const [a, b] = bundledContent.upgrades
+  const { engine, game } = setup((s) => { s.money = b.cost; s.lifetimeEarnings = s.money })
+  assert.equal(engine.canBuyUpgrade(a.id), true)
+  assert.equal(engine.canBuyUpgrade(b.id), true)
+  game.buyUpgrade(a.id)
+  assert.deepEqual(engine.state.upgrades, [a.id])
+  assert.equal(engine.canBuyUpgrade(b.id), false, 'денег не осталось — кнопка гаснет, покупки нет')
+})
