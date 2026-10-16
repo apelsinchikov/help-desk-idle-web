@@ -41,6 +41,14 @@ const done = (engine: GameEngine, q: Quest) => {
   return p.value >= p.target
 }
 
+/** Есть работа, которую собирают руками (без менеджера или менеджер ждёт на пороге). */
+function hasManualJob(engine: GameEngine): boolean {
+  return engine.content.jobs.some((j) => {
+    const js = engine.state.jobs[j.id]
+    return js && js.level > 0 && (!js.hasManager || engine.atCap(j.id))
+  })
+}
+
 /** Возможные задания сейчас (без учёта уже активных). */
 function candidates(engine: GameEngine): Omit<Quest, 'id'>[] {
   const { content, state } = engine
@@ -82,11 +90,7 @@ function candidates(engine: GameEngine): Omit<Quest, 'id'>[] {
   })
   if (unlockable && fits(unlockable.baseCost)) list.push({ kind: 'unlock', jobId: unlockable.id, target: 1, base: 0 })
 
-  const manual = content.jobs.some((j) => {
-    const js = state.jobs[j.id]
-    return js && js.level > 0 && (!js.hasManager || engine.atCap(j.id))
-  })
-  if (manual) {
+  if (hasManualJob(engine)) {
     const [lo, hi] = content.config.quests.collect
     list.push({ kind: 'collect', jobId: null, target: lo + Math.floor(random(state) * (hi - lo + 1)), base: state.stats.collects })
   }
@@ -116,6 +120,11 @@ export function fillQuests(engine: GameEngine, at: number, exclude?: QuestKind):
 /** Засчитывает выполненные: звёзды += выполнено, на их место — новые. Возвращает число выполненных. */
 export function completeQuests(engine: GameEngine, at: number): number {
   const { state } = engine
+  // «Собери вручную» без ручных работ (всех взяли менеджеры) не выполнить — заменяем без звезды
+  if (!hasManualJob(engine) && state.quests.active.some((q) => q.kind === 'collect')) {
+    state.quests.active = state.quests.active.filter((q) => q.kind !== 'collect')
+    fillQuests(engine, at, 'collect')
+  }
   const finished = state.quests.active.filter((q) => done(engine, q))
   if (finished.length === 0) return 0
   state.quests.active = state.quests.active.filter((q) => !finished.includes(q))

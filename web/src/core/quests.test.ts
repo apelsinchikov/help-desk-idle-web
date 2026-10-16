@@ -118,3 +118,14 @@ test('replacing the earn quest when nothing else is free never breaks the list',
   for (const q of e.state.quests.active) assert.ok(typeof q.kind === 'string', JSON.stringify(q))
   assert.doesNotThrow(() => completeQuests(e, 1000))
 })
+
+test('a collect quest that became impossible is replaced, not stuck', () => {
+  const { e } = afterTutorial((s) => {
+    for (const id of Object.keys(s.jobs)) s.jobs[id] = { level: 10, rank: 0, hasManager: true, startedAt: 0 }
+  })
+  e.state.quests.active = one({ kind: 'collect', jobId: null, target: 30, base: 0 })
+  assert.equal(completeQuests(e, 0), 0)
+  assert.equal(e.state.stars, 0)
+  assert.ok(!e.state.quests.active.some((q) => q.kind === 'collect'))
+  assert.equal(e.state.quests.active.length, 3)
+})

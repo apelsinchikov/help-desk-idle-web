@@ -279,10 +279,14 @@ export class GameEngine {
     const job = this.content.job(jobId)
     if (!job || !this.canHireManager(jobId)) return false
     const js = this.current.jobs[jobId]
+    const now = this.now()
+    // висящая зарплата: менеджер забирает её один раз и запускает новый цикл (без выплат «задним числом»)
+    const waiting = this.status(jobId, now).kind === 'ready'
     this.current.money -= job.managerCost
+    if (waiting) this.credit(this.payout(jobId, now))
     js.hasManager = true
     this.current.stats.hires++
-    if (js.startedAt === null) js.startedAt = this.now()
+    if (js.startedAt === null || waiting) js.startedAt = now
     return true
   }
 
