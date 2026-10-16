@@ -10,7 +10,7 @@ import { nextTicket, ticketDue } from '../core/messages.ts'
 import type { Message } from '../core/messages.ts'
 import type { Milestone } from '../core/content.ts'
 import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
-import { grantPerk } from '../core/perks.ts'
+import { grantPerk, markBackpackSeen } from '../core/perks.ts'
 import { markItemsSeen, nextItem } from '../core/items.ts'
 import { completeQuests, fillQuests, rerollQuest } from '../core/quests.ts'
 import { claimTrack } from '../core/track.ts'
@@ -168,6 +168,11 @@ export function createGame(o: {
     /** Игрок увидел вещи (вкладка «Вещи» рюкзака или гардероб) — метки «новое» и точка на «Меню» гаснут. */
     markItemsSeen(): void {
       game.act('purchase', () => markItemsSeen(engine.state))
+    },
+
+    /** Игрок открыл рюкзак: новые перки и вещи просмотрены. */
+    markBackpackSeen(): void {
+      game.act('purchase', () => markBackpackSeen(engine.state))
     },
 
     buyUpgrade(upgradeId: string): void {

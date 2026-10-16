@@ -11,7 +11,9 @@ export function Header() {
   const { engine } = game
   return (
     <header class="header">
-      <Icon src={iconUrl('avatar')} class="header__avatar" />
+      <button class="header__avatar-button" aria-label={t('menu.wardrobe')} onClick={() => game.navigate('wardrobe')}>
+        <Icon src={iconUrl('avatar')} class="header__avatar" />
+      </button>
       <div class="header__money">
         <div class="header__balance">{money(engine.state.money)}</div>
         <div class="header__income">

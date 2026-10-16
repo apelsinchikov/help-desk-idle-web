@@ -149,7 +149,7 @@ function decodeStage2b(value: Record<string, unknown>, content?: GameContent) {
       track: { claimed: Math.min(track.claimed, stars) },
       quests: { active, rerollAt: quests.rerollAt, seq: Math.max(quests.seq, ...active.map((q) => q.id)) },
       stats: { collects, hires, upgrades, earned },
-      perks: { inventory, active: activePerks },
+      perks: { inventory, active: activePerks, fresh: isCount(perks.fresh) ? perks.fresh : 0 },
       items: { owned, equipped, seen: items.seen.filter((id) => owned.includes(id)) },
       rngSeed,
     },

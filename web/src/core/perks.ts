@@ -4,6 +4,13 @@ import type { GameState } from './state.ts'
 
 export function grantPerk(state: GameState, perkId: string, count = 1): void {
   state.perks.inventory[perkId] = (state.perks.inventory[perkId] ?? 0) + count
+  state.perks.fresh += count
+}
+
+/** Игрок открыл рюкзак: новых перков и вещей больше нет — счётчик и точка на «Меню» гаснут. */
+export function markBackpackSeen(state: GameState): void {
+  state.perks.fresh = 0
+  for (const id of state.items.owned) if (!state.items.seen.includes(id)) state.items.seen.push(id)
 }
 
 /** Сколько перков в рюкзаке всего. */

@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { bundledContent as c } from './bundled.ts'
 import { newGame } from './state.ts'
-import { itemTotals, statTotals } from './modifiers.ts'
+import { itemTotals, perkTotals, statTotals } from './modifiers.ts'
 
 const fresh = () => newGame(c, 0, 'ru', 1)
 
@@ -57,4 +57,10 @@ test('grade discount adds up from items', () => {
   s.items.equipped.watch = 'slow_watch'
   s.items.equipped.pants = 'friday_jeans'
   assert.ok(Math.abs(statTotals(c, s, 0).gradeDiscount - 0.15) < 1e-9)
+})
+
+test('perk totals sum only active perks', () => {
+  const s = fresh()
+  s.perks.active.push({ id: 'speed_100_5', until: 10_000 }, { id: 'speed_150_5', until: 10_000 }, { id: 'salary_10_5', until: 5 })
+  assert.deepEqual(perkTotals(c, s, 100), { speed: 2.5, salary: 0, levelDiscount: 0, gradeDiscount: 0 })
 })

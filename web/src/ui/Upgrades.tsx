@@ -25,7 +25,9 @@ export function Upgrades() {
           <span>{t('managers.balance')}</span>
           <span>{money(engine.state.money)}</span>
         </div>
-        {list.map((u) => <UpgradeRow key={u.id} up={u} />)}
+        {list.filter((u) => !owned.includes(u.id)).map((u) => <UpgradeRow key={u.id} up={u} />)}
+        {owned.length > 0 && <div class="group__title">{t('upgrades.bought')}</div>}
+        {list.filter((u) => owned.includes(u.id)).map((u) => <UpgradeRow key={u.id} up={u} />)}
       </div>
       <SectionHint section="upgrades" />
     </div>

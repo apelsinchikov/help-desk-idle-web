@@ -96,7 +96,7 @@ test('new game has schema 3 fields', () => {
   assert.deepEqual(s.track, { claimed: 0 })
   assert.deepEqual(s.quests, { active: [], rerollAt: 0, seq: 0 })
   assert.deepEqual(s.stats, { collects: 0, hires: 0, upgrades: 0, earned: 0 })
-  assert.deepEqual(s.perks, { inventory: {}, active: [] })
+  assert.deepEqual(s.perks, { inventory: {}, active: [], fresh: 0 })
   assert.deepEqual(s.items, { owned: [], equipped: {}, seen: [] })
   assert.equal(s.rngSeed, 7)
   assert.equal(s.ui.ticketCursor, 0)
@@ -108,7 +108,7 @@ test('round trip v3 with quests, perks and items', () => {
   s.track.claimed = 10
   s.quests = { active: [{ id: 3, kind: 'level', jobId: 'reboot', target: 25, base: 0 }], rerollAt: 99, seq: 3 }
   s.stats = { collects: 4, hires: 1, upgrades: 0, earned: 1234.5 }
-  s.perks = { inventory: { speed_100_5: 2 }, active: [{ id: 'salary_10_5', until: 5000 }] }
+  s.perks = { inventory: { speed_100_5: 2 }, active: [{ id: 'salary_10_5', until: 5000 }], fresh: 1 }
   s.items = { owned: ['helpdesk_cap'], equipped: { head: 'helpdesk_cap' }, seen: ['helpdesk_cap'] }
   s.ui.ticketCursor = 17
   assert.deepEqual(decodeState(encodeState(s), bundledContent), s)
@@ -124,7 +124,7 @@ test('v2 save migrates to v3 with empty stage 2b state', () => {
   assert.equal(s.schemaVersion, 3)
   assert.equal(s.money, 77)
   assert.equal(s.stars, 0)
-  assert.deepEqual(s.perks, { inventory: {}, active: [] })
+  assert.deepEqual(s.perks, { inventory: {}, active: [], fresh: 0 })
   assert.deepEqual(s.items, { owned: [], equipped: {}, seen: [] })
   assert.ok(Number.isInteger(s.rngSeed) && s.rngSeed >= 0)
   assert.equal(s.ui.ticketCursor, 0)
@@ -139,10 +139,10 @@ test('v1 save migrates all the way to v3', () => {
 
 test('v3 drops unknown perk and item ids when content is given', () => {
   const s = newGame(bundledContent, 0, 'ru', 1)
-  s.perks = { inventory: { speed_100_5: 1, gone_perk: 3 }, active: [{ id: 'gone_perk', until: 1 }, { id: 'speed_100_5', until: 1 }] }
+  s.perks = { inventory: { speed_100_5: 1, gone_perk: 3 }, active: [{ id: 'gone_perk', until: 1 }, { id: 'speed_100_5', until: 1 }], fresh: 0 }
   s.items = { owned: ['helpdesk_cap', 'gone_item'], equipped: { head: 'helpdesk_cap', top: 'gone_item' }, seen: ['gone_item'] }
   const d = decodeState(encodeState(s), bundledContent)!
-  assert.deepEqual(d.perks, { inventory: { speed_100_5: 1 }, active: [{ id: 'speed_100_5', until: 1 }] })
+  assert.deepEqual(d.perks, { inventory: { speed_100_5: 1 }, active: [{ id: 'speed_100_5', until: 1 }], fresh: 0 })
   assert.deepEqual(d.items, { owned: ['helpdesk_cap'], equipped: { head: 'helpdesk_cap' }, seen: [] })
 })
 

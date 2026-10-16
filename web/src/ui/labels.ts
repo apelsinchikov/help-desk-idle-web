@@ -1,5 +1,5 @@
 // Подписи перков и статов (общие для плашки эффектов, рюкзака и гардероба).
-import { t } from '../app/strings.ts'
+import { t, uiLanguage } from '../app/strings.ts'
 import type { PerkDefinition, StatKey } from '../core/content.ts'
 
 const pct = (v: number) => Math.round(v * 100)
@@ -10,10 +10,16 @@ export function perkLabel(perk: PerkDefinition): string {
   return statLabel(perk.kind, perk.value)
 }
 
-/** Значение стата со знаком: «+50%», «−3%». */
+/** Прибавка вещи или перка: «+50%», «−3%». */
 export function statValue(stat: StatKey, value: number): string {
   const sign = stat === 'levelDiscount' || stat === 'gradeDiscount' ? '−' : '+'
   return `${sign}${pct(value)}%`
+}
+
+/** Итог стата: скорость и зарплата — множитель к базе ×1 («×2,5»), скидки — «−45%». */
+export function statTotal(stat: StatKey, value: number): string {
+  if (stat === 'levelDiscount' || stat === 'gradeDiscount') return `−${pct(value)}%`
+  return `×${(1 + value).toLocaleString(uiLanguage.value === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 })}`
 }
 
 /** «Скорость +50%», «Уровни −3%», «Грейд −5%», «Зарплата +10%». */

@@ -32,3 +32,14 @@ export function statTotals(content: GameContent, state: GameState, at: number): 
   }
   return capped(content, total)
 }
+
+/** Только действующие перки (для гардероба: «перки сейчас»), без потолков — как прибавка. */
+export function perkTotals(content: GameContent, state: GameState, at: number): Stats {
+  const total = zero()
+  for (const a of state.perks.active) {
+    if (a.until <= at) continue
+    const perk = content.perk(a.id)
+    if (perk && perk.kind !== 'rewind') total[perk.kind] += perk.value
+  }
+  return total
+}

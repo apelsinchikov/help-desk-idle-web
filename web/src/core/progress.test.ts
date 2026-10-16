@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { makeClock, makeEngine } from './testkit.ts'
+import { grantPerk, markBackpackSeen } from './perks.ts'
 import { buyableCounts, refreshSections, sectionLock, tutorialAck, tutorialAdvance, tutorialView } from './progress.ts'
 
 test('fresh game: the job runs by itself, the tutorial first asks to collect', () => {
@@ -123,10 +124,10 @@ test('backpack opens with the first perk; until then it says 5 stars', () => {
   assert.ok(refreshSections(e).includes('backpack'))
 })
 
-test('menu dot also lights up when the backpack has perks to switch on', () => {
+test('menu dot also lights up when new perks came to the backpack', () => {
   const e = makeEngine(makeClock())
   assert.equal(buyableCounts(e).perks, 0)
-  e.state.perks.inventory.rewind_10 = 2
+  grantPerk(e.state, 'rewind_10', 2)
   assert.equal(buyableCounts(e).perks, 2)
 })
 
@@ -157,4 +158,18 @@ test('quests section opens with the finished tutorial', () => {
 test('lock progress shows the best job level, not the rank: level 25 reached but not promoted yet', () => {
   const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 25; s.jobs.reboot.rank = 0 })
   assert.deepEqual(sectionLock(e, 'managers'), { kind: 'rank', need: 25, best: 25 })
+})
+
+test('the backpack badge counts only perks and items new since the last visit', () => {
+  const e = makeEngine(makeClock())
+  grantPerk(e.state, 'speed_100_5')
+  grantPerk(e.state, 'rewind_10')
+  e.grantItem('helpdesk_cap')
+  assert.equal(buyableCounts(e).perks, 2)
+  assert.equal(buyableCounts(e).items, 1)
+  markBackpackSeen(e.state)
+  assert.deepEqual(buyableCounts(e), { managers: 0, upgrades: 0, perks: 0, items: 0 }, 'зашёл в рюкзак — новых нет, точка гаснет')
+  assert.equal(e.state.perks.inventory.speed_100_5, 1, 'сами перки остались')
+  grantPerk(e.state, 'salary_10_5')
+  assert.equal(buyableCounts(e).perks, 1)
 })
