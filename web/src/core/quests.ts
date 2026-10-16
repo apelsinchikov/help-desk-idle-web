@@ -45,8 +45,11 @@ const done = (engine: GameEngine, q: Quest) => {
 function candidates(engine: GameEngine): Omit<Quest, 'id'>[] {
   const { content, state } = engine
   const income = Math.max(estimatedIncome(engine), 1e-9)
+  const minSeconds = content.config.quests.minMinutes * 60
   const maxSeconds = content.config.quests.maxMinutes * 60
   const fits = (cost: number) => Number.isFinite(cost) && cost / income <= maxSeconds
+  // цель «на 5–15 минут»: слишком быстрые цели не выдаём (кроме самого начала, где всё быстрое — там хватит «Заработай»)
+  const inWindow = (cost: number) => fits(cost) && cost / income >= minSeconds
   const f = 1 - engine.stats().levelDiscount
   const list: Omit<Quest, 'id'>[] = []
 
@@ -57,11 +60,11 @@ function candidates(engine: GameEngine): Omit<Quest, 'id'>[] {
     const cap = engine.cap(job.id)
     if (level < 1 || engine.atCap(job.id) || !Number.isFinite(cap)) continue
     const cost = bulkCost(job.baseCost, job.growthRate, level, cap - level) * f
-    if (fits(cost) && (!best || cost > best.cost)) best = { jobId: job.id, cost, cap }
+    if (inWindow(cost) && (!best || cost > best.cost)) best = { jobId: job.id, cost, cap }
   }
   if (best) list.push({ kind: 'level', jobId: best.jobId, target: best.cap, base: engine.level(best.jobId) })
 
-  const promotable = content.jobs.find((j) => engine.atCap(j.id) && fits(engine.promotionCost(j.id)))
+  const promotable = content.jobs.find((j) => engine.atCap(j.id) && inWindow(engine.promotionCost(j.id)))
   if (promotable) list.push({ kind: 'promote', jobId: promotable.id, target: engine.cap(promotable.id), base: engine.rank(promotable.id) })
 
   const hireable = content.jobs.some((j) => {

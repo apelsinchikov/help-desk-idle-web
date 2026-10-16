@@ -9,6 +9,8 @@ import { bundledContent as base } from '../../web/src/core/bundled.ts'
 import { GameContent } from '../../web/src/core/content.ts'
 import { GameEngine } from '../../web/src/core/engine.ts'
 import { newGame } from '../../web/src/core/state.ts'
+import { completeQuests, fillQuests } from '../../web/src/core/quests.ts'
+import { claimTrack } from '../../web/src/core/track.ts'
 
 const env = (k: string, d: number) => Number(process.env[k] ?? d)
 const cfg = { ...base.config, managerMinRank: env('MGR_RANK', base.config.managerMinRank), promotionFactor: env('PROMO_F', base.config.promotionFactor) }
@@ -30,13 +32,19 @@ const c = new GameContent(
   milestones(),
   cfg,
   base.upgrades.map((u) => ({ ...u, cost: u.cost * env('UPG_MUL', 1) })),
+  base.perks,
+  base.items,
+  base.chests,
 )
+// QUESTS=0 — без этапа 2b (задания, звёзды, перки, вещи)
+const QUESTS = env('QUESTS', 1)
 const CASUAL = env('CASUAL', 0), SAVE_S = env('SAVE_S', 300), DECIDE_S = env('DECIDE_S', 10)
 const TAP = env('TAP', 2), ACTIVE = env('ACTIVE', 30), AWAY = env('AWAY', 120), HOURS = env('HOURS', 72)
 
 let t = 0
-const e = new GameEngine(c, newGame(c, 0, 'ru'), () => t)
+const e = new GameEngine(c, newGame(c, 0, 'ru', env('SEED', 7)), () => t)
 const s = e.state
+s.ui.tutorialDone = true // обучение — первая минута; задания идут после него
 let activeMs = 0
 let lastEvent = 0
 const gaps: { at: number; gap: number }[] = []
@@ -65,6 +73,19 @@ function income(): number {
     sum += e.payout(j.id) / Math.max(e.cycle(j.id), TAP) // ручная работа ограничена скоростью тапов
   }
   return sum
+}
+
+/** Этап 2b: задания → звёзды → награды; перки игрок включает сразу, новую вещь надевает. */
+function questsTick() {
+  if (!QUESTS) return
+  fillQuests(e, t)
+  if (completeQuests(e, t) === 0) return
+  event('S')
+  for (const r of claimTrack(e)) {
+    event(r.kind === 'item' ? 'I' : 'K')
+    if (r.kind === 'perk') e.activatePerk(r.perkId)
+    else e.equip(r.itemId)
+  }
 }
 
 function decide() {
@@ -106,8 +127,9 @@ while (t < HOURS * 3_600_000) {
     let pick: string | null = null, best = -1
     for (const j of c.jobs) if (e.status(j.id).kind === 'ready' && e.payout(j.id) > best) { best = e.payout(j.id); pick = j.id }
     if (pick) e.tap(pick)
+    questsTick()
   }
-  if (t >= nextDecide) { nextDecide = t + DECIDE_S * 1000; decide() }
+  if (t >= nextDecide) { nextDecide = t + DECIDE_S * 1000; decide(); questsTick() }
 }
 
 const h = (x: number | undefined) => x === undefined ? '—' : x < 1 ? `${Math.round(x * 60)}м` : `${x.toFixed(1)}ч`
@@ -120,4 +142,6 @@ console.log(JSON.stringify({
   jobs: c.jobs.map((j) => h(firsts[`J${j.order}`] ?? (j.order === 1 ? 0 : undefined))).join(' '),
   maxGapMin: { first1hActive: +maxGap(0, 60).toFixed(1), h1to6Active: +maxGap(60, 360).toFixed(1), after6hActive: +maxGap(360, 1e9).toFixed(1), sinceLastEvent: +tail.toFixed(1) },
   events: gaps.length,
+  stars: s.stars,
+  items: s.items.owned.length,
 }))
