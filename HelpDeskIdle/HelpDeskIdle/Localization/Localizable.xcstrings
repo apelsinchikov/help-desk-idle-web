@@ -6301,13 +6301,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The game got quests, perks, a wardrobe and a new economy, so everyone starts over. As a thank-you there is a 30-minute rewind in your backpack — save it until you hire managers: rewind pays only jobs with managers."
+            "value": "We updated the game: quests, perks, a wardrobe and a new economy. Progress has been reset, and here is your compensation: a 30-minute rewind in the backpack. Save it until you hire managers — rewind pays only jobs with managers."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В игре появились задания, перки, гардероб и новая экономика, поэтому прогресс у всех начат заново. В благодарность в рюкзаке лежит перемотка на 30 минут — прибереги её, пока не наймёшь менеджеров: перемотка платит только за работы с менеджерами."
+            "value": "Мы обновили игру: задания, перки, гардероб и новая экономика. Прогресс обнулён — вот компенсация: перемотка на 30 минут в рюкзаке. Прибереги её до первых менеджеров: перемотка платит только за работы с менеджерами."
           }
         }
       }
@@ -6318,13 +6318,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New season!"
+            "value": "Thank you for staying with us!"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Новый сезон!"
+            "value": "Спасибо, что вы с нами!"
           }
         }
       }
