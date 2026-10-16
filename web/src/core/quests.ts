@@ -72,7 +72,15 @@ function candidates(engine: GameEngine): Omit<Quest, 'id'>[] {
   }
   if (best) list.push({ kind: 'level', jobId: best.jobId, target: best.cap, base: engine.level(best.jobId) })
 
-  const promotable = content.jobs.find((j) => engine.atCap(j.id) && inWindow(engine.promotionCost(j.id)))
+  // «Повысь» — когда до порога ≤ 10 уровней: цена = докупить уровни до порога + само повышение
+  const promotable = content.jobs.find((j) => {
+    const level = engine.level(j.id)
+    const cap = engine.cap(j.id)
+    if (level < 1 || !Number.isFinite(cap) || cap - level > 10) return false
+    const toCap = bulkCost(j.baseCost, j.growthRate, level, cap - level) * f
+    const promotion = content.config.promotionFactor * bulkCost(j.baseCost, j.growthRate, engine.rank(j.id), cap - engine.rank(j.id))
+    return fits(toCap + promotion)
+  })
   if (promotable) list.push({ kind: 'promote', jobId: promotable.id, target: engine.cap(promotable.id), base: engine.rank(promotable.id) })
 
   const hireable = content.jobs.some((j) => {

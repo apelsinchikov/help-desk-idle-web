@@ -129,3 +129,21 @@ test('a collect quest that became impossible is replaced, not stuck', () => {
   assert.ok(!e.state.quests.active.some((q) => q.kind === 'collect'))
   assert.equal(e.state.quests.active.length, 3)
 })
+
+test('promote quests come when 10 levels or fewer are left to the threshold', () => {
+  const kindsWith = (level: number) => {
+    const seen = new Set<string>()
+    for (let seed = 1; seed <= 30; seed++) {
+      const { e } = afterTutorial((s) => {
+        s.rngSeed = seed
+        s.jobs.reboot = { level, rank: 0, hasManager: true, startedAt: 0 }
+        s.jobs.plug_mouse = { level: 30, rank: 25, hasManager: true, startedAt: 0 }
+      })
+      fillQuests(e, 0)
+      for (const q of e.state.quests.active) if (q.kind === 'promote') seen.add(q.jobId!)
+    }
+    return seen
+  }
+  assert.ok(kindsWith(18).has('reboot'), '7 уровней до порога — можно «Повысь»')
+  assert.ok(!kindsWith(10).has('reboot'), '15 уровней до порога — рано')
+})
