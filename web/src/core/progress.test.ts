@@ -80,7 +80,7 @@ test('sections open by progress and only once', () => {
   assert.deepEqual(refreshSections(e), [])
   e.state.jobs.reboot.level = 51
   e.state.jobs.reboot.rank = 50
-  e.state.lifetimeEarnings = 25_000_000
+  e.state.lifetimeEarnings = 75_000_000
   assert.deepEqual(refreshSections(e).sort(), ['achievements', 'managers', 'upgrades'])
   assert.deepEqual(refreshSections(e), [])
   assert.deepEqual([...e.state.ui.sections].sort(), ['achievements', 'managers', 'settings', 'upgrades'])
@@ -95,7 +95,7 @@ test('a locked section says what opens it', () => {
   const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 30; s.jobs.reboot.rank = 25; s.lifetimeEarnings = 1000 })
   assert.equal(sectionLock(e, 'managers'), null, 'менеджер первых работ — с первого повышения')
   assert.equal(sectionLock(e, 'achievements'), null)
-  assert.deepEqual(sectionLock(e, 'upgrades'), { kind: 'earn', need: 25_000_000, have: 1000 })
+  assert.deepEqual(sectionLock(e, 'upgrades'), { kind: 'earn', need: 75_000_000, have: 1000 })
   const fresh = makeEngine(makeClock())
   assert.deepEqual(sectionLock(fresh, 'achievements'), { kind: 'rank', need: 25, best: 1 })
   assert.deepEqual(sectionLock(fresh, 'managers'), { kind: 'rank', need: 25, best: 1 })
@@ -104,7 +104,7 @@ test('a locked section says what opens it', () => {
 test('menu alert counts managers and upgrades the player can buy now', () => {
   const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 51; s.jobs.reboot.rank = 50; s.money = 10 })
   assert.deepEqual(buyableCounts(e), { managers: 0, upgrades: 0, perks: 0, items: 0 })
-  e.state.money = 30_000_000
+  e.state.money = 80_000_000
   assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 1, perks: 0, items: 0 })
   e.state.upgrades.push('reboot_x3')
   assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 0, perks: 0, items: 0 })

@@ -90,7 +90,7 @@ test('managers of jobs 1-4 need the first promotion, later jobs the second', () 
   const c = makeClock()
   const none = makeEngine(c, (s) => { s.jobs.reboot.level = 25; s.jobs.reboot.rank = 0; s.money = 1e6 })
   assert.equal(none.hireManager('reboot'), false)
-  const early = makeEngine(c, (s) => { s.jobs.escalate = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e6 })
+  const early = makeEngine(c, (s) => { s.jobs.escalate = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e7 })
   assert.equal(early.hireManager('escalate'), true)
   const late = makeEngine(c, (s) => { s.jobs.works_on_my_machine = { level: 50, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e7 })
   assert.equal(late.hireManager('works_on_my_machine'), false)
@@ -100,7 +100,7 @@ test('managers of jobs 1-4 need the first promotion, later jobs the second', () 
 
 test('manager auto-collects', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 100; s.money = 1000 })
+  const e = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 100; s.money = 3000 })
   assert.equal(e.hireManager('reboot'), true)
   assert.equal(e.state.money, 0)
   c.t += 6000
@@ -176,7 +176,7 @@ test('starting over keeps the finished tutorial and seen hints', () => {
 
 test('hiring a manager pays the waiting salary once, not every missed cycle', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1000 })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 3000 })
   c.t = 3_600_000 // час стояла в «Готово»
   const payout = e.payout('reboot')
   assert.equal(e.hireManager('reboot'), true)
@@ -186,7 +186,7 @@ test('hiring a manager pays the waiting salary once, not every missed cycle', ()
 
 test('hiring a manager at the cap pays once and the job then waits for the promotion', () => {
   const c = makeClock()
-  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 50, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1000 })
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 50, rank: 25, hasManager: false, startedAt: 0 }; s.money = 3000 })
   c.t = 60_000
   const payout = e.payout('reboot')
   e.hireManager('reboot')
