@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import { iconUrl } from '../app/icons.ts'
 import { t } from '../app/strings.ts'
 import { RARITIES, SLOTS } from '../core/content.ts'
@@ -14,23 +14,21 @@ const STATS: StatKey[] = ['speed', 'salary', 'levelDiscount', 'gradeDiscount']
 const SLOT_EMOJI: Record<Slot, string> = { head: '🧢', glasses: '👓', top: '🧥', pants: '👖', shoes: '👟', watch: '⌚', accessory: '🪪' }
 
 /** Гардероб: сверху закреплены слоты и суммарные статы, ниже — шкаф с фильтрами. */
+/** Вещи, которые были новыми в момент открытия экрана: метка «новое» видна весь визит, а сами вещи сразу считаются просмотренными. */
+export function useFreshItems(): Set<string> {
+  const game = useGame()
+  const [fresh] = useState(() => new Set(game.engine.state.items.owned.filter((id) => !game.engine.state.items.seen.includes(id))))
+  useEffect(() => { if (fresh.size > 0) game.markItemsSeen() }, [])
+  return fresh
+}
+
+/** Гардероб: сверху закреплены слоты и суммарные статы, ниже — шкаф с фильтрами. */
 export function Wardrobe() {
   const game = useGame()
   const { engine } = game
-  const { owned, equipped } = engine.state.items
-  const [slot, setSlot] = useState<Slot | null>(null)
-  const [rarity, setRarity] = useState<Rarity | null>(null)
-  const [open, setOpen] = useState<string | null>(null)
+  const { equipped } = engine.state.items
+  const fresh = useFreshItems()
   const totals = itemTotals(engine.content, engine.state)
-  const items = owned
-    .map((id) => engine.content.item(id)!)
-    .filter((i) => i && (!slot || i.slot === slot) && (!rarity || i.rarity === rarity))
-    .sort((a, b) => RARITIES.indexOf(b.rarity) - RARITIES.indexOf(a.rarity))
-
-  const toggle = (id: string) => {
-    setOpen(open === id ? null : id)
-    game.markSeen(id)
-  }
 
   return (
     <div class="sheet">
@@ -62,27 +60,45 @@ export function Wardrobe() {
       </div>
       <div class="sheet__body">
         <div class="group__title">{t('wardrobe.closet')}</div>
-        <div class="chips">
-          <button class={`chip ${slot === null ? 'chip--on' : ''}`} onClick={() => setSlot(null)}>{t('wardrobe.all')}</button>
-          {SLOTS.map((s) => (
-            <button key={s} class={`chip ${slot === s ? 'chip--on' : ''}`} onClick={() => setSlot(slot === s ? null : s)}>{SLOT_EMOJI[s]}</button>
-          ))}
-        </div>
-        <div class="chips">
-          <button class={`chip ${rarity === null ? 'chip--on' : ''}`} onClick={() => setRarity(null)}>{t('wardrobe.all')}</button>
-          {RARITIES.map((r) => (
-            <button key={r} class={`chip rarity-text--${r} ${rarity === r ? 'chip--on' : ''}`} onClick={() => setRarity(rarity === r ? null : r)}>
-              {t(`rarity.${r}`)}
-            </button>
-          ))}
-        </div>
-        {items.length === 0 && <p class="backpack__empty">{t('wardrobe.empty')}</p>}
-        {items.map((item) => (
-          <ItemCard key={item.id} item={item} open={open === item.id} onToggle={() => toggle(item.id)} />
-        ))}
+        <Closet fresh={fresh} />
       </div>
       <SectionHint section="wardrobe" />
     </div>
+  )
+}
+
+/** Шкаф: фильтры по слоту и редкости, карточки вещей со сравнением и «Надеть»/«Снять». */
+export function Closet({ fresh }: { fresh: Set<string> }) {
+  const game = useGame()
+  const { engine } = game
+  const [slot, setSlot] = useState<Slot | null>(null)
+  const [rarity, setRarity] = useState<Rarity | null>(null)
+  const [open, setOpen] = useState<string | null>(null)
+  const items = engine.state.items.owned
+    .map((id) => engine.content.item(id)!)
+    .filter((i) => i && (!slot || i.slot === slot) && (!rarity || i.rarity === rarity))
+    .sort((a, b) => Number(fresh.has(b.id)) - Number(fresh.has(a.id)) || RARITIES.indexOf(b.rarity) - RARITIES.indexOf(a.rarity))
+  return (
+    <>
+      <div class="chips">
+        <button class={`chip ${slot === null ? 'chip--on' : ''}`} onClick={() => setSlot(null)}>{t('wardrobe.all')}</button>
+        {SLOTS.map((s) => (
+          <button key={s} class={`chip ${slot === s ? 'chip--on' : ''}`} onClick={() => setSlot(slot === s ? null : s)}>{SLOT_EMOJI[s]}</button>
+        ))}
+      </div>
+      <div class="chips">
+        <button class={`chip ${rarity === null ? 'chip--on' : ''}`} onClick={() => setRarity(null)}>{t('wardrobe.all')}</button>
+        {RARITIES.map((r) => (
+          <button key={r} class={`chip rarity-text--${r} ${rarity === r ? 'chip--on' : ''}`} onClick={() => setRarity(rarity === r ? null : r)}>
+            {t(`rarity.${r}`)}
+          </button>
+        ))}
+      </div>
+      {items.length === 0 && <p class="backpack__empty">{t('wardrobe.empty')}</p>}
+      {items.map((item) => (
+        <ItemCard key={item.id} item={item} fresh={fresh.has(item.id)} open={open === item.id} onToggle={() => setOpen(open === item.id ? null : item.id)} />
+      ))}
+    </>
   )
 }
 
@@ -91,11 +107,10 @@ function ItemIcon({ slot }: { slot: Slot }) {
   return src ? <Icon src={src} class="slot__icon" /> : <span class="slot__emoji" aria-hidden="true">{SLOT_EMOJI[slot]}</span>
 }
 
-function ItemCard({ item, open, onToggle }: { item: ItemDefinition; open: boolean; onToggle: () => void }) {
+function ItemCard({ item, fresh, open, onToggle }: { item: ItemDefinition; fresh: boolean; open: boolean; onToggle: () => void }) {
   const game = useGame()
   const { engine } = game
   const worn = engine.state.items.equipped[item.slot] === item.id
-  const fresh = !engine.state.items.seen.includes(item.id)
   const cmp = open && !worn ? compareEquip(engine.content, engine.state, item.id) : null
   return (
     <div class={`item rarity--${item.rarity}`}>

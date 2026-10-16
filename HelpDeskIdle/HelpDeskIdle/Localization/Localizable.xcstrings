@@ -226,23 +226,6 @@
         }
       }
     },
-    "backpack.duration": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "for %1$lld min"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "на %1$lld мин"
-          }
-        }
-      }
-    },
     "backpack.empty": {
       "extractionState": "manual",
       "localizations": {
@@ -345,19 +328,36 @@
         }
       }
     },
-    "backpack.rewindGain": {
+    "backpack.tab.items": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "gives %1$@ now"
+            "value": "Items"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "даст %1$@ сейчас"
+            "value": "Вещи"
+          }
+        }
+      }
+    },
+    "backpack.tab.perks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perks (%1$lld)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перки (%1$lld)"
           }
         }
       }
@@ -929,13 +929,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Perks live here. Switch one on when it helps most: speed while you play, rewind any time. Rewind pays only jobs with managers."
+            "value": "Perks and items live here. Switch a perk on when it helps most: speed while you play, rewind any time. Items work only when worn — put them on here or in the wardrobe."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тут лежат перки. Включай, когда выгоднее всего: скорость — пока играешь, перемотку — когда угодно. Перемотка платит только за работы с менеджерами."
+            "value": "Тут лежат перки и вещи. Перк включай, когда выгоднее: скорость — пока играешь, перемотку — когда угодно. Вещи работают, только когда надеты — надень здесь или в гардеробе."
           }
         }
       }
@@ -2810,6 +2810,23 @@
         }
       }
     },
+    "perk.minutes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld мин"
+          }
+        }
+      }
+    },
     "perk.rewind": {
       "extractionState": "manual",
       "localizations": {
@@ -3197,6 +3214,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Редкая"
+          }
+        }
+      }
+    },
+    "rewind.noManagers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewind pays only jobs with managers. Jobs without one are now ready — collect by hand."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перемотка платит только за работы с менеджерами. Остальные готовы — собери вручную."
+          }
+        }
+      }
+    },
+    "rewind.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time rewound by %1$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время перемотано на %1$lld мин"
           }
         }
       }
@@ -5373,23 +5424,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "В рюкзак: скорость +%1$lld%% на %2$lld мин"
-          }
-        }
-      }
-    },
-    "toast.rewind": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rewound %1$lld min: +%2$@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Перемотка %1$lld мин: +%2$@"
           }
         }
       }

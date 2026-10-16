@@ -32,7 +32,7 @@ test('0 → 20 stars gives perk, item, perk, item in order; claiming again gives
   const e = engineWith(20)
   assert.deepEqual(claimTrack(e).map((r) => r.kind), ['perk', 'item', 'perk', 'item'])
   assert.deepEqual(e.state.items.owned, ['helpdesk_cap', 'sprint_pants'])
-  assert.equal(e.state.items.equipped.head, 'helpdesk_cap', 'первая вещь надета сама')
+  assert.deepEqual(e.state.items.equipped, {}, 'вещи сами не надеваются')
   assert.deepEqual(claimTrack(e), [])
 })
 

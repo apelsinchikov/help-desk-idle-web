@@ -34,3 +34,8 @@ export function compareEquip(content: GameContent, state: GameState, itemId: str
 }
 
 const round = (v: number) => Math.round(v * 1e6) / 1e6
+
+/** Игрок увидел вещи (открыл вкладку «Вещи» рюкзака или гардероб): метки «новое» и точка на «Меню» гаснут. */
+export function markItemsSeen(state: GameState): void {
+  for (const id of state.items.owned) if (!state.items.seen.includes(id)) state.items.seen.push(id)
+}

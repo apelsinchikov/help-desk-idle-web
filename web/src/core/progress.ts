@@ -32,7 +32,7 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
       return best >= need ? null : { kind: 'rank', need, best }
     }
     case 'backpack': {
-      const has = inventoryCount(state) > 0 || state.perks.active.length > 0
+      const has = inventoryCount(state) > 0 || state.perks.active.length > 0 || state.items.owned.length > 0
       return has ? null : { kind: 'stars', need: content.config.track.perkEvery, have: state.stars }
     }
     case 'quests':

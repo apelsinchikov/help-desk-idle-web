@@ -43,7 +43,9 @@ test('a simple bot earns stars from quests, gets a perk at 5 and an item at 10',
   }
   assert.ok(engine.state.stars >= 10, `звёзд: ${engine.state.stars}`)
   assert.ok(gotPerkAt5, 'на 5 ⭐ в рюкзаке перк')
-  assert.equal(engine.state.items.equipped.head, 'helpdesk_cap', 'на 10 ⭐ кепка надета')
+  assert.ok(engine.state.items.owned.includes('helpdesk_cap'), 'на 10 ⭐ кепка в рюкзаке')
+  game.equip('helpdesk_cap')
+  assert.equal(engine.state.items.equipped.head, 'helpdesk_cap')
   assert.ok(game.messages.value.some((m) => m.kind === 'toast' && m.text.key === 'toast.item'))
 
   const perkId = Object.keys(engine.state.perks.inventory).find((id) => c.perk(id)!.kind !== 'rewind')

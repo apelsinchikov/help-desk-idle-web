@@ -404,12 +404,10 @@ export class GameEngine {
     return earned
   }
 
-  /** Новая вещь: в шкаф; слот пуст — надевается сама. */
+  /** Новая вещь — в рюкзак с меткой «новое». Сама не надевается: надевает игрок. */
   grantItem(itemId: string): void {
-    const item = this.content.item(itemId)
-    if (!item || this.current.items.owned.includes(itemId)) return
+    if (!this.content.item(itemId) || this.current.items.owned.includes(itemId)) return
     this.current.items.owned.push(itemId)
-    if (!this.current.items.equipped[item.slot]) this.equip(itemId)
   }
 
   /** Надеть свою вещь (вместо той, что в слоте). Скорость меняется на ходу — доля цикла сохраняется. */

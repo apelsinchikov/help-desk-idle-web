@@ -11,7 +11,7 @@ import type { Message } from '../core/messages.ts'
 import type { Milestone } from '../core/content.ts'
 import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
 import { grantPerk } from '../core/perks.ts'
-import { nextItem } from '../core/items.ts'
+import { markItemsSeen, nextItem } from '../core/items.ts'
 import { completeQuests, fillQuests, rerollQuest } from '../core/quests.ts'
 import { claimTrack } from '../core/track.ts'
 import type { Reward } from '../core/track.ts'
@@ -47,6 +47,8 @@ export function createGame(o: {
   const version = signal(0)
   const buyMode = signal<BuyMode>('one')
   const offlineReport = signal<OfflineReport | null>(null)
+  /** Итог перемотки для окна «Время перемотано». */
+  const rewindReport = signal<{ minutes: number; earned: number } | null>(null)
   const route = signal<Route>('jobs')
   const language = o.language
   language.value = engine.state.settings.language
@@ -90,6 +92,7 @@ export function createGame(o: {
     version,
     buyMode,
     offlineReport,
+    rewindReport,
     route,
     language,
     cloudStatus: o.cloudStatus,
@@ -121,13 +124,16 @@ export function createGame(o: {
       messages.value = firstTicket < 0 ? [...queue, toast] : [...queue.slice(0, firstTicket), toast, ...queue.slice(firstTicket)]
     },
 
-    /** Включить перк из рюкзака; перемотка — тост с заработанным. */
+    /** Включить перк из рюкзака; перемотка — окно с заработанным. Повторный тап по кончившемуся перку ничего не делает. */
     activatePerk(perkId: string): void {
       const perk = engine.content.perk(perkId)
       if (!perk) return
       const before = engine.state.money
-      game.act('purchase', () => { if (engine.activatePerk(perkId)) game.haptic('success') })
-      if (perk.kind === 'rewind') game.pushToast({ key: 'toast.rewind', args: [perk.minutes, { money: engine.state.money - before }] })
+      let ok = false
+      game.act('purchase', () => { ok = engine.activatePerk(perkId) })
+      if (!ok) return
+      game.haptic('success')
+      if (perk.kind === 'rewind') rewindReport.value = { minutes: perk.minutes, earned: engine.state.money - before }
     },
 
     /** Только /dev/: по перку каждого типа (и следующая вещь — когда появится гардероб). */
@@ -153,10 +159,9 @@ export function createGame(o: {
       game.act('purchase', () => engine.unequip(slot))
     },
 
-    /** Вещь просмотрена в шкафу — метка «новое» и точка на «Меню» гаснут. */
-    markSeen(itemId: string): void {
-      if (engine.state.items.seen.includes(itemId)) return
-      game.act('purchase', () => engine.state.items.seen.push(itemId))
+    /** Игрок увидел вещи (вкладка «Вещи» рюкзака или гардероб) — метки «новое» и точка на «Меню» гаснут. */
+    markItemsSeen(): void {
+      game.act('purchase', () => markItemsSeen(engine.state))
     },
 
     buyUpgrade(upgradeId: string): void {

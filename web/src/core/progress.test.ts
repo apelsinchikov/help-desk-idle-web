@@ -109,6 +109,12 @@ test('menu alert counts managers and upgrades the player can buy now', () => {
   assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 0, perks: 0, items: 0 })
 })
 
+test('backpack also opens with the first item', () => {
+  const e = makeEngine(makeClock())
+  e.grantItem('helpdesk_cap')
+  assert.equal(sectionLock(e, 'backpack'), null)
+})
+
 test('backpack opens with the first perk; until then it says 5 stars', () => {
   const e = makeEngine(makeClock())
   assert.deepEqual(sectionLock(e, 'backpack'), { kind: 'stars', need: 5, have: 0 })
