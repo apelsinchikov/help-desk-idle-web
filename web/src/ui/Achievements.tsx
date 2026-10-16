@@ -61,7 +61,7 @@ function Goals() {
   )
 }
 
-/** Галерея: все пороги; полученные отмечены, ближайший виден, дальше — замок. */
+/** Галерея: все пороги с наградами; полученные — яркие, ещё не полученные — бледные. */
 function Gallery() {
   const { engine } = useGame()
   const groups: { title: string; icon: string; list: Milestone[]; rank: number }[] = engine.content.jobs.map((job) => ({
@@ -75,20 +75,15 @@ function Gallery() {
   return (
     <>
       {groups.map((g) => {
-        const nextIndex = g.list.findIndex((m) => m.level > g.rank)
         return (
           <div class="gallery" key={g.title}>
             <div class="gallery__title">{g.icon && <Icon src={g.icon} class="gallery__icon" />}{g.title}</div>
             <div class="gallery__grid">
-              {g.list.map((m, i) => {
-                const got = m.level <= g.rank
-                const visible = got || i === nextIndex
-                return (
-                  <div key={`${m.level}-${m.effect}`} class={`gallery__item ${got ? 'gallery__item--got' : ''}`}>
-                    {visible ? <><b>{m.level}</b><small>{reward(m)}</small></> : <span aria-hidden="true">🔒</span>}
-                  </div>
-                )
-              })}
+              {g.list.map((m) => (
+                <div key={`${m.level}-${m.effect}`} class={`gallery__item ${m.level <= g.rank ? 'gallery__item--got' : 'gallery__item--todo'}`}>
+                  <b>{m.level}</b><small>{reward(m)}</small>
+                </div>
+              ))}
             </div>
           </div>
         )

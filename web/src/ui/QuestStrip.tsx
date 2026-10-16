@@ -25,38 +25,38 @@ function progressText(engine: GameEngine, q: Quest): string {
   return ''
 }
 
-/** Полоса заданий под шапкой: три строки с прогрессом; тап — раскрыть с кнопкой «Заменить». */
+/** Задания под шапкой: три квадрата в строку с прогрессом; тап — под строкой полный текст и «Заменить». */
 export function QuestStrip() {
   const game = useGame()
   const { engine } = game
   const [open, setOpen] = useState<number | null>(null)
   const quests = engine.state.quests.active
   if (quests.length === 0) return null
+  const selected = quests.find((q) => q.id === open)
   const rerollIn = (engine.state.quests.rerollAt - game.now()) / 1000
   return (
     <div class="quests">
-      {quests.map((q) => {
-        const p = questProgress(engine, q)
-        const share = Math.max(0, Math.min(1, p.value / p.target))
-        const expanded = open === q.id
-        return (
-          <div key={q.id} class={`quest ${expanded ? 'quest--open' : ''}`}>
-            <button class="quest__row" onClick={() => setOpen(expanded ? null : q.id)}>
+      <div class="quests__row">
+        {quests.map((q) => {
+          const p = questProgress(engine, q)
+          const share = Math.max(0, Math.min(1, p.value / p.target))
+          return (
+            <button key={q.id} class={`quest ${open === q.id ? 'quest--open' : ''}`} onClick={() => setOpen(open === q.id ? null : q.id)}>
               <span class="quest__text">{questText(engine, q)}</span>
               <span class="quest__progress">{progressText(engine, q)}</span>
               <span class="quest__bar" style={{ width: `${share * 100}%` }} />
             </button>
-            {expanded && (
-              <div class="quest__details">
-                <span>{t('quest.reward')}</span>
-                {rerollIn > 0
-                  ? <span class="quest__wait">{t('quest.rerollIn', timer(rerollIn))}</span>
-                  : <button class="quest__reroll" onClick={() => { game.rerollQuest(q.id); setOpen(null) }}>{t('quest.reroll')}</button>}
-              </div>
-            )}
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
+      {selected && (
+        <div class="quest__details">
+          <span><span class="quest__full">{questText(engine, selected)}</span> · {t('quest.reward')}</span>
+          {rerollIn > 0
+            ? <span class="quest__wait">{t('quest.rerollIn', timer(rerollIn))}</span>
+            : <button class="quest__reroll" onClick={() => { game.rerollQuest(selected.id); setOpen(null) }}>{t('quest.reroll')}</button>}
+        </div>
+      )}
     </div>
   )
 }
