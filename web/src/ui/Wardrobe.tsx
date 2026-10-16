@@ -4,6 +4,7 @@ import { t } from '../app/strings.ts'
 import { RARITIES, SLOTS } from '../core/content.ts'
 import type { ItemDefinition, Rarity, Slot, StatKey } from '../core/content.ts'
 import { compareEquip } from '../core/items.ts'
+import type { CompareRow } from '../core/items.ts'
 import { itemTotals } from '../core/modifiers.ts'
 import { useGame } from './context.ts'
 import { Icon } from './Icon.tsx'
@@ -102,6 +103,27 @@ export function Closet({ fresh }: { fresh: Set<string> }) {
   )
 }
 
+/** «Скорость: +50% → +100%», «Новый стат: зарплата +10%», «Стат пропадёт: скорость +100%». */
+function CompareLine({ row }: { row: CompareRow }) {
+  const name = t(`statName.${row.stat}`)
+  const text = row.before === 0
+    ? t('wardrobe.newStat', name, statValue(row.stat, row.after))
+    : row.after === 0
+      ? t('wardrobe.lostStat', name, statValue(row.stat, row.before))
+      : `${name}: ${statValue(row.stat, row.before)} → ${statValue(row.stat, row.after)}`
+  return <div class={`cmp cmp--${row.verdict}`}>{text}</div>
+}
+
+/** «Снимется «Кепка эникейщика»: скорость +50% → +0%». */
+function RemovesLine({ itemId, rows }: { itemId: string; rows: CompareRow[] }) {
+  const { engine } = useGame()
+  const item = engine.content.item(itemId)
+  if (!item) return null
+  const row = rows.find((r) => r.stat === item.stat)
+  const change = row ? `${t(`statName.${row.stat}`)} ${statValue(row.stat, row.before)} → ${statValue(row.stat, row.after)}` : ''
+  return <div class="cmp cmp--worse">{t('wardrobe.removes', t(`item.${itemId}.name`), change)}</div>
+}
+
 function ItemIcon({ slot }: { slot: Slot }) {
   const src = iconUrl(`slot_${slot}`)
   return src ? <Icon src={src} class="slot__icon" /> : <span class="slot__emoji" aria-hidden="true">{SLOT_EMOJI[slot]}</span>
@@ -127,12 +149,8 @@ function ItemCard({ item, fresh, open, onToggle }: { item: ItemDefinition; fresh
       </button>
       {open && (
         <div class="item__details">
-          {cmp && cmp.rows.map((row) => (
-            <div key={row.stat} class={`cmp cmp--${row.verdict}`}>
-              {t(`statName.${row.stat}`)}: {statValue(row.stat, row.before)} → {statValue(row.stat, row.after)}
-            </div>
-          ))}
-          {cmp?.removes && <div class="cmp cmp--worse">{t('wardrobe.removes', t(`item.${cmp.removes}.name`))}</div>}
+          {cmp && cmp.rows.map((row) => <CompareLine key={row.stat} row={row} />)}
+          {cmp?.removes && <RemovesLine itemId={cmp.removes} rows={cmp.rows} />}
           {worn
             ? <button class="item__action item__action--off" onClick={() => game.unequip(item.slot)}>{t('wardrobe.unequip')}</button>
             : <button class="item__action" onClick={() => game.equip(item.id)}>{t('wardrobe.equip')}</button>}

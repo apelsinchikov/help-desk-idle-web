@@ -6108,6 +6108,40 @@
         }
       }
     },
+    "wardrobe.lostStat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stat goes away: %1$@ %2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стат пропадёт: %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "wardrobe.newStat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New stat: %1$@ %2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новый стат: %1$@ %2$@"
+          }
+        }
+      }
+    },
     "wardrobe.noStats": {
       "extractionState": "manual",
       "localizations": {
@@ -6131,13 +6165,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comes off: %1$@"
+            "value": "Comes off “%1$@”: %2$@"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Снимется: %1$@"
+            "value": "Снимется «%1$@»: %2$@"
           }
         }
       }
