@@ -1,6 +1,6 @@
 // Вся игровая логика этапа 1. Порт GameEngine.swift.
 // Прогресс работ вычисляется из `startedAt`, поэтому одинаково работает онлайн (тик) и оффлайн (`resume`).
-import type { GameContent, Milestone } from './content.ts'
+import type { GameContent, Milestone, Slot } from './content.ts'
 import { bulkCost, cycle, maxAffordable, nextCost, payout } from './economy.ts'
 import { nextMilestone, profitMultiplier, speedMultiplier } from './milestones.ts'
 import { newGame } from './state.ts'
@@ -402,6 +402,31 @@ export class GameEngine {
     }
     this.credit(earned)
     return earned
+  }
+
+  /** Новая вещь: в шкаф; слот пуст — надевается сама. */
+  grantItem(itemId: string): void {
+    const item = this.content.item(itemId)
+    if (!item || this.current.items.owned.includes(itemId)) return
+    this.current.items.owned.push(itemId)
+    if (!this.current.items.equipped[item.slot]) this.equip(itemId)
+  }
+
+  /** Надеть свою вещь (вместо той, что в слоте). Скорость меняется на ходу — доля цикла сохраняется. */
+  equip(itemId: string): boolean {
+    const item = this.content.item(itemId)
+    if (!item || !this.current.items.owned.includes(itemId)) return false
+    const now = this.now()
+    this.advance(now)
+    this.changeModifiers(now, () => { this.current.items.equipped[item.slot] = itemId })
+    return true
+  }
+
+  unequip(slot: Slot): void {
+    if (!this.current.items.equipped[slot]) return
+    const now = this.now()
+    this.advance(now)
+    this.changeModifiers(now, () => { delete this.current.items.equipped[slot] })
   }
 
   /** Сколько даст перемотка, без изменений состояния. */
