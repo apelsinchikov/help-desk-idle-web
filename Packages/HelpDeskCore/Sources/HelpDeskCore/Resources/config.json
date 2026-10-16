@@ -17,7 +17,8 @@
     "tickets": 50
   },
   "track": {
-    "perkEvery": 5,
+    "perkFirst": 5,
+    "perkEvery": 10,
     "itemStars": {
       "common": 10,
       "rare": 20,

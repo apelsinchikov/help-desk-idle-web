@@ -4,7 +4,7 @@ import type { Signal } from '@preact/signals'
 import type { GameEngine } from '../core/engine.ts'
 import type { AppLanguage } from '../core/format.ts'
 import type { BuyMode, OfflineReport } from '../core/state.ts'
-import { achievementText } from '../core/achievements.ts'
+import { achievementText, groupMilestones } from '../core/achievements.ts'
 import type { AchievementText } from '../core/achievements.ts'
 import { nextTicket, ticketDue } from '../core/messages.ts'
 import type { Message } from '../core/messages.ts'
@@ -131,7 +131,7 @@ export function createGame(o: {
       if (gained.length === 0) return
       game.haptic('success')
       const index = engine.content.jobs.findIndex((j) => j.id === jobId)
-      for (const m of gained) game.pushToast(achievementText(m, m.jobId === null ? -1 : index))
+      for (const group of groupMilestones(gained)) game.pushToast(achievementText(group, group[0].jobId === null ? -1 : index))
     },
 
     /** Тост встаёт в очередь раньше заявок. */

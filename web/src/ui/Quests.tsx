@@ -1,5 +1,5 @@
 import { t } from '../app/strings.ts'
-import { itemStarSchedule, perkTier } from '../core/track.ts'
+import { itemStarSchedule, isPerkStar, perkTier, rewardStars } from '../core/track.ts'
 import { useGame } from './context.ts'
 import { SectionHint } from './SectionHint.tsx'
 
@@ -8,22 +8,20 @@ export function Quests() {
   const game = useGame()
   const { engine } = game
   const { content, state } = engine
-  const { perkEvery, rewindEvery } = content.config.track
+  const { rewindEvery } = content.config.track
   const itemStars = new Set(itemStarSchedule(content))
   const upcomingItems = content.items.filter((i) => !state.items.owned.includes(i.id))
-  const firstNext = (Math.floor(state.track.claimed / perkEvery) + 1) * perkEvery
-  const past = [] as number[]
-  for (let s = firstNext - perkEvery; s > 0 && past.length < 3; s -= perkEvery) past.unshift(s)
-  const next = [firstNext, firstNext + perkEvery, firstNext + 2 * perkEvery]
+  const past = rewardStars(content, state.track.claimed, 3, -1)
+  const next = rewardStars(content, state.track.claimed + 1, 3)
 
-  // ближайшие награды: вещи идут по порядку, поэтому считаем, какая по счёту достанется на каждой десятке
+  // ближайшие награды: вещи идут по порядку, поэтому считаем, какая по счёту достанется на каждой вещевой отметке
   let itemIndex = 0
   const rows = next.map((s) => {
     const parts: string[] = []
     if (itemStars.has(s)) {
       const item = upcomingItems[itemIndex++]
       parts.push(item ? t('track.item', t(`item.${item.id}.name`)) : t('track.perk'))
-    } else {
+    } else if (s % rewindEvery !== 0 || isPerkStar(content, s)) {
       parts.push(t('track.perk'))
     }
     if (s % rewindEvery === 0) parts.push(t('track.rewind', Math.max(...perkTier(content, s).rewind)))

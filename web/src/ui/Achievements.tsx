@@ -1,12 +1,13 @@
 import { useState } from 'preact/hooks'
 import { iconUrl } from '../app/icons.ts'
 import { t } from '../app/strings.ts'
+import { rewardsOf } from '../core/achievements.ts'
 import type { Milestone } from '../core/content.ts'
 import { useGame } from './context.ts'
 import { Icon } from './Icon.tsx'
+import { rewardText } from './labels.ts'
 import { SectionHint } from './SectionHint.tsx'
 
-const reward = (m: Milestone) => `${t(`effect.${m.effect}`)} ×${m.value}`
 
 export function Achievements() {
   const game = useGame()
@@ -47,7 +48,7 @@ function Goals() {
               <div class="manager__name">{t(`job.${job.id}.title`)}</div>
               {next ? (
                 <>
-                  <div class="manager__runs">{t('ach.goal.next', next.level, t(`effect.${next.effect}`), next.value)}</div>
+                  <div class="manager__runs">{t('ach.goal.next', next.level, rewardText(rewardsOf(engine.content.milestones.filter((m) => m.jobId === job.id && m.level === next.level))))}</div>
                   <div class="goal__track"><div class="goal__fill" style={{ width: `${Math.min(1, level / next.level) * 100}%` }} /></div>
                 </>
               ) : (
@@ -81,7 +82,7 @@ function Gallery() {
             <div class="gallery__grid">
               {g.list.map((m) => (
                 <div key={`${m.level}-${m.effect}`} class={`gallery__item ${m.level <= g.rank ? 'gallery__item--got' : 'gallery__item--todo'}`}>
-                  <b>{m.level}</b><small>{reward(m)}</small>
+                  <b>{m.level}</b><small>{rewardText(rewardsOf([m]))}</small>
                 </div>
               ))}
             </div>

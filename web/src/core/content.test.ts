@@ -37,20 +37,27 @@ test('stage 2a balance config and cash upgrades', () => {
   assert.equal(coffee.jobId, null)
   assert.equal(coffee.cost, 1_000_000_000_000)
   assert.equal(coffee.value, 3)
-  assert.deepEqual(c.milestoneLevels('reboot').slice(0, 6), [25, 50, 75, 100, 125, 150])
+  assert.deepEqual(c.milestoneLevels('reboot').slice(0, 6), [25, 50, 75, 100, 150, 200])
   const speed = c.milestones.filter((m) => m.jobId === 'reboot' && m.effect === 'speed').map((m) => m.level)
   assert.deepEqual(speed.slice(0, 6), [25, 50, 100, 200, 300, 400])
 })
 
-test('milestones every 25 levels; intermediate ones give profit x1.5', () => {
+test('thresholds: every 25 up to 100, every 50 up to 300, every 100 up to 1000, then every 250; dropped rewards folded up', () => {
   const c = bundledContent
+  const step = (l: number) => (l <= 100 ? 25 : l <= 300 ? 50 : l <= 1000 ? 100 : 250)
   for (const job of c.jobs) {
     const levels = c.milestoneLevels(job.id)
-    const last = Math.max(...levels.filter((l) => l <= 1000))
-    for (let l = 25; l <= last; l += 25) assert.ok(levels.includes(l), `${job.id}: нет порога ${l}`)
+    let expected = 25
+    for (const l of levels) {
+      assert.equal(l, expected, `${job.id}: порог ${l}, ожидали ${expected}`)
+      expected += step(expected + 1)
+    }
   }
-  const m75 = c.milestones.filter((m) => m.jobId === 'plug_mouse' && m.level === 75)
-  assert.deepEqual(m75.map((m) => [m.effect, m.value]), [['profit', 1.5]])
+  const at = (jobId: string, level: number) =>
+    c.milestones.filter((m) => m.jobId === jobId && m.level === level).map((m) => [m.effect, m.value])
+  assert.deepEqual(at('plug_mouse', 75), [['profit', 1.5]])
+  assert.deepEqual(at('reboot', 150), [['profit', 2.25]], '125 (×1,5) + 150 (×1,5)')
+  assert.deepEqual(at('reboot', 200), [['speed', 2], ['profit', 1.5]], '175 (×1,5) переехал на 200')
 })
 
 test('manager rank: jobs 1-4 after the first promotion, the rest after the second', () => {

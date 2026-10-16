@@ -1,6 +1,8 @@
 // Подписи перков и статов (общие для плашки эффектов, рюкзака и гардероба).
 import { t, uiLanguage } from '../app/strings.ts'
+import type { MilestoneReward } from '../core/achievements.ts'
 import type { PerkDefinition, StatKey } from '../core/content.ts'
+import { formatMultiplier } from '../core/format.ts'
 
 const pct = (v: number) => Math.round(v * 100)
 
@@ -28,3 +30,8 @@ export function statLabel(stat: StatKey, value: number): string {
 }
 
 export const perkIcon: Record<PerkDefinition['kind'], string> = { speed: '⚡', salary: '💰', levelDiscount: '🏷️', rewind: '⏩' }
+
+/** Награды порога: «скорость ×2, прибыль ×1,5». */
+export function rewardText(rewards: readonly MilestoneReward[]): string {
+  return rewards.map((r) => `${t(r.effect)} ×${formatMultiplier(r.value, uiLanguage.value)}`).join(', ')
+}

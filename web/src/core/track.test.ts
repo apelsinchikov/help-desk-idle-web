@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { bundledContent as c } from './bundled.ts'
 import { makeClock, makeEngine } from './testkit.ts'
-import { claimTrack, itemStarSchedule, perkTier } from './track.ts'
+import { claimTrack, itemStarSchedule, perkTier, rewardStars } from './track.ts'
 import { decodeState, encodeState } from './serialize.ts'
 import { GameEngine } from './engine.ts'
 
@@ -72,11 +72,20 @@ test('item stars grow with rarity: common every 10, rare 20, epic 40, legendary 
   assert.equal(schedule[27], 1050)
 })
 
-test('a ten that is not an item star gives a perk', () => {
+test('perks every 10 tickets on the fives; a ten without an item gives nothing', () => {
   const e = engineWith(80, 75)
   for (const item of c.items.slice(0, 7)) e.state.items.owned.push(item.id)
-  assert.deepEqual(claimTrack(e).map((r) => r.kind), ['perk'])
-  const e2 = engineWith(90, 85)
-  for (const item of c.items.slice(0, 7)) e2.state.items.owned.push(item.id)
-  assert.deepEqual(claimTrack(e2), [{ kind: 'item', itemId: 'notabug_glasses' }])
+  assert.deepEqual(claimTrack(e), [], '80 — не вещь и не перк')
+  const e2 = engineWith(85, 80)
+  assert.deepEqual(claimTrack(e2).map((r) => r.kind), ['perk'])
+  const e3 = engineWith(90, 85)
+  for (const item of c.items.slice(0, 7)) e3.state.items.owned.push(item.id)
+  assert.deepEqual(claimTrack(e3), [{ kind: 'item', itemId: 'notabug_glasses' }])
+})
+
+test('reward stars: what the track hands out next and what it gave last', () => {
+  assert.deepEqual(rewardStars(c, 1, 5), [5, 10, 15, 20, 25])
+  assert.deepEqual(rewardStars(c, 71, 4), [75, 85, 90, 95], '80 пустая: вещи уже раз в 20')
+  assert.deepEqual(rewardStars(c, 100, 3, -1), [90, 95, 100], '100 — перемотка')
+  assert.deepEqual(rewardStars(c, 3, 3, -1), [])
 })

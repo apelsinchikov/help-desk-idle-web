@@ -2,6 +2,7 @@ import { useEffect } from 'preact/hooks'
 import { t } from '../app/strings.ts'
 import type { Message } from '../core/messages.ts'
 import { money, useGame } from './context.ts'
+import { rewardText } from './labels.ts'
 
 /** Одно сообщение внизу экрана: первое из очереди; заявка — `seconds`, тост — `toastSeconds`; тап — скрыть. */
 export function MessageSlot() {
@@ -27,6 +28,7 @@ function text(m: Message): string {
     const n = m.index + 1
     return t('ticket.from', t(`ticket.${n}.dept`), t(`ticket.${n}.text`))
   }
-  const args = m.text.args.map((a) => (typeof a === 'string' ? t(a) : typeof a === 'number' ? a : money(a.money)))
+  const args = m.text.args.map((a) =>
+    typeof a === 'string' ? t(a) : typeof a === 'number' ? a : 'money' in a ? money(a.money) : rewardText(a.rewards))
   return t(m.text.key, ...args)
 }

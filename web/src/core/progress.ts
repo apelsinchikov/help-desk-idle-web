@@ -35,7 +35,7 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
     }
     case 'backpack': {
       const has = inventoryCount(state) > 0 || state.perks.active.length > 0 || state.items.owned.length > 0
-      return has ? null : { kind: 'stars', need: content.config.track.perkEvery, have: state.stars }
+      return has ? null : { kind: 'stars', need: content.config.track.perkFirst, have: state.stars }
     }
     case 'quests':
       return state.ui.tutorialDone ? null : { kind: 'tutorial' }

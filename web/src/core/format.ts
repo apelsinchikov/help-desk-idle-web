@@ -40,6 +40,11 @@ function scaleName(exponent: number, language: AppLanguage): string {
 }
 
 /** Фиксированное число знаков, без хвостовых нулей. */
+/** Множитель награды: «2», «1,5», «2,25», «3,38», «38,4», «154» (три значащие цифры). */
+export function formatMultiplier(value: number, language: AppLanguage): string {
+  return decimal(value, value < 10 ? 2 : value < 100 ? 1 : 0, language)
+}
+
 function decimal(v: number, digits: number, language: AppLanguage): string {
   let text = v.toFixed(digits)
   if (text.includes('.')) text = text.replace(/0+$/, '').replace(/\.$/, '')
