@@ -3,11 +3,14 @@ import type { Route } from '../app/store.ts'
 import { buyableCounts, sectionLock, type SectionLock } from '../core/progress.ts'
 import { money, useGame } from './context.ts'
 
-type Item = { section: 'managers' | 'achievements' | 'upgrades'; key: string; color: string }
+type Item = { section: 'quests' | 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe'; key: string; color: string }
 const ITEMS: Item[] = [
+  { section: 'quests', key: 'menu.quests', color: 'var(--accent)' },
   { section: 'managers', key: 'menu.managers', color: 'var(--managers)' },
   { section: 'achievements', key: 'menu.achievements', color: 'var(--achievements)' },
   { section: 'upgrades', key: 'menu.upgrades', color: 'var(--upgrades)' },
+  { section: 'backpack', key: 'menu.backpack', color: 'var(--backpack)' },
+  { section: 'wardrobe', key: 'menu.wardrobe', color: 'var(--wardrobe)' },
 ]
 
 /** Меню — колонка кнопок поверх затемнённой игры. Разделы появляются по мере прогресса. */
@@ -16,6 +19,7 @@ export function Menu() {
   const { engine } = game
   const ui = engine.state.ui
   const buyable = buyableCounts(engine)
+  const counts: Partial<Record<Item['section'], number>> = { managers: buyable.managers, upgrades: buyable.upgrades, backpack: buyable.perks, wardrobe: buyable.items }
   const close = () => game.navigate('jobs')
 
   return (
@@ -31,8 +35,8 @@ export function Menu() {
             >
               <i class="dot" style={{ background: item.color }} />
               {t(item.key)}
-              {item.section in buyable && buyable[item.section as keyof typeof buyable] > 0 ? (
-                <span class="menu__badge">{buyable[item.section as keyof typeof buyable]}</span>
+              {(counts[item.section] ?? 0) > 0 ? (
+                <span class="menu__badge">{counts[item.section]}</span>
               ) : (
                 !ui.hintsSeen.includes(item.section) && <span class="menu__new">{t('menu.new')}</span>
               )}
@@ -41,7 +45,6 @@ export function Menu() {
             <Locked key={item.key} label={t(item.key)} lock={sectionLock(engine, item.section)} />
           ),
         )}
-        <Locked label={t('menu.wardrobe')} />
         <Locked label={t('menu.reorg')} />
         <button class="menu__item" onClick={() => game.navigate('settings')}>
           <i class="dot" style={{ background: 'var(--muted)' }} />
@@ -74,7 +77,10 @@ function Locked({ label, lock }: { label: string; lock?: SectionLock | null }) {
 }
 
 function requirement(lock: SectionLock): string {
-  return lock.kind === 'rank'
-    ? t('menu.lock.rank', lock.need, lock.best)
-    : t('menu.lock.earn', money(lock.need), money(lock.have))
+  switch (lock.kind) {
+    case 'rank': return t('menu.lock.rank', lock.need, lock.best)
+    case 'earn': return t('menu.lock.earn', money(lock.need), money(lock.have))
+    case 'stars': return t('menu.lock.stars', lock.need, lock.have)
+    case 'tutorial': return t('menu.lock.tutorial')
+  }
 }

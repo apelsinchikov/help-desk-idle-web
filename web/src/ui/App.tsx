@@ -4,12 +4,17 @@ import { GameContext } from './context.ts'
 import { JobsScreen } from './jobs/JobsScreen.tsx'
 import { Loading } from './Loading.tsx'
 import { Achievements } from './Achievements.tsx'
+import { Backpack } from './Backpack.tsx'
 import { Managers } from './Managers.tsx'
+import { MessageSlot } from './MessageSlot.tsx'
 import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
-import { Toast } from './Toast.tsx'
+import { Shop } from './Shop.tsx'
+import { Quests } from './Quests.tsx'
+import { RewindReport } from './RewindReport.tsx'
 import { Tutorial } from './Tutorial.tsx'
 import { Upgrades } from './Upgrades.tsx'
+import { Wardrobe } from './Wardrobe.tsx'
 import { WelcomeBack } from './WelcomeBack.tsx'
 
 export type Phase = 'loading' | 'playing'
@@ -30,7 +35,12 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'settings' && <Settings />}
       {route === 'upgrades' && <Upgrades />}
       {route === 'achievements' && <Achievements />}
-      <Toast />
+      {route === 'backpack' && <Backpack />}
+      {route === 'wardrobe' && <Wardrobe />}
+      {route === 'shop' && <Shop />}
+      {route === 'quests' && <Quests />}
+      <MessageSlot />
+      <RewindReport />
       {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}
       {badge}

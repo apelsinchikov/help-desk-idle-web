@@ -8,7 +8,7 @@ import type { AppLanguage } from '../core/format.ts'
 import { createGame } from './store.ts'
 import type { CloudStatus } from './store.ts'
 
-function setup(edit: (s: ReturnType<typeof newGame>) => void = () => {}) {
+function setup(edit: (s: ReturnType<typeof newGame>) => void = () => {}, clock = { t: 0 }) {
   const s = newGame(bundledContent, 0, 'ru')
   edit(s)
   const engine = new GameEngine(bundledContent, s)
@@ -18,6 +18,7 @@ function setup(edit: (s: ReturnType<typeof newGame>) => void = () => {}) {
     scheduler: { changed: (k) => { calls.changed.push(k) }, flush: async () => { calls.flush++ } },
     cloudStatus: signal<CloudStatus>({ kind: 'disabled' }),
     language: signal<AppLanguage>('ru'),
+    now: () => clock.t,
   })
   return { engine, game, calls }
 }
@@ -33,11 +34,11 @@ test('promotion queues an achievement toast and saves at once', () => {
   const { engine, game, calls } = setup((s) => { s.jobs.reboot.level = 25; s.money = 1e9; s.lifetimeEarnings = 1e9 })
   game.promote('reboot')
   assert.equal(engine.rank('reboot'), 25)
-  assert.deepEqual(game.toasts.value, [{ key: 'ach.job', args: ['job.reboot.title', 25, 'effect.speed', 2] }])
+  assert.deepEqual(game.messages.value, [{ kind: 'toast', text: { key: 'ach.job', args: ['job.reboot.title', 25, 'effect.speed', 2] } }])
   assert.deepEqual(calls.changed, ['purchase'])
   assert.ok(engine.state.ui.sections.includes('achievements'), 'раздел открылся после первого повышения')
-  game.dismissToast()
-  assert.deepEqual(game.toasts.value, [])
+  game.dismissMessage()
+  assert.deepEqual(game.messages.value, [])
 })
 
 test('section hint is marked once', () => {
@@ -53,4 +54,38 @@ test('tutorial ack moves the step on', () => {
   assert.equal(engine.state.ui.tutorialStep, 3)
   game.ackTutorial()
   assert.equal(engine.state.ui.tutorialStep, 4)
+})
+
+test('support tickets come every 3 minutes after the tutorial, toasts go first', () => {
+  const clock = { t: 0 }
+  const { game } = setup((s) => { s.ui.tutorialDone = true }, clock)
+  clock.t = 179_000
+  game.checkTicket()
+  assert.deepEqual(game.messages.value, [])
+  clock.t = 180_000
+  game.pushToast({ key: 'ach.all', args: [25, 'effect.speed', 2] })
+  game.checkTicket()
+  assert.equal(game.messages.value.length, 1, 'пока висит тост, заявка не приходит')
+  game.dismissMessage()
+  clock.t = 360_000
+  game.checkTicket()
+  assert.deepEqual(game.messages.value, [{ kind: 'ticket', index: 0 }])
+  game.dismissMessage()
+  clock.t = 400_000
+  game.checkTicket()
+  assert.deepEqual(game.messages.value, [], '3 минуты считаются от закрытия последнего сообщения')
+})
+
+test('frequent toasts do not starve support tickets', () => {
+  const clock = { t: 0 }
+  const { game } = setup((s) => { s.ui.tutorialDone = true }, clock)
+  for (let t = 100_000; t <= 200_000; t += 100_000) {
+    clock.t = t
+    game.pushToast({ key: 'ach.all', args: [25, 'effect.speed', 2] })
+    clock.t = t + 5_000
+    game.dismissMessage()
+  }
+  clock.t = 206_000
+  game.checkTicket()
+  assert.deepEqual(game.messages.value, [{ kind: 'ticket', index: 0 }], '3 минуты считаются от прошлой заявки, а не от любого тоста')
 })

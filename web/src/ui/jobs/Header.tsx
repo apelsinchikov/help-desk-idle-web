@@ -14,7 +14,10 @@ export function Header() {
       <Icon src={iconUrl('avatar')} class="header__avatar" />
       <div class="header__money">
         <div class="header__balance">{money(engine.state.money)}</div>
-        <div class="header__income">{t('header.perSecond', formatMoney(engine.incomePerSecond, uiLanguage.value))}</div>
+        <div class="header__income">
+          {t('header.perSecond', formatMoney(engine.incomePerSecond, uiLanguage.value))}
+          {engine.state.ui.tutorialDone && <span class="header__stars"> · ⭐ {engine.state.stars}</span>}
+        </div>
       </div>
       <button class="header__buy" data-tutorial="buy-mode" onClick={() => (game.buyMode.value = nextBuyMode(game.buyMode.value))}>
         <span>{t('buy.label')}</span>

@@ -2,13 +2,16 @@
 // Всё хранится в state.ui, поэтому едет в облако вместе с сейвом.
 import type { GameEngine } from './engine.ts'
 import type { BuyMode } from './state.ts'
+import { inventoryCount } from './perks.ts'
 
-export type Section = 'managers' | 'achievements' | 'upgrades' | 'settings'
+export type Section = 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe' | 'quests' | 'settings'
 
 /** Что нужно, чтобы раздел меню открылся. */
 export type SectionLock =
   | { kind: 'rank'; need: number; best: number } // повысить любую работу до ур. need (лучшая сейчас — best)
   | { kind: 'earn'; need: number; have: number } // заработать за всё время need
+  | { kind: 'stars'; need: number; have: number } // набрать need звёзд
+  | { kind: 'tutorial' } // пройти обучение
 
 /** null — раздел уже можно открыть; иначе условие открытия. Единый источник правды для меню и refreshSections. */
 export function sectionLock(engine: GameEngine, section: Section): SectionLock | null {
@@ -28,6 +31,14 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
       const need = Math.min(...content.milestones.filter((m) => m.jobId !== null).map((m) => m.level))
       return best >= need ? null : { kind: 'rank', need, best }
     }
+    case 'backpack': {
+      const has = inventoryCount(state) > 0 || state.perks.active.length > 0 || state.items.owned.length > 0
+      return has ? null : { kind: 'stars', need: content.config.track.perkEvery, have: state.stars }
+    }
+    case 'quests':
+      return state.ui.tutorialDone ? null : { kind: 'tutorial' }
+    case 'wardrobe':
+      return state.items.owned.length > 0 ? null : { kind: 'stars', need: content.config.track.itemStars.common, have: state.stars }
     case 'upgrades': {
       const need = Math.min(...content.upgrades.map((u) => u.cost))
       return state.lifetimeEarnings >= need ? null : { kind: 'earn', need, have: state.lifetimeEarnings }
@@ -35,19 +46,21 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
   }
 }
 
-/** Сколько менеджеров и улучшений можно купить прямо сейчас — для точки на кнопке меню. */
-export function buyableCounts(engine: GameEngine): { managers: number; upgrades: number } {
+/** Что можно купить или включить прямо сейчас — для точки на кнопке меню и чисел у пунктов. */
+export function buyableCounts(engine: GameEngine): { managers: number; upgrades: number; perks: number; items: number } {
   const { content } = engine
   return {
     managers: content.jobs.filter((j) => engine.canHireManager(j.id)).length,
     upgrades: content.upgrades.filter((u) => engine.canBuyUpgrade(u.id)).length,
+    perks: inventoryCount(engine.state),
+    items: engine.state.items.owned.filter((id) => !engine.state.items.seen.includes(id)).length,
   }
 }
 
 /** Дописывает в ui.sections разделы, которые пора открыть; возвращает только новые. */
 export function refreshSections(engine: GameEngine): Section[] {
   const { state } = engine
-  const sections: Section[] = ['settings', 'managers', 'achievements', 'upgrades']
+  const sections: Section[] = ['settings', 'quests', 'managers', 'achievements', 'upgrades', 'backpack', 'wardrobe']
   const open = Object.fromEntries(sections.map((s) => [s, sectionLock(engine, s) === null])) as Record<Section, boolean>
   const added: Section[] = []
   for (const section of Object.keys(open) as Section[]) {

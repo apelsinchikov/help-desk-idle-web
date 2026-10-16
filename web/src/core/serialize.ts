@@ -1,8 +1,11 @@
 // GameState ⇄ JSON. Битый, чужой или «из будущего» сейв → null (игра не падает).
 // Схема 1 (этап 1) мигрирует в 2: ранг по уже достигнутым порогам, пустые улучшения, состояние обучения.
+// Схема 2 мигрирует в 3: задания, звёзды, перки и вещи — пустые.
 import type { GameContent } from './content.ts'
-import { CURRENT_SCHEMA, newUiState } from './state.ts'
-import type { GameState, JobState, UiState } from './state.ts'
+import { CURRENT_SCHEMA, QUEST_KINDS, newStage2b, newUiState, randomSeed } from './state.ts'
+import type { GameState, JobState, Quest, UiState } from './state.ts'
+import { SLOTS } from './content.ts'
+import type { Slot } from './content.ts'
 
 export function encodeState(state: GameState): string {
   return JSON.stringify(state)
@@ -59,7 +62,15 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     if (typeof u.tutorialDone !== 'boolean' || !isInt(u.tutorialStep) || u.tutorialStep < 0) return null
     if (!isStrings(u.sections) || !isStrings(u.hintsSeen)) return null
     upgrades = [...value.upgrades]
-    ui = { tutorialDone: u.tutorialDone, tutorialStep: u.tutorialStep, sections: [...u.sections], hintsSeen: [...u.hintsSeen] }
+    ui = { tutorialDone: u.tutorialDone, tutorialStep: u.tutorialStep, sections: [...u.sections], hintsSeen: [...u.hintsSeen], ticketCursor: 0 }
+  }
+
+  let stage2b = newStage2b(randomSeed())
+  if (schemaVersion >= 3) {
+    const parsed = decodeStage2b(value, content)
+    if (!parsed) return null
+    stage2b = parsed.stage2b
+    ui.ticketCursor = parsed.ticketCursor
   }
 
   return {
@@ -71,10 +82,67 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     settings: { language: settings.language, haptics: settings.haptics },
     upgrades,
     ui,
+    ...stage2b,
+  }
+}
+
+/** Поля схемы 3. Неизвестные id перков и вещей (контент поменялся) выбрасываются, если передан `content`. */
+function decodeStage2b(value: Record<string, unknown>, content?: GameContent) {
+  const { stars, track, quests, stats, perks, items, rngSeed, ui } = value
+  if (!isCount(stars) || !isInt(rngSeed) || rngSeed < 0) return null
+  if (!isObject(track) || !isCount(track.claimed)) return null
+  if (!isObject(ui) || !isCount(ui.ticketCursor)) return null
+  if (!isObject(quests) || !Array.isArray(quests.active) || !isNum(quests.rerollAt) || !isCount(quests.seq)) return null
+  const active: Quest[] = []
+  for (const q of quests.active) {
+    if (!isObject(q) || !isCount(q.id) || !QUEST_KINDS.includes(q.kind as Quest['kind'])) return null
+    if (q.jobId !== null && typeof q.jobId !== 'string') return null
+    if (!isNum(q.target) || !isNum(q.base)) return null
+    const kind = q.kind as Quest['kind']
+    const jobId = q.jobId as string | null
+    // задание на работу — только с существующей работой; больше трёх — лишние
+    if ((kind === 'level' || kind === 'promote' || kind === 'unlock') && (jobId === null || (content && !content.job(jobId)))) continue
+    if (active.length < 3) active.push({ id: q.id, kind, jobId, target: q.target, base: q.base })
+  }
+  if (!isObject(stats)) return null
+  const { collects, hires, upgrades, earned } = stats
+  if (!isCount(collects) || !isCount(hires) || !isCount(upgrades) || !isNum(earned) || earned < 0) return null
+  if (!isObject(perks) || !isObject(perks.inventory) || !Array.isArray(perks.active)) return null
+  const knownPerk = (id: string) => !content || !!content.perk(id)
+  const knownItem = (id: string) => !content || !!content.item(id)
+  const inventory: Record<string, number> = {}
+  for (const [id, n] of Object.entries(perks.inventory)) {
+    if (!isCount(n)) return null
+    if (knownPerk(id) && n > 0) inventory[id] = n
+  }
+  const activePerks: { id: string; until: number }[] = []
+  for (const a of perks.active) {
+    if (!isObject(a) || typeof a.id !== 'string' || !isNum(a.until)) return null
+    if (knownPerk(a.id)) activePerks.push({ id: a.id, until: a.until })
+  }
+  if (!isObject(items) || !isStrings(items.owned) || !isObject(items.equipped) || !isStrings(items.seen)) return null
+  const owned = [...new Set(items.owned.filter(knownItem))]
+  const equipped: Partial<Record<Slot, string>> = {}
+  for (const [slot, id] of Object.entries(items.equipped)) {
+    if (typeof id !== 'string' || !SLOTS.includes(slot as Slot)) return null
+    if (owned.includes(id) && (!content || content.item(id)!.slot === slot)) equipped[slot as Slot] = id
+  }
+  return {
+    ticketCursor: ui.ticketCursor,
+    stage2b: {
+      stars,
+      track: { claimed: Math.min(track.claimed, stars) },
+      quests: { active, rerollAt: quests.rerollAt, seq: Math.max(quests.seq, ...active.map((q) => q.id)) },
+      stats: { collects, hires, upgrades, earned },
+      perks: { inventory, active: activePerks },
+      items: { owned, equipped, seen: items.seen.filter((id) => owned.includes(id)) },
+      rngSeed,
+    },
   }
 }
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v)
 const isInt = (v: unknown): v is number => isNum(v) && Number.isInteger(v)
+const isCount = (v: unknown): v is number => isInt(v) && v >= 0
 const isStrings = (v: unknown): v is string[] => Array.isArray(v) && v.every((x) => typeof x === 'string')

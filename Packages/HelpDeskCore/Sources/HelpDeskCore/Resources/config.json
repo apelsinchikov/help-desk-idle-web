@@ -3,5 +3,133 @@
   "autosaveSeconds": 30,
   "fastCycleThreshold": 0.25,
   "managerMinRank": 50,
-  "promotionFactor": 2
+  "promotionFactor": 2,
+  "effects": {
+    "levelDiscountCap": 0.6,
+    "gradeDiscountCap": 0.5
+  },
+  "messages": {
+    "seconds": 20,
+    "ticketEverySeconds": 180,
+    "tickets": 50
+  },
+  "track": {
+    "perkEvery": 5,
+    "itemStars": {
+      "common": 10,
+      "rare": 20,
+      "epic": 40,
+      "legendary": 80
+    },
+    "rewindEvery": 50,
+    "weights": {
+      "speed": 30,
+      "salary": 25,
+      "levelDiscount": 25,
+      "rewind": 20
+    },
+    "tiers": [
+      {
+        "fromStars": 0,
+        "minutes": [
+          5
+        ],
+        "speed": [
+          1
+        ],
+        "levelDiscount": [
+          0.15
+        ],
+        "salary": [
+          0.1
+        ],
+        "rewind": [
+          10
+        ]
+      },
+      {
+        "fromStars": 50,
+        "minutes": [
+          5,
+          10
+        ],
+        "speed": [
+          1,
+          1.5
+        ],
+        "levelDiscount": [
+          0.15
+        ],
+        "salary": [
+          0.1
+        ],
+        "rewind": [
+          10,
+          15
+        ]
+      },
+      {
+        "fromStars": 100,
+        "minutes": [
+          5,
+          10,
+          30
+        ],
+        "speed": [
+          1,
+          1.5
+        ],
+        "levelDiscount": [
+          0.15,
+          0.25
+        ],
+        "salary": [
+          0.1,
+          0.3
+        ],
+        "rewind": [
+          10,
+          15,
+          30
+        ]
+      },
+      {
+        "fromStars": 150,
+        "minutes": [
+          5,
+          10,
+          30,
+          60
+        ],
+        "speed": [
+          1,
+          1.5,
+          2
+        ],
+        "levelDiscount": [
+          0.15,
+          0.25
+        ],
+        "salary": [
+          0.1,
+          0.3
+        ],
+        "rewind": [
+          10,
+          15,
+          30,
+          60
+        ]
+      }
+    ]
+  },
+  "quests": {
+    "minMinutes": 5,
+    "maxMinutes": 15,
+    "rerollHours": 4,
+    "collect": [
+      30,
+      60
+    ]
+  }
 }

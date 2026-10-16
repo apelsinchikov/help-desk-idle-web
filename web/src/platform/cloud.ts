@@ -9,6 +9,8 @@ import type { GameState } from '../core/state.ts'
 export type CloudSync = {
   download(): Promise<RemoteSave>
   upload(state: GameState): Promise<void>
+  /** Время сервера (мс) и когда (по часам устройства) ушёл запрос и пришёл ответ. */
+  serverTime(): Promise<{ server: number; sentAt: number; receivedAt: number }>
 }
 
 type Tokens = { access_token: string; refresh_token: string }
@@ -48,6 +50,15 @@ export function createCloud(
       if (!data) return { kind: 'none' }
       const state = decodeState(data.payload, bundledContent)
       return state ? { kind: 'ok', state } : { kind: 'unreadable' }
+    },
+
+    async serverTime() {
+      await userId()
+      const sentAt = Date.now()
+      const { data, error } = await supabase.rpc('server_now')
+      const receivedAt = Date.now()
+      if (error) throw error
+      return { server: Date.parse(String(data)), sentAt, receivedAt }
     },
 
     async upload(state) {

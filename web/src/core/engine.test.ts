@@ -173,3 +173,25 @@ test('starting over keeps the finished tutorial and seen hints', () => {
   assert.deepEqual(e.state.ui.hintsSeen, ['managers', 'upgrades'])
   assert.deepEqual(e.state.ui.sections, ['settings'], 'разделы откроются заново по прогрессу')
 })
+
+test('hiring a manager pays the waiting salary once, not every missed cycle', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1000 })
+  c.t = 3_600_000 // час стояла в «Готово»
+  const payout = e.payout('reboot')
+  assert.equal(e.hireManager('reboot'), true)
+  assert.equal(e.state.money, payout)
+  assert.equal(e.advance(c.t), 0, 'пропущенные циклы не начисляются задним числом')
+})
+
+test('hiring a manager at the cap pays once and the job then waits for the promotion', () => {
+  const c = makeClock()
+  const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 50, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1000 })
+  c.t = 60_000
+  const payout = e.payout('reboot')
+  e.hireManager('reboot')
+  assert.equal(e.state.money, payout)
+  assert.equal(e.status('reboot').kind, 'running')
+  c.t = 120_000
+  assert.equal(e.advance(c.t), 0, 'на пороге менеджер ждёт повышения')
+})

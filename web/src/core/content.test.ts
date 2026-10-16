@@ -57,3 +57,55 @@ test('manager rank: jobs 1-4 after the first promotion, the rest after the secon
   const c = bundledContent
   assert.deepEqual(c.jobs.map((j) => c.managerRank(j.id)), [25, 25, 25, 25, 50, 50, 50, 50, 50, 50, 50, 50])
 })
+
+test('stage 2b perks catalog', () => {
+  const c = bundledContent
+  assert.equal(c.perks.length, 32)
+  assert.deepEqual(c.perk('speed_200_60'), { id: 'speed_200_60', kind: 'speed', value: 2, minutes: 60 })
+  assert.deepEqual(c.perk('level_25_5'), { id: 'level_25_5', kind: 'levelDiscount', value: 0.25, minutes: 5 })
+  assert.equal(c.perk('salary_30_10')!.value, 0.3)
+  assert.deepEqual(c.perk('rewind_15'), { id: 'rewind_15', kind: 'rewind', value: 0, minutes: 15 })
+  const count = (kind: string) => c.perks.filter((p) => p.kind === kind).length
+  assert.deepEqual([count('speed'), count('levelDiscount'), count('salary'), count('rewind')], [12, 8, 8, 4])
+})
+
+test('stage 2b wardrobe items: 7 per rarity, one per slot, stats by the spec table', () => {
+  const c = bundledContent
+  assert.equal(c.items.length, 28)
+  assert.deepEqual(
+    { ...c.items[0] },
+    { id: 'helpdesk_cap', slot: 'head', rarity: 'common', stat: 'speed', value: 0.5, iconKey: 'slot_head' },
+  )
+  const values: Record<string, number[]> = {
+    speed: [0.5, 1, 1.5, 2], levelDiscount: [0.03, 0.05, 0.08, 0.1], gradeDiscount: [0.05, 0.1, 0.15, 0.2], salary: [0.1, 0.15, 0.2, 0.3],
+  }
+  const rarities = ['common', 'rare', 'epic', 'legendary'] as const
+  rarities.forEach((rarity, r) => {
+    const set = c.items.filter((i) => i.rarity === rarity)
+    assert.equal(set.length, 7, rarity)
+    assert.equal(new Set(set.map((i) => i.slot)).size, 7, `${rarity}: слоты`)
+    const stats = set.map((i) => i.stat).sort()
+    assert.deepEqual(stats, ['gradeDiscount', 'levelDiscount', 'levelDiscount', 'salary', 'salary', 'speed', 'speed'])
+    for (const i of set) assert.equal(i.value, values[i.stat][r], i.id)
+  })
+  // порядок выдачи: редкости по возрастанию
+  assert.deepEqual(c.items.map((i) => rarities.indexOf(i.rarity)), [...c.items.map((i) => rarities.indexOf(i.rarity))].sort())
+  assert.equal(c.item('board_shoes')!.rarity, 'legendary')
+})
+
+test('stage 2b chests and config', () => {
+  const c = bundledContent
+  assert.deepEqual(c.chests.map((ch) => ch.id), ['hr_gift', 'corporate_party', 'funding_round', 'ipo'])
+  assert.deepEqual(c.chests[0].items, [{ rarity: 'common', chance: 0.3 }])
+  assert.deepEqual(c.chests[2].items, [{ rarity: 'rare', chance: 0.7 }, { rarity: 'epic', chance: 0.25 }, { rarity: 'legendary', chance: 0.005 }])
+  assert.deepEqual(c.chests.map((ch) => ch.perks), [[1, 1], [3, 5], [5, 9], [9, 15]])
+  assert.equal(c.chests[0].currency, 'techcoin')
+  assert.equal(c.config.effects.levelDiscountCap, 0.6)
+  assert.deepEqual(c.config.messages, { seconds: 20, ticketEverySeconds: 180, tickets: 50 })
+  assert.deepEqual(c.config.track.tiers.map((t) => t.fromStars), [0, 50, 100, 150])
+  assert.deepEqual(c.config.track.tiers[0], { fromStars: 0, minutes: [5], speed: [1], levelDiscount: [0.15], salary: [0.1], rewind: [10] })
+  assert.deepEqual(c.config.track.tiers[3].speed, [1, 1.5, 2])
+  assert.deepEqual(c.config.track.weights, { speed: 30, salary: 25, levelDiscount: 25, rewind: 20 })
+  assert.deepEqual(c.config.track.itemStars, { common: 10, rare: 20, epic: 40, legendary: 80 })
+  assert.deepEqual(c.config.quests, { minMinutes: 5, maxMinutes: 15, rerollHours: 4, collect: [30, 60] })
+})

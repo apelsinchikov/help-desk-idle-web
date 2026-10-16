@@ -56,7 +56,7 @@ button:disabled { cursor: default; }
 .bottom { display: flex; gap: 10px; padding: 8px 16px calc(4px + var(--safe-bottom)); background: var(--background); }
 .bottom__menu, .bottom__shop { position: relative; flex: 1; min-height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 800; }
 .bottom__menu { background: var(--ink); color: var(--on-accent); }
-.bottom__shop { background: var(--track-strong); color: var(--muted); }
+.bottom__shop { background: var(--shop); color: var(--on-accent); }
 .bottom__shop small { font-size: 12px; }
 .badge { position: absolute; top: -8px; right: 8px; padding: 2px 7px; border-radius: 99px; background: var(--upgrades); color: var(--on-accent); font-size: 12px; font-weight: 800; }
 
@@ -166,7 +166,8 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .gallery__item { min-height: 52px; border-radius: 12px; background: var(--track); color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; text-align: center; padding: 4px; }
 .gallery__item b { font-size: 14px; color: var(--ink); }
 .gallery__item--got { background: color-mix(in srgb, var(--achievements) 25%, var(--card)); color: var(--ink); }
-.toast { position: fixed; left: 16px; right: 16px; bottom: calc(76px + var(--safe-bottom)); max-width: 528px; margin: 0 auto; z-index: 40; padding: 12px 14px; border-radius: 14px; background: var(--ink); color: var(--on-accent); font-size: 14px; font-weight: 700; text-align: center; animation: toast-in .25s ease-out; }
+.message { position: fixed; left: 16px; right: 16px; bottom: calc(76px + var(--safe-bottom)); max-width: 528px; margin: 0 auto; z-index: 40; padding: 12px 14px; border-radius: 14px; background: var(--ink); color: var(--on-accent); font-size: 14px; font-weight: 700; text-align: center; animation: toast-in .25s ease-out; cursor: pointer; }
+.message--ticket { background: var(--card); color: var(--ink); border: 2px solid var(--line); text-align: left; font-weight: 600; }
 @keyframes toast-in { from { opacity: 0; transform: translateY(12px); } }
 .hint-backdrop { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 55%, transparent); display: flex; align-items: flex-end; justify-content: center; padding: 16px 16px calc(24px + var(--safe-bottom)); }
 .hint { width: 100%; max-width: 420px; padding: 16px; border-radius: 20px; background: var(--card); display: flex; flex-direction: column; gap: 10px; }
@@ -205,3 +206,97 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .card__action:active:not(:disabled) { transform: scale(.97); }
 .card__time { flex: none; width: 64px; border-radius: 12px; background: var(--track-strong); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
 .card__side { gap: 10px; }
+
+/* Этап 2b: плашка эффектов, рюкзак */
+.effects { margin: 0 16px 8px; border-radius: 14px; background: var(--card); border: 2px solid var(--line); overflow: hidden; }
+.effects__summary { width: 100%; padding: 10px 14px; text-align: left; font-size: 14px; font-weight: 800; color: var(--ink); }
+.effects__list { padding: 0 14px 12px; display: flex; flex-direction: column; gap: 6px; }
+.effects__row { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 600; }
+.effects__row--items { color: var(--muted); }
+.effects__time { font-variant-numeric: tabular-nums; font-weight: 800; }
+.effects__backpack { align-self: flex-start; margin-top: 4px; padding: 6px 12px; border-radius: 10px; background: var(--backpack); color: var(--on-accent); font-size: 13px; font-weight: 800; }
+.sheet__head--backpack { background: var(--backpack); }
+.backpack__empty { color: var(--muted); font-size: 14px; padding: 16px 4px; }
+.group__title { font-size: 13px; font-weight: 800; color: var(--muted); padding: 8px 4px 4px; }
+.perks { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.perk { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px; border-radius: 14px; background: var(--card); text-align: center; }
+.perk__icon { position: relative; width: 56px; height: 56px; border-radius: 14px; background: var(--track); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+.perk__minutes { position: absolute; right: -6px; bottom: -6px; padding: 1px 6px; border-radius: 99px; background: var(--ink); color: var(--on-accent); font-size: 11px; font-weight: 800; }
+.perk__name { font-size: 13px; font-weight: 800; }
+.perk__count { position: absolute; top: 6px; right: 8px; font-size: 12px; font-weight: 800; color: var(--muted); }
+.perk__use { width: 100%; padding: 7px 8px; border-radius: 10px; background: var(--backpack); color: var(--on-accent); font-size: 13px; font-weight: 800; }
+.tabs__active--backpack { color: var(--backpack); }
+.tabs__dot { display: inline-block; width: 8px; height: 8px; margin-left: 6px; border-radius: 50%; background: var(--alert); vertical-align: middle; }
+.rewind { margin: auto; width: min(340px, calc(100% - 32px)); padding: 20px; border-radius: 20px; background: var(--card); text-align: center; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.rewind__icon { font-size: 44px; }
+.rewind__title { font-size: 17px; font-weight: 800; }
+.rewind__earned { font-size: 26px; font-weight: 800; color: var(--positive); }
+.rewind__note { font-size: 13px; color: var(--muted); }
+.rewind__ok { margin-top: 6px; width: 100%; min-height: 44px; border-radius: 14px; background: var(--backpack); color: var(--on-accent); font-size: 15px; font-weight: 800; }
+
+/* Гардероб */
+.sheet__head--wardrobe { background: var(--wardrobe); }
+.wardrobe__pinned { padding: 12px 16px 4px; background: var(--background); border-bottom: 2px solid var(--line); }
+.wardrobe__slots { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.slot { aspect-ratio: 1; border-radius: 12px; background: var(--card); border: 3px solid var(--rarity-common); display: flex; align-items: center; justify-content: center; }
+.slot--empty { border: 2px dashed var(--locked-border); opacity: .55; }
+.slot__icon { width: 70%; height: 70%; }
+.slot__emoji { font-size: 22px; }
+.wardrobe__stats { display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 10px 2px; font-size: 13px; font-weight: 800; }
+.wardrobe__stat small { font-weight: 600; color: var(--muted); }
+.wardrobe__stat--none { color: var(--muted); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.chip { padding: 6px 10px; border-radius: 99px; background: var(--card); border: 2px solid var(--line); font-size: 13px; font-weight: 700; color: var(--ink); }
+.chip--on { border-color: var(--ink); }
+.rarity--common { border-color: var(--rarity-common); }
+.rarity--rare { border-color: var(--rarity-rare); }
+.rarity--epic { border-color: var(--rarity-epic); }
+.rarity--legendary { border-color: var(--rarity-legendary); }
+.rarity-text--common { color: var(--rarity-common); }
+.rarity-text--rare { color: var(--rarity-rare); }
+.rarity-text--epic { color: var(--rarity-epic); }
+.rarity-text--legendary { color: var(--rarity-legendary); }
+.item { border-radius: 14px; background: var(--card); border: 3px solid; margin-bottom: 8px; overflow: hidden; }
+.item__row { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-align: left; color: var(--ink); }
+.item__row .slot__icon { width: 40px; height: 40px; }
+.item__info { flex: 1; min-width: 0; }
+.item__name { font-size: 15px; font-weight: 800; }
+.item__meta { font-size: 12px; color: var(--muted); }
+.item__worn { font-size: 12px; font-weight: 800; color: var(--positive); }
+.item__details { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+.cmp { font-size: 13px; font-weight: 700; }
+.cmp--better { color: var(--positive); }
+.cmp--worse { color: var(--upgrades); }
+.cmp--same { color: var(--muted); }
+.item__action { align-self: flex-start; margin-top: 6px; padding: 8px 14px; border-radius: 12px; background: var(--wardrobe); color: var(--on-accent); font-size: 14px; font-weight: 800; }
+.item__action--off { background: var(--track-strong); color: var(--ink); }
+
+/* Магазин */
+.sheet__head--shop { background: var(--shop); }
+.chest { border-radius: 16px; background: var(--card); padding: 12px 14px; margin-bottom: 10px; }
+.chest__head { display: flex; align-items: center; gap: 12px; }
+.chest__icon { font-size: 34px; }
+.chest__name { font-size: 16px; font-weight: 800; }
+.chest__price { font-size: 12px; color: var(--muted); font-weight: 600; }
+.chest__odds { margin: 8px 0; padding-left: 18px; font-size: 13px; font-weight: 600; }
+.chest__buy { width: 100%; min-height: 40px; border-radius: 12px; background: var(--track-strong); color: var(--muted); font-size: 14px; font-weight: 800; }
+
+/* Задания и трек */
+.quests { margin: 0 16px 8px; display: flex; flex-direction: column; gap: 6px; }
+.quest { border-radius: 12px; background: var(--card); border: 2px solid var(--line); overflow: hidden; }
+.quest__row { position: relative; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 12px 10px; text-align: left; color: var(--ink); }
+.quest__text { font-size: 13px; font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quest--open .quest__text { white-space: normal; }
+.quest__progress { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.quest__bar { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--achievements); border-radius: 0 4px 4px 0; }
+.quest__details { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 0 12px 10px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.quest__reroll { padding: 6px 12px; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-size: 13px; font-weight: 800; }
+.quest__wait { font-variant-numeric: tabular-nums; }
+.header__stars { font-weight: 800; }
+.sheet__head--quests { background: var(--accent); }
+.quests__stars { color: var(--on-accent); font-size: 22px; font-weight: 800; padding: 0 2px 8px; }
+.quests__about { color: var(--muted); font-size: 13px; padding: 4px 2px 10px; }
+.track { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--card); margin-bottom: 6px; font-size: 14px; font-weight: 700; }
+.track__at { min-width: 64px; font-weight: 800; }
+.track--done { opacity: .6; }
+.track--locked { background: var(--track-strong); color: var(--muted); }

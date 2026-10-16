@@ -102,9 +102,54 @@ test('a locked section says what opens it', () => {
 
 test('menu alert counts managers and upgrades the player can buy now', () => {
   const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 51; s.jobs.reboot.rank = 50; s.money = 10 })
-  assert.deepEqual(buyableCounts(e), { managers: 0, upgrades: 0 })
+  assert.deepEqual(buyableCounts(e), { managers: 0, upgrades: 0, perks: 0, items: 0 })
   e.state.money = 30_000_000
-  assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 1 })
+  assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 1, perks: 0, items: 0 })
   e.state.upgrades.push('reboot_x3')
-  assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 0 })
+  assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 0, perks: 0, items: 0 })
+})
+
+test('backpack also opens with the first item', () => {
+  const e = makeEngine(makeClock())
+  e.grantItem('helpdesk_cap')
+  assert.equal(sectionLock(e, 'backpack'), null)
+})
+
+test('backpack opens with the first perk; until then it says 5 stars', () => {
+  const e = makeEngine(makeClock())
+  assert.deepEqual(sectionLock(e, 'backpack'), { kind: 'stars', need: 5, have: 0 })
+  e.state.perks.inventory.speed_100_5 = 1
+  assert.equal(sectionLock(e, 'backpack'), null)
+  assert.ok(refreshSections(e).includes('backpack'))
+})
+
+test('menu dot also lights up when the backpack has perks to switch on', () => {
+  const e = makeEngine(makeClock())
+  assert.equal(buyableCounts(e).perks, 0)
+  e.state.perks.inventory.rewind_10 = 2
+  assert.equal(buyableCounts(e).perks, 2)
+})
+
+test('wardrobe opens with the first item; until then it says 10 stars', () => {
+  const e = makeEngine(makeClock())
+  assert.deepEqual(sectionLock(e, 'wardrobe'), { kind: 'stars', need: 10, have: 0 })
+  e.grantItem('helpdesk_cap')
+  assert.equal(sectionLock(e, 'wardrobe'), null)
+  assert.ok(refreshSections(e).includes('wardrobe'))
+})
+
+test('new items not yet looked at count for the menu dot', () => {
+  const e = makeEngine(makeClock())
+  e.grantItem('helpdesk_cap')
+  e.grantItem('look_glasses')
+  assert.equal(buyableCounts(e).items, 2)
+  e.state.items.seen.push('helpdesk_cap')
+  assert.equal(buyableCounts(e).items, 1)
+})
+
+test('quests section opens with the finished tutorial', () => {
+  const e = makeEngine(makeClock())
+  assert.deepEqual(sectionLock(e, 'quests'), { kind: 'tutorial' })
+  e.state.ui.tutorialDone = true
+  assert.equal(sectionLock(e, 'quests'), null)
 })
