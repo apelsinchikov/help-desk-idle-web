@@ -32,7 +32,7 @@ export function QuestStrip() {
   const [open, setOpen] = useState<number | null>(null)
   const quests = engine.state.quests.active
   if (quests.length === 0) return null
-  const rerollIn = (engine.state.quests.rerollAt - Date.now()) / 1000
+  const rerollIn = (engine.state.quests.rerollAt - game.now()) / 1000
   return (
     <div class="quests">
       {quests.map((q) => {

@@ -97,6 +97,8 @@ export function createGame(o: {
     language,
     cloudStatus: o.cloudStatus,
     messages,
+    /** Часы игры (с поправкой по серверу). */
+    now,
     devBuild: o.devBuild ?? false,
 
     /** Действие игрока: покупки сохраняются сразу, тапы — по интервалу автосейва. */
@@ -214,7 +216,7 @@ export function createGame(o: {
 
     /** «Начать заново»: локально и в облако сразу, иначе облачный сейв вернул бы старый прогресс. */
     async reset(): Promise<void> {
-      game.act('purchase', () => engine.reset(Date.now()))
+      game.act('purchase', () => engine.reset(now()))
       await scheduler.flush()
     },
 
@@ -223,7 +225,7 @@ export function createGame(o: {
       timer = setInterval(() => {
         // resume, а не advance: большой разрыв между тиками (замороженный WebView, перевод часов)
         // проходит через оффлайн-лимит и показывает «С возвращением».
-        const report = engine.resume(Date.now())
+        const report = engine.resume(now())
         if (report) offlineReport.value = report
         bump()
         game.checkTicket()
@@ -239,14 +241,14 @@ export function createGame(o: {
     /** Mini App свернули или закрывают: догнать время и сохранить всё. */
     async onHidden(): Promise<void> {
       game.stopTicking()
-      engine.advance(Date.now())
+      engine.advance(now())
       await scheduler.flush()
     },
 
     /** Вернулись: оффлайн-доход и «С возвращением». */
     onVisible(): void {
       if (timer !== null) return
-      const report = engine.resume(Date.now())
+      const report = engine.resume(now())
       if (report) offlineReport.value = report
       bump()
       game.startTicking()

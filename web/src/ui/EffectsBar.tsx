@@ -14,7 +14,7 @@ export function EffectsBar() {
   const { engine } = game
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const now = Date.now()
+  const now = game.now()
   const perks = activeEffects(engine.content, engine.state, now)
   const items = itemTotals(engine.content, engine.state)
   const itemStats = STATS.filter((s) => items[s] > 0)

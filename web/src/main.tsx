@@ -15,6 +15,7 @@ import { uiLanguage } from './app/strings.ts'
 import { detectLanguage } from './app/i18n.ts'
 import { withTimeout } from './app/timeout.ts'
 import { App } from './ui/App.tsx'
+import { createClock } from './app/clock.ts'
 import type { Phase } from './ui/App.tsx'
 import './theme/tokens.css'
 import './theme/fonts.css'
@@ -22,6 +23,7 @@ import './ui/styles.css'
 
 const MIN_LOADING_MS = 1400
 const CLOUD_TIMEOUT_MS = 4000
+const CLOCK_TIMEOUT_MS = 2000
 
 telegram.init(getComputedStyle(document.documentElement).getPropertyValue('--background').trim())
 
@@ -30,8 +32,9 @@ const isDevBuild = import.meta.env.VITE_CHANNEL === 'dev'
 // Сейвы тестовой сборки отдельно от рабочих (один домен github.io); в Telegram — по аккаунту.
 const saveAccount = isDevBuild ? 'dev' : telegram.userId !== undefined ? `tg${telegram.userId}` : undefined
 const localSave = createLocalSave(undefined, saveAccount)
-const state = localSave.load() ?? newGame(content, Date.now(), detectLanguage(telegram.languageCode ?? navigator.language))
-const engine = new GameEngine(content, state)
+const clock = createClock()
+const state = localSave.load() ?? newGame(content, clock.now(), detectLanguage(telegram.languageCode ?? navigator.language))
+const engine = new GameEngine(content, state, clock.now)
 
 // Облако — только в Telegram и только если сборка знает адрес и ключ проекта.
 const cloud = createCloud(
@@ -63,10 +66,10 @@ const scheduler = createSaveScheduler({
   },
   localIntervalMs: content.config.autosaveSeconds * 1000,
   cloudIntervalMs: 30_000,
-  now: Date.now,
+  now: clock.now,
 })
 const game = createGame({
-  devBuild: isDevBuild, engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic })
+  devBuild: isDevBuild, engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic, now: clock.now })
 const phase = signal<Phase>('loading')
 
 // Кнопка «Назад» Telegram закрывает меню и листы.
@@ -81,10 +84,21 @@ render(<App game={game} phase={phase} devBuild={isDevBuild} />, document.getElem
  * При запуске берём облачный сейв, если в нём заработано больше. Плохая сеть не держит загрузку дольше 4 с:
  * загрузка продолжится в фоне, а выгрузки в облако подождут её (cloudGate).
  */
+/** Сверить часы с сервером (не дольше 2 с; не вышло — играем по последней поправке или часам устройства). */
+async function syncClock(): Promise<void> {
+  if (!cloud) return
+  try {
+    const t = await withTimeout(cloud.serverTime(), CLOCK_TIMEOUT_MS)
+    clock.sync(t.server, t.sentAt, t.receivedAt)
+  } catch {
+    // нет сети — без поправки
+  }
+}
+
 async function syncFromCloud(): Promise<void> {
   if (!gate) return
   try {
-    await withTimeout(gate.reconcile(), CLOUD_TIMEOUT_MS)
+    await withTimeout(Promise.all([gate.reconcile(), syncClock()]), CLOUD_TIMEOUT_MS)
     cloudStatus.value = { kind: 'synced', at: Date.now() }
   } catch {
     cloudStatus.value = { kind: 'offline' }
@@ -100,12 +114,12 @@ async function boot() {
 document.addEventListener('visibilitychange', () => {
   if (phase.value !== 'playing') return
   if (document.visibilityState === 'hidden') void game.onHidden()
-  else game.onVisible()
+  else void syncClock().then(() => game.onVisible()) // часы могли перевести, пока игра была свёрнута
 })
 // Telegram 8.0+: Mini App свернули в «плашку» / развернули обратно.
 telegram.onLifecycle(
   () => { if (phase.value === 'playing') void game.onHidden() },
-  () => { if (phase.value === 'playing') game.onVisible() },
+  () => { if (phase.value === 'playing') void syncClock().then(() => game.onVisible()) },
 )
 window.addEventListener('pagehide', () => {
   if (phase.value === 'playing') void game.onHidden()
