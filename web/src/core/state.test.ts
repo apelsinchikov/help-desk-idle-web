@@ -167,6 +167,6 @@ test('v3 quests are cleaned up on load: at most 3, known jobs, job-bound kinds h
   s.track.claimed = 7
   const d = decodeState(encodeState(s), bundledContent)!
   assert.deepEqual(d.quests.active.map((q) => q.id), [3, 4, 9])
-  assert.equal(d.quests.seq, 10)
+  assert.equal(d.quests.seq, 9, 'новые id — после самого большого из оставшихся')
   assert.equal(d.track.claimed, 4)
 })
