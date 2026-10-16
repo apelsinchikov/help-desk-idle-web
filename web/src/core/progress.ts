@@ -19,8 +19,10 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
     case 'settings':
       return null
     case 'managers': {
-      const need = content.config.managerMinRank
-      return best >= need || jobs.some((j) => j.hasManager) ? null : { kind: 'rank', need, best }
+      // раздел открывается, когда хоть одной работе можно нанять менеджера; в подсказке — ближайший такой ранг
+      const ready = content.jobs.some((j) => (state.jobs[j.id]?.rank ?? 0) >= content.managerRank(j.id))
+      const need = Math.min(...content.jobs.map((j) => content.managerRank(j.id)))
+      return ready || jobs.some((j) => j.hasManager) ? null : { kind: 'rank', need, best }
     }
     case 'achievements': {
       const need = Math.min(...content.milestones.filter((m) => m.jobId !== null).map((m) => m.level))

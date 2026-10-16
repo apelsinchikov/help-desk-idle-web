@@ -25,11 +25,13 @@ function milestones() {
   return out
 }
 const c = new GameContent(
-  base.jobs.map((j) => ({ ...j, managerCost: j.managerCost * env('MGR_MUL', 1) })),
+  base.jobs.map((j, i) => ({ ...j, managerCost: j.managerCost * env('MGR_MUL', 1) * (i < 4 ? env('MGR_EARLY_MUL', 1) : 1),
+    ...(process.env.MGR_TIERS ? { managerMinRank: Number(process.env.MGR_TIERS.split(',')[i]) } : {}) })),
   milestones(),
   cfg,
   base.upgrades.map((u) => ({ ...u, cost: u.cost * env('UPG_MUL', 1) })),
 )
+const CASUAL = env('CASUAL', 0), SAVE_S = env('SAVE_S', 300), DECIDE_S = env('DECIDE_S', 10)
 const TAP = env('TAP', 2), ACTIVE = env('ACTIVE', 30), AWAY = env('AWAY', 120), HOURS = env('HOURS', 72)
 
 let t = 0
@@ -49,7 +51,7 @@ function goals() {
   const list: { cost: number; act: () => boolean; name: string }[] = []
   for (const j of c.jobs) {
     const js = s.jobs[j.id]
-    if (js.rank >= c.config.managerMinRank && !js.hasManager) list.push({ cost: j.managerCost, act: () => e.hireManager(j.id), name: `M${j.order}` })
+    if (js.rank >= c.managerRank(j.id) && !js.hasManager) list.push({ cost: j.managerCost, act: () => e.hireManager(j.id), name: `M${j.order}` })
     if (js.level === 0 && e.canUnlock(j.id)) list.push({ cost: j.baseCost, act: () => e.unlock(j.id), name: `J${j.order}` })
     if (e.atCap(j.id)) list.push({ cost: e.promotionCost(j.id), act: () => !!e.promote(j.id), name: `P` })
   }
@@ -71,13 +73,14 @@ function decide() {
     const affordable = g.find((x) => x.cost <= s.money)
     if (affordable) { if (affordable.act()) { event(affordable.name); continue } }
     const next = g[0]
-    if (next && next.cost <= income() * 300) return // копим на близкую цель
+    if (next && next.cost <= income() * SAVE_S) return // копим на близкую цель
     let best: string | null = null, bestScore = 0
     for (const j of c.jobs) {
       if (s.jobs[j.id].level < 1 || e.atCap(j.id)) continue
       const q = e.quote(j.id, 'one')
       if (q.count < 1 || q.cost > s.money) continue
-      const score = e.payout(j.id) / e.level(j.id) / Math.max(e.cycle(j.id), TAP) / q.cost
+      // CASUAL=1: покупает самое дешёвое (раскидывает деньги по работам), иначе — лучшее по окупаемости
+      const score = CASUAL ? 1 / q.cost : e.payout(j.id) / e.level(j.id) / Math.max(e.cycle(j.id), TAP) / q.cost
       if (score > bestScore) { bestScore = score; best = j.id }
     }
     if (!best || !e.buy(best, 'one')) return
@@ -104,14 +107,14 @@ while (t < HOURS * 3_600_000) {
     for (const j of c.jobs) if (e.status(j.id).kind === 'ready' && e.payout(j.id) > best) { best = e.payout(j.id); pick = j.id }
     if (pick) e.tap(pick)
   }
-  if (t >= nextDecide) { nextDecide = t + 10_000; decide() }
+  if (t >= nextDecide) { nextDecide = t + DECIDE_S * 1000; decide() }
 }
 
 const h = (x: number | undefined) => x === undefined ? '—' : x < 1 ? `${Math.round(x * 60)}м` : `${x.toFixed(1)}ч`
 const maxGap = (from: number, to: number) => Math.max(0, ...gaps.filter((g) => g.at > from * 60_000 && g.at <= to * 60_000).map((g) => g.gap)) / 60_000
 const tail = (activeMs - lastEvent) / 60_000
 console.log(JSON.stringify({
-  params: { MS_SMALL: small, MGR_RANK: cfg.managerMinRank, PROMO_F: cfg.promotionFactor, UPG_MUL: env('UPG_MUL', 1), MGR_MUL: env('MGR_MUL', 1), TAP, ACTIVE, AWAY, HOURS },
+  params: { MS_SMALL: small, MGR_RANK: process.env.MGR_TIERS ?? cfg.managerMinRank, CASUAL, SAVE_S, DECIDE_S, MGR_EARLY_MUL: env('MGR_EARLY_MUL', 1), PROMO_F: cfg.promotionFactor, UPG_MUL: env('UPG_MUL', 1), MGR_MUL: env('MGR_MUL', 1), TAP, ACTIVE, AWAY, HOURS },
   activeHours: +(activeMs / 3_600_000).toFixed(1),
   managers: c.jobs.map((j) => h(firsts[`M${j.order}`])).join(' '),
   jobs: c.jobs.map((j) => h(firsts[`J${j.order}`] ?? (j.order === 1 ? 0 : undefined))).join(' '),

@@ -41,7 +41,7 @@ function ManagerRow({ job }: { job: JobDefinition }) {
   const level = js?.level ?? 0
   const rank = js?.rank ?? 0
   const open = level > 0
-  const minRank = engine.content.config.managerMinRank
+  const minRank = engine.content.managerRank(job.id)
   const canHire = engine.canHireManager(job.id)
 
   const hire = () => game.act('purchase', () => {

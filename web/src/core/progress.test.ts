@@ -92,11 +92,12 @@ test('managers section is open for a player who already has a manager', () => {
 
 test('a locked section says what opens it', () => {
   const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 30; s.jobs.reboot.rank = 25; s.lifetimeEarnings = 1000 })
-  assert.deepEqual(sectionLock(e, 'managers'), { kind: 'rank', need: 50, best: 25 })
+  assert.equal(sectionLock(e, 'managers'), null, 'менеджер первых работ — с первого повышения')
   assert.equal(sectionLock(e, 'achievements'), null)
   assert.deepEqual(sectionLock(e, 'upgrades'), { kind: 'earn', need: 25_000_000, have: 1000 })
   const fresh = makeEngine(makeClock())
   assert.deepEqual(sectionLock(fresh, 'achievements'), { kind: 'rank', need: 25, best: 0 })
+  assert.deepEqual(sectionLock(fresh, 'managers'), { kind: 'rank', need: 25, best: 0 })
 })
 
 test('menu alert counts managers and upgrades the player can buy now', () => {

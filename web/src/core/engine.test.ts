@@ -86,13 +86,16 @@ test('unlock requires level 25 and money', () => {
   assert.equal(broke.unlock('plug_mouse'), false)
 })
 
-test('manager needs the second promotion (rank 50)', () => {
+test('managers of jobs 1-4 need the first promotion, later jobs the second', () => {
   const c = makeClock()
-  const low = makeEngine(c, (s) => { s.jobs.reboot.level = 50; s.jobs.reboot.rank = 25; s.money = 1e6 })
-  assert.equal(low.canHireManager('reboot'), false)
-  assert.equal(low.hireManager('reboot'), false)
-  const ok = makeEngine(c, (s) => { s.jobs.reboot.level = 51; s.jobs.reboot.rank = 50; s.money = 1e6 })
-  assert.equal(ok.hireManager('reboot'), true)
+  const none = makeEngine(c, (s) => { s.jobs.reboot.level = 25; s.jobs.reboot.rank = 0; s.money = 1e6 })
+  assert.equal(none.hireManager('reboot'), false)
+  const early = makeEngine(c, (s) => { s.jobs.escalate = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e6 })
+  assert.equal(early.hireManager('escalate'), true)
+  const late = makeEngine(c, (s) => { s.jobs.works_on_my_machine = { level: 50, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e7 })
+  assert.equal(late.hireManager('works_on_my_machine'), false)
+  late.state.jobs.works_on_my_machine.rank = 50
+  assert.equal(late.hireManager('works_on_my_machine'), true)
 })
 
 test('manager auto-collects', () => {

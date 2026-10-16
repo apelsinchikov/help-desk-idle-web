@@ -52,3 +52,8 @@ test('milestones every 25 levels; intermediate ones give profit x1.5', () => {
   const m75 = c.milestones.filter((m) => m.jobId === 'plug_mouse' && m.level === 75)
   assert.deepEqual(m75.map((m) => [m.effect, m.value]), [['profit', 1.5]])
 })
+
+test('manager rank: jobs 1-4 after the first promotion, the rest after the second', () => {
+  const c = bundledContent
+  assert.deepEqual(c.jobs.map((j) => c.managerRank(j.id)), [25, 25, 25, 25, 50, 50, 50, 50, 50, 50, 50, 50])
+})
