@@ -18,7 +18,7 @@ export function Header() {
         <div class="header__balance">{money(engine.state.money)}</div>
         <div class="header__income">
           {t('header.perSecond', formatMoney(engine.incomePerSecond, uiLanguage.value))}
-          {engine.state.ui.tutorialDone && <span class="header__stars"> · ⭐ {engine.state.stars}</span>}
+          {engine.state.ui.tutorialDone && <span class="header__stars"> · 🎫 {engine.state.stars}</span>}
         </div>
       </div>
       <button class="header__buy" data-tutorial="buy-mode" onClick={() => (game.buyMode.value = nextBuyMode(game.buyMode.value))}>
