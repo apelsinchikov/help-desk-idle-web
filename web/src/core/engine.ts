@@ -5,6 +5,7 @@ import { bulkCost, cycle, maxAffordable, nextCost, payout } from './economy.ts'
 import { nextMilestone, profitMultiplier, speedMultiplier } from './milestones.ts'
 import { newGame } from './state.ts'
 import { statTotals } from './modifiers.ts'
+import { energyCans } from './energy.ts'
 import type { Stats } from './modifiers.ts'
 import type { BuyMode, GameState, JobStatus, OfflineReport, PlayerSettings } from './state.ts'
 
@@ -429,6 +430,19 @@ export class GameEngine {
     const now = this.now()
     this.advance(now)
     this.changeModifiers(now, () => { delete this.current.items.equipped[slot] })
+  }
+
+  /** Выпить энергетик (после досмотренной рекламы): +5 минут ускорения; все банки полные — false. */
+  drinkEnergy(): boolean {
+    const now = this.now()
+    const { perkId, minutesPerCan } = this.content.config.energy
+    if (!energyCans(this.content, this.current, now).canDrink) return false
+    this.advance(now)
+    const add = minutesPerCan * 60_000
+    const running = this.current.perks.active.find((a) => a.id === perkId && a.until > now)
+    if (running) running.until += add // ускорение уже идёт — только время, скорость та же
+    else this.changeModifiers(now, () => this.current.perks.active.push({ id: perkId, until: now + add }))
+    return true
   }
 
   /** Сколько даст перемотка, без изменений состояния. */

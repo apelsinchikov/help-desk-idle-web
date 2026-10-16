@@ -60,13 +60,15 @@ test('manager rank: jobs 1-4 after the first promotion, the rest after the secon
 
 test('stage 2b perks catalog', () => {
   const c = bundledContent
-  assert.equal(c.perks.length, 32)
+  assert.equal(c.perks.length, 33)
   assert.deepEqual(c.perk('speed_200_60'), { id: 'speed_200_60', kind: 'speed', value: 2, minutes: 60 })
   assert.deepEqual(c.perk('level_25_5'), { id: 'level_25_5', kind: 'levelDiscount', value: 0.25, minutes: 5 })
   assert.equal(c.perk('salary_30_10')!.value, 0.3)
   assert.deepEqual(c.perk('rewind_15'), { id: 'rewind_15', kind: 'rewind', value: 0, minutes: 15 })
   const count = (kind: string) => c.perks.filter((p) => p.kind === kind).length
-  assert.deepEqual([count('speed'), count('levelDiscount'), count('salary'), count('rewind')], [12, 8, 8, 4])
+  assert.deepEqual([count('speed'), count('levelDiscount'), count('salary'), count('rewind')], [13, 8, 8, 4])
+  assert.deepEqual(c.perk('energy_drink'), { id: 'energy_drink', kind: 'speed', value: 0.3, minutes: 5 })
+  assert.deepEqual(c.config.energy, { perkId: 'energy_drink', minutesPerCan: 5, cans: 5 })
 })
 
 test('stage 2b wardrobe items: 7 per rarity, one per slot, stats by the spec table', () => {
