@@ -13,7 +13,13 @@ import { completeQuests, fillQuests } from '../../web/src/core/quests.ts'
 import { claimTrack } from '../../web/src/core/track.ts'
 
 const env = (k: string, d: number) => Number(process.env[k] ?? d)
-const cfg = { ...base.config, managerMinRank: env('MGR_RANK', base.config.managerMinRank), promotionFactor: env('PROMO_F', base.config.promotionFactor) }
+const cfg = {
+  ...base.config,
+  managerMinRank: env('MGR_RANK', base.config.managerMinRank),
+  promotionFactor: env('PROMO_F', base.config.promotionFactor),
+  track: { ...base.config.track, perkEvery: env('PERK_EVERY', base.config.track.perkEvery) },
+  quests: { ...base.config.quests, minMinutes: env('Q_MIN', base.config.quests.minMinutes), maxMinutes: env('Q_MAX', base.config.quests.maxMinutes) },
+}
 // MS_SMALL > 0: пороги каждые 25 уровней — существующие остаются, на промежуточных «прибыль ×MS_SMALL»
 const small = env('MS_SMALL', 0)
 function milestones() {
