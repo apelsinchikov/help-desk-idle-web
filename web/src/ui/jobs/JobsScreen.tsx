@@ -23,9 +23,9 @@ export function JobsScreen() {
           <span aria-hidden="true">☰</span> {t('nav.menu')}
           {alert && <span class="badge badge--dot" aria-label={t('menu.canBuy')} />}
         </button>
-        <div class="bottom__shop">
-          <span aria-hidden="true">🎁</span> {t('nav.shop')} <small>· {t('common.soon')}</small>
-        </div>
+        <button class="bottom__shop" onClick={() => game.navigate('shop')}>
+          <span aria-hidden="true">🎁</span> {t('nav.shop')}
+        </button>
       </nav>
     </div>
   )

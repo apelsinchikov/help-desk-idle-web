@@ -56,7 +56,7 @@ button:disabled { cursor: default; }
 .bottom { display: flex; gap: 10px; padding: 8px 16px calc(4px + var(--safe-bottom)); background: var(--background); }
 .bottom__menu, .bottom__shop { position: relative; flex: 1; min-height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 800; }
 .bottom__menu { background: var(--ink); color: var(--on-accent); }
-.bottom__shop { background: var(--track-strong); color: var(--muted); }
+.bottom__shop { background: var(--shop); color: var(--on-accent); }
 .bottom__shop small { font-size: 12px; }
 .badge { position: absolute; top: -8px; right: 8px; padding: 2px 7px; border-radius: 99px; background: var(--upgrades); color: var(--on-accent); font-size: 12px; font-weight: 800; }
 
@@ -261,3 +261,13 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .cmp--same { color: var(--muted); }
 .item__action { align-self: flex-start; margin-top: 6px; padding: 8px 14px; border-radius: 12px; background: var(--wardrobe); color: var(--on-accent); font-size: 14px; font-weight: 800; }
 .item__action--off { background: var(--track-strong); color: var(--ink); }
+
+/* Магазин */
+.sheet__head--shop { background: var(--shop); }
+.chest { border-radius: 16px; background: var(--card); padding: 12px 14px; margin-bottom: 10px; }
+.chest__head { display: flex; align-items: center; gap: 12px; }
+.chest__icon { font-size: 34px; }
+.chest__name { font-size: 16px; font-weight: 800; }
+.chest__price { font-size: 12px; color: var(--muted); font-weight: 600; }
+.chest__odds { margin: 8px 0; padding-left: 18px; font-size: 13px; font-weight: 600; }
+.chest__buy { width: 100%; min-height: 40px; border-radius: 12px; background: var(--track-strong); color: var(--muted); font-size: 14px; font-weight: 800; }
