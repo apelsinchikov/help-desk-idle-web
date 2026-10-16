@@ -16,7 +16,7 @@ function memory(): KeyValueStorage & { map: Map<string, string> } {
 }
 
 const game = (money: number) => {
-  const s = newGame(bundledContent, 1000, 'ru')
+  const s = newGame(bundledContent, 1000, 'ru', 1)
   s.money = money
   return s
 }
