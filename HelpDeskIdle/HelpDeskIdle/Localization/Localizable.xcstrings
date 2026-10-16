@@ -957,6 +957,23 @@
         }
       }
     },
+    "hint.quests": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three quests are always on the main screen. Each one is a star, and stars bring perks and items. Don’t like a quest? Replace it once every 4 hours."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На главном экране всегда три задания. За каждое — звезда, а звёзды приносят перки и вещи. Не нравится задание — замени его, раз в 4 часа можно."
+          }
+        }
+      }
+    },
     "hint.speaker": {
       "extractionState": "manual",
       "localizations": {
@@ -2674,6 +2691,23 @@
         }
       }
     },
+    "menu.quests": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quests"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Задания"
+          }
+        }
+      }
+    },
     "menu.reorg": {
       "extractionState": "manual",
       "localizations": {
@@ -2925,6 +2959,176 @@
           "stringUnit": {
             "state": "translated",
             "value": "Стать незаменимым"
+          }
+        }
+      }
+    },
+    "quest.collect": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collect by hand %1$lld times"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Собери вручную %1$lld раз"
+          }
+        }
+      }
+    },
+    "quest.earn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earn %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заработай %1$@"
+          }
+        }
+      }
+    },
+    "quest.hire": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hire a manager"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найми менеджера"
+          }
+        }
+      }
+    },
+    "quest.level": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level up “%1$@” to %2$lld"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прокачай «%1$@» до ур. %2$lld"
+          }
+        }
+      }
+    },
+    "quest.promote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promote “%1$@”"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повысь «%1$@»"
+          }
+        }
+      }
+    },
+    "quest.reroll": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заменить"
+          }
+        }
+      }
+    },
+    "quest.rerollIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace in %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Замена через %1$@"
+          }
+        }
+      }
+    },
+    "quest.reward": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reward: +1 ⭐"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Награда: +1 ⭐"
+          }
+        }
+      }
+    },
+    "quest.unlock": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open “%1$@”"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открой «%1$@»"
+          }
+        }
+      }
+    },
+    "quest.upgrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy an upgrade"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Купи улучшение"
           }
         }
       }
@@ -5203,6 +5407,108 @@
           "stringUnit": {
             "state": "translated",
             "value": "Задание выполнено! +1 ⭐ (всего %1$lld)"
+          }
+        }
+      }
+    },
+    "track.about": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every quest gives a star. Every 5 ⭐ — a perk, every 10 ⭐ — a new item, every 50 ⭐ — a rewind too."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Каждое задание — звезда. Каждые 5 ⭐ — перк, каждые 10 ⭐ — новая вещь, каждые 50 ⭐ — ещё и перемотка."
+          }
+        }
+      }
+    },
+    "track.got": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Received"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Получено"
+          }
+        }
+      }
+    },
+    "track.item": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item: %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вещь: %1$@"
+          }
+        }
+      }
+    },
+    "track.later": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Further rewards open as you go"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дальше — откроется по ходу игры"
+          }
+        }
+      }
+    },
+    "track.perk": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Random perk"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Случайный перк"
+          }
+        }
+      }
+    },
+    "track.rewind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rewind %1$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "перемотка %1$lld мин"
           }
         }
       }

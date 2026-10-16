@@ -3,8 +3,9 @@ import type { Route } from '../app/store.ts'
 import { buyableCounts, sectionLock, type SectionLock } from '../core/progress.ts'
 import { money, useGame } from './context.ts'
 
-type Item = { section: 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe'; key: string; color: string }
+type Item = { section: 'quests' | 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe'; key: string; color: string }
 const ITEMS: Item[] = [
+  { section: 'quests', key: 'menu.quests', color: 'var(--accent)' },
   { section: 'managers', key: 'menu.managers', color: 'var(--managers)' },
   { section: 'achievements', key: 'menu.achievements', color: 'var(--achievements)' },
   { section: 'upgrades', key: 'menu.upgrades', color: 'var(--upgrades)' },

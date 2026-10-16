@@ -24,7 +24,7 @@ export type CloudStatus =
   | { kind: 'synced'; at: number }
   | { kind: 'offline' }
 
-export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop'
+export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop' | 'quests'
 
 const TICK_MS = 100
 

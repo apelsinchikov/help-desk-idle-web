@@ -10,6 +10,7 @@ import { MessageSlot } from './MessageSlot.tsx'
 import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
 import { Shop } from './Shop.tsx'
+import { Quests } from './Quests.tsx'
 import { Tutorial } from './Tutorial.tsx'
 import { Upgrades } from './Upgrades.tsx'
 import { Wardrobe } from './Wardrobe.tsx'
@@ -36,6 +37,7 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'backpack' && <Backpack />}
       {route === 'wardrobe' && <Wardrobe />}
       {route === 'shop' && <Shop />}
+      {route === 'quests' && <Quests />}
       <MessageSlot />
       {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}
