@@ -5,17 +5,48 @@ import type { BuyMode } from './state.ts'
 
 export type Section = 'managers' | 'achievements' | 'upgrades' | 'settings'
 
-/** Дописывает в ui.sections разделы, которые пора открыть; возвращает только новые. */
-export function refreshSections(engine: GameEngine): Section[] {
+/** Что нужно, чтобы раздел меню открылся. */
+export type SectionLock =
+  | { kind: 'rank'; need: number; best: number } // повысить любую работу до ур. need (лучшая сейчас — best)
+  | { kind: 'earn'; need: number; have: number } // заработать за всё время need
+
+/** null — раздел уже можно открыть; иначе условие открытия. Единый источник правды для меню и refreshSections. */
+export function sectionLock(engine: GameEngine, section: Section): SectionLock | null {
   const { state, content } = engine
   const jobs = Object.values(state.jobs)
-  const cheapestUpgrade = content.upgrades[0]?.cost ?? Infinity
-  const open: Record<Section, boolean> = {
-    settings: true,
-    managers: jobs.some((j) => j.rank >= content.config.managerMinRank || j.hasManager),
-    achievements: jobs.some((j) => j.rank > 0),
-    upgrades: state.lifetimeEarnings >= cheapestUpgrade,
+  const best = Math.max(0, ...jobs.map((j) => j.rank))
+  switch (section) {
+    case 'settings':
+      return null
+    case 'managers': {
+      const need = content.config.managerMinRank
+      return best >= need || jobs.some((j) => j.hasManager) ? null : { kind: 'rank', need, best }
+    }
+    case 'achievements': {
+      const need = Math.min(...content.milestones.filter((m) => m.jobId !== null).map((m) => m.level))
+      return best >= need ? null : { kind: 'rank', need, best }
+    }
+    case 'upgrades': {
+      const need = Math.min(...content.upgrades.map((u) => u.cost))
+      return state.lifetimeEarnings >= need ? null : { kind: 'earn', need, have: state.lifetimeEarnings }
+    }
   }
+}
+
+/** Сколько менеджеров и улучшений можно купить прямо сейчас — для точки на кнопке меню. */
+export function buyableCounts(engine: GameEngine): { managers: number; upgrades: number } {
+  const { content } = engine
+  return {
+    managers: content.jobs.filter((j) => engine.canHireManager(j.id)).length,
+    upgrades: content.upgrades.filter((u) => engine.canBuyUpgrade(u.id)).length,
+  }
+}
+
+/** Дописывает в ui.sections разделы, которые пора открыть; возвращает только новые. */
+export function refreshSections(engine: GameEngine): Section[] {
+  const { state } = engine
+  const sections: Section[] = ['settings', 'managers', 'achievements', 'upgrades']
+  const open = Object.fromEntries(sections.map((s) => [s, sectionLock(engine, s) === null])) as Record<Section, boolean>
   const added: Section[] = []
   for (const section of Object.keys(open) as Section[]) {
     if (open[section] && !state.ui.sections.includes(section)) {

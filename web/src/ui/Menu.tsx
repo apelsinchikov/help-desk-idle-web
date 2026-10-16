@@ -1,6 +1,7 @@
 import { t } from '../app/strings.ts'
 import type { Route } from '../app/store.ts'
-import { useGame } from './context.ts'
+import { buyableCounts, sectionLock, type SectionLock } from '../core/progress.ts'
+import { money, useGame } from './context.ts'
 
 type Item = { section: 'managers' | 'achievements' | 'upgrades'; key: string; color: string }
 const ITEMS: Item[] = [
@@ -14,7 +15,7 @@ export function Menu() {
   const game = useGame()
   const { engine } = game
   const ui = engine.state.ui
-  const hireable = engine.content.jobs.filter((j) => engine.canHireManager(j.id)).length
+  const buyable = buyableCounts(engine)
   const close = () => game.navigate('jobs')
 
   return (
@@ -30,14 +31,14 @@ export function Menu() {
             >
               <i class="dot" style={{ background: item.color }} />
               {t(item.key)}
-              {item.section === 'managers' && hireable > 0 ? (
-                <span class="menu__badge">{hireable}</span>
+              {item.section in buyable && buyable[item.section as keyof typeof buyable] > 0 ? (
+                <span class="menu__badge">{buyable[item.section as keyof typeof buyable]}</span>
               ) : (
                 !ui.hintsSeen.includes(item.section) && <span class="menu__new">{t('menu.new')}</span>
               )}
             </button>
           ) : (
-            <Locked key={item.key} label={t(item.key)} />
+            <Locked key={item.key} label={t(item.key)} lock={sectionLock(engine, item.section)} />
           ),
         )}
         <Locked label={t('menu.wardrobe')} />
@@ -52,12 +53,28 @@ export function Menu() {
   )
 }
 
-function Locked({ label }: { label: string }) {
+/** Закрытый пункт: lock — что сделать, чтобы открыть; без lock — раздела ещё нет в игре (Coming soon). */
+function Locked({ label, lock }: { label: string; lock?: SectionLock | null }) {
   return (
     <div class="menu__item menu__item--locked">
       <span aria-hidden="true">🔒</span>
-      {label}
-      <small>{t('common.soon')}</small>
+      {lock ? (
+        <span class="menu__label">
+          {label}
+          <span class="menu__req">{requirement(lock)}</span>
+        </span>
+      ) : (
+        <>
+          {label}
+          <small>{t('common.soon')}</small>
+        </>
+      )}
     </div>
   )
+}
+
+function requirement(lock: SectionLock): string {
+  return lock.kind === 'rank'
+    ? t('menu.lock.rank', lock.need, lock.best)
+    : t('menu.lock.earn', money(lock.need), money(lock.have))
 }

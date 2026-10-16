@@ -470,13 +470,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Soon"
+            "value": "Coming soon"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Скоро"
+            "value": "Coming soon"
           }
         }
       }
@@ -1637,6 +1637,23 @@
         }
       }
     },
+    "menu.canBuy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something to buy"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Есть что купить"
+          }
+        }
+      }
+    },
     "menu.gallery": {
       "extractionState": "manual",
       "localizations": {
@@ -1650,6 +1667,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Галерея"
+          }
+        }
+      }
+    },
+    "menu.lock.earn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earn %1$@ in total (now %2$@)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заработай всего %1$@ (сейчас %2$@)"
+          }
+        }
+      }
+    },
+    "menu.lock.rank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promote any job to lv. %1$lld (now %2$lld)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повысь любую работу до ур. %1$lld (сейчас %2$lld)"
           }
         }
       }
