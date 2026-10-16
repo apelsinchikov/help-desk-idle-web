@@ -107,3 +107,14 @@ test('level quests that would take under 5 minutes are not given', () => {
     assert.ok(!e.state.quests.active.some((q) => q.kind === 'level'))
   }
 })
+
+test('replacing the earn quest when nothing else is free never breaks the list', () => {
+  const { e } = afterTutorial()
+  fillQuests(e, 0)
+  const earn = e.state.quests.active.find((q) => q.kind === 'earn')!
+  assert.ok(earn, e.state.quests.active.map((q) => q.kind).join())
+  assert.equal(rerollQuest(e, earn.id, 1000), true)
+  assert.equal(e.state.quests.active.length, 3)
+  for (const q of e.state.quests.active) assert.ok(typeof q.kind === 'string', JSON.stringify(q))
+  assert.doesNotThrow(() => completeQuests(e, 1000))
+})

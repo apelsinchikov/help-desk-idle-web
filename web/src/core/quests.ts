@@ -102,11 +102,12 @@ export function fillQuests(engine: GameEngine, at: number, exclude?: QuestKind):
   void at
   while (state.quests.active.length < SLOTS) {
     const taken = new Set(state.quests.active.map((q) => q.kind))
-    const all = candidates(engine).filter((q) => q.kind !== exclude)
+    const every = candidates(engine)
+    const all = every.filter((q) => q.kind !== exclude)
     const fresh = all.filter((q) => !taken.has(q.kind))
-    // случайный порядок, но «Заработай» — только когда больше нечего
+    // случайный порядок, но «Заработай» — только когда больше нечего; заменить нечем — снова «Заработай» (он есть всегда)
     const pool = fresh.filter((q) => q.kind !== 'earn')
-    const next = pool.length > 0 ? pick(state, pool) : fresh[0] ?? all.find((q) => q.kind === 'earn')!
+    const next = pool.length > 0 ? pick(state, pool) : fresh[0] ?? every.find((q) => q.kind === 'earn')!
     state.quests.seq++
     state.quests.active.push({ id: state.quests.seq, ...next })
   }
