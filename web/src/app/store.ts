@@ -10,6 +10,7 @@ import { nextTicket, ticketDue } from '../core/messages.ts'
 import type { Message } from '../core/messages.ts'
 import type { Milestone } from '../core/content.ts'
 import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
+import { grantPerk } from '../core/perks.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
 
 export type CloudStatus =
@@ -18,7 +19,7 @@ export type CloudStatus =
   | { kind: 'synced'; at: number }
   | { kind: 'offline' }
 
-export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements'
+export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack'
 
 const TICK_MS = 100
 
@@ -32,6 +33,8 @@ export function createGame(o: {
   haptic?: (kind: 'light' | 'success') => void
   /** Часы (тесты подменяют). */
   now?: () => number
+  /** Тестовая сборка (/dev/): в настройках есть выдача перков и вещей. */
+  devBuild?: boolean
 }) {
   const now = o.now ?? Date.now
   const { engine, scheduler } = o
@@ -64,6 +67,7 @@ export function createGame(o: {
     language,
     cloudStatus: o.cloudStatus,
     messages,
+    devBuild: o.devBuild ?? false,
 
     /** Действие игрока: покупки сохраняются сразу, тапы — по интервалу автосейва. */
     act(kind: 'purchase' | 'tap', fn: () => void): void {
@@ -88,6 +92,23 @@ export function createGame(o: {
       const firstTicket = queue.findIndex((m, i) => i > 0 && m.kind === 'ticket')
       const toast: Message = { kind: 'toast', text }
       messages.value = firstTicket < 0 ? [...queue, toast] : [...queue.slice(0, firstTicket), toast, ...queue.slice(firstTicket)]
+    },
+
+    /** Включить перк из рюкзака; перемотка — тост с заработанным. */
+    activatePerk(perkId: string): void {
+      const perk = engine.content.perk(perkId)
+      if (!perk) return
+      const before = engine.state.money
+      game.act('purchase', () => { if (engine.activatePerk(perkId)) game.haptic('success') })
+      if (perk.kind === 'rewind') game.pushToast({ key: 'toast.rewind', args: [perk.minutes, { money: engine.state.money - before }] })
+    },
+
+    /** Только /dev/: по перку каждого типа (и следующая вещь — когда появится гардероб). */
+    devGrant(): void {
+      if (!game.devBuild) return
+      game.act('purchase', () => {
+        for (const id of ['speed_100_5', 'salary_10_5', 'level_15_5', 'rewind_10']) grantPerk(engine.state, id)
+      })
     },
 
     buyUpgrade(upgradeId: string): void {

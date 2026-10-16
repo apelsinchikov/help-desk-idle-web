@@ -4,6 +4,7 @@ import { GameContext } from './context.ts'
 import { JobsScreen } from './jobs/JobsScreen.tsx'
 import { Loading } from './Loading.tsx'
 import { Achievements } from './Achievements.tsx'
+import { Backpack } from './Backpack.tsx'
 import { Managers } from './Managers.tsx'
 import { MessageSlot } from './MessageSlot.tsx'
 import { Menu } from './Menu.tsx'
@@ -30,6 +31,7 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'settings' && <Settings />}
       {route === 'upgrades' && <Upgrades />}
       {route === 'achievements' && <Achievements />}
+      {route === 'backpack' && <Backpack />}
       <MessageSlot />
       {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}

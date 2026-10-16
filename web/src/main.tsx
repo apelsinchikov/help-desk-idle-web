@@ -65,7 +65,8 @@ const scheduler = createSaveScheduler({
   cloudIntervalMs: 30_000,
   now: Date.now,
 })
-const game = createGame({ engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic })
+const game = createGame({
+  devBuild: isDevBuild, engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic })
 const phase = signal<Phase>('loading')
 
 // Кнопка «Назад» Telegram закрывает меню и листы.

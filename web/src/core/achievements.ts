@@ -2,7 +2,7 @@
 import type { Milestone } from './content.ts'
 
 /** `key` — ключ строки; строки в `args` — тоже ключи (переводятся перед подстановкой), числа — как есть. */
-export type AchievementText = { key: string; args: (string | number)[] }
+export type AchievementText = { key: string; args: (string | number | { money: number })[] }
 
 /** Работы 3 и 7 (бухгалтерия): сквозная шутка Людмилы Петровны из CONTENT.md. */
 const LYUDMILA_JOBS = new Set([2, 6])

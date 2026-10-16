@@ -2,6 +2,7 @@ import { t } from '../../app/strings.ts'
 import { buyableCounts } from '../../core/progress.ts'
 import { useGame } from '../context.ts'
 import { Header } from './Header.tsx'
+import { EffectsBar } from '../EffectsBar.tsx'
 import { JobCard } from './JobCard.tsx'
 
 /** Главный экран: шапка, список работ, нижняя панель. */
@@ -9,10 +10,11 @@ export function JobsScreen() {
   const game = useGame()
   const { engine } = game
   const buyable = buyableCounts(engine)
-  const alert = buyable.managers + buyable.upgrades > 0
+  const alert = buyable.managers + buyable.upgrades + buyable.perks > 0
   return (
     <div class="screen">
       <Header />
+      <EffectsBar />
       <main class="jobs">
         {engine.content.jobs.map((job) => <JobCard key={job.id} job={job} />)}
       </main>

@@ -226,6 +226,159 @@
         }
       }
     },
+    "backpack.duration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "for %1$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "на %1$lld мин"
+          }
+        }
+      }
+    },
+    "backpack.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empty for now. Perks come with stars: 5, 15, 25…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока пусто. Перки дают за звёзды: 5, 15, 25…"
+          }
+        }
+      }
+    },
+    "backpack.kind.levelDiscount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level discount"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скидка на уровни"
+          }
+        }
+      }
+    },
+    "backpack.kind.rewind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewind"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перемотка"
+          }
+        }
+      }
+    },
+    "backpack.kind.salary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salary"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зарплата"
+          }
+        }
+      }
+    },
+    "backpack.kind.speed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speed"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скорость"
+          }
+        }
+      }
+    },
+    "backpack.rewind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewind"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перемотать"
+          }
+        }
+      }
+    },
+    "backpack.rewindGain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gives %1$@ now"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "даст %1$@ сейчас"
+          }
+        }
+      }
+    },
+    "backpack.use": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch on"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включить"
+          }
+        }
+      }
+    },
     "buy.button": {
       "extractionState": "manual",
       "localizations": {
@@ -515,6 +668,74 @@
         }
       }
     },
+    "effects.backpack": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backpack (%1$lld)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рюкзак (%1$lld)"
+          }
+        }
+      }
+    },
+    "effects.items": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Items: %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вещи: %1$@"
+          }
+        }
+      }
+    },
+    "effects.itemsOnly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡ Item bonuses"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡ Бонусы вещей"
+          }
+        }
+      }
+    },
+    "effects.summary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡ Effects: %1$lld · %2$@ left"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡ Эффекты: %1$lld · ещё %2$@"
+          }
+        }
+      }
+    },
     "header.perSecond": {
       "extractionState": "manual",
       "localizations": {
@@ -545,6 +766,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Прокачай работу до нужного уровня — и она станет быстрее или прибыльнее. Галерея покажет, что ещё впереди."
+          }
+        }
+      }
+    },
+    "hint.backpack": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perks live here. Switch one on when it helps most: speed while you play, rewind any time. Rewind pays only jobs with managers."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тут лежат перки. Включай, когда выгоднее всего: скорость — пока играешь, перемотку — когда угодно. Перемотка платит только за работы с менеджерами."
           }
         }
       }
@@ -1637,6 +1875,23 @@
         }
       }
     },
+    "menu.backpack": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backpack"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рюкзак"
+          }
+        }
+      }
+    },
     "menu.canBuy": {
       "extractionState": "manual",
       "localizations": {
@@ -1701,6 +1956,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Повысь любую работу до ур. %1$lld (сейчас %2$lld)"
+          }
+        }
+      }
+    },
+    "menu.lock.stars": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collect %1$lld ⭐ (now %2$lld)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Набери %1$lld ⭐ (сейчас %2$lld)"
           }
         }
       }
@@ -1837,6 +2109,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Магазин"
+          }
+        }
+      }
+    },
+    "perk.rewind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewind %1$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перемотка %1$lld мин"
           }
         }
       }
@@ -2092,6 +2381,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Начать заново?"
+          }
+        }
+      }
+    },
+    "stat.gradeDiscount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grade −%1$lld%%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Грейд −%1$lld%%"
+          }
+        }
+      }
+    },
+    "stat.levelDiscount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levels −%1$lld%%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уровни −%1$lld%%"
+          }
+        }
+      }
+    },
+    "stat.salary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salary +%1$lld%%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зарплата +%1$lld%%"
+          }
+        }
+      }
+    },
+    "stat.speed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speed +%1$lld%%"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скорость +%1$lld%%"
           }
         }
       }
@@ -3809,6 +4166,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "📨 Заявка от %1$@: «%2$@»"
+          }
+        }
+      }
+    },
+    "toast.rewind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewound %1$lld min: +%2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перемотка %1$lld мин: +%2$@"
           }
         }
       }

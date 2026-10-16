@@ -71,6 +71,12 @@ export function Settings() {
             <button class="row row--danger" onClick={() => setConfirmReset(true)}>{t('settings.reset')}</button>
           )}
         </div>
+        {/* Техническая кнопка тестовой сборки, не переводится. */}
+        {game.devBuild && (
+          <div class="group">
+            <button class="row" onClick={() => game.devGrant()}>DEV: выдать перки и вещь</button>
+          </div>
+        )}
       </div>
     </div>
   )
