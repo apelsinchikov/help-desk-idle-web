@@ -8,10 +8,10 @@ import type { AppLanguage } from '../core/format.ts'
 import { createGame } from './store.ts'
 import type { CloudStatus } from './store.ts'
 
-function setup(edit: (s: ReturnType<typeof newGame>) => void = () => {}, clock = { t: 0 }) {
+function setup(edit: (s: ReturnType<typeof newGame>) => void = () => {}, clock = { t: 0 }, ads?: { show(): Promise<'done' | 'skipped' | 'unavailable'> } | null) {
   const s = newGame(bundledContent, 0, 'ru')
   edit(s)
-  const engine = new GameEngine(bundledContent, s)
+  const engine = new GameEngine(bundledContent, s, () => clock.t)
   const calls = { flush: 0, changed: [] as string[] }
   const game = createGame({
     engine,
@@ -19,6 +19,7 @@ function setup(edit: (s: ReturnType<typeof newGame>) => void = () => {}, clock =
     cloudStatus: signal<CloudStatus>({ kind: 'disabled' }),
     language: signal<AppLanguage>('ru'),
     now: () => clock.t,
+    ads,
   })
   return { engine, game, calls }
 }
@@ -107,4 +108,33 @@ test('when money covers only one upgrade, the other button goes grey but nothing
   game.buyUpgrade(a.id)
   assert.deepEqual(engine.state.upgrades, [a.id])
   assert.equal(engine.canBuyUpgrade(b.id), false, 'денег не осталось — кнопка гаснет, покупки нет')
+})
+
+test('energy: a watched ad fills a can, a skipped one does not', async () => {
+  let result: 'done' | 'skipped' = 'done'
+  let shows = 0
+  const { engine, game } = setup(() => {}, { t: 0 }, { show: async () => { shows++; return result } })
+  await game.watchAd()
+  assert.equal(engine.stats().speed, 0.3)
+  result = 'skipped'
+  await game.watchAd()
+  assert.equal(shows, 2)
+  assert.equal(engine.state.perks.active.find((a) => a.id === 'energy_drink')!.until, 5 * 60_000, 'пропущенная реклама банку не даёт')
+})
+
+test('energy: with all five cans full no ad is shown, a joke pops up instead', async () => {
+  let shows = 0
+  const { game } = setup(() => {}, { t: 0 }, { show: async () => { shows++; return 'done' } })
+  for (let i = 0; i < 5; i++) await game.watchAd()
+  assert.equal(shows, 5)
+  await game.watchAd()
+  assert.equal(shows, 5)
+  assert.notEqual(game.energyJoke.value, null)
+})
+
+test('energy: no ad network — a toast, no boost', async () => {
+  const { engine, game } = setup(() => {}, { t: 0 }, null)
+  await game.watchAd()
+  assert.equal(engine.stats().speed, 0)
+  assert.deepEqual(game.messages.value.at(-1), { kind: 'toast', text: { key: 'energy.noAds', args: [] } })
 })

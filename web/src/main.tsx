@@ -17,6 +17,7 @@ import { withTimeout } from './app/timeout.ts'
 import { App } from './ui/App.tsx'
 import { createClock } from './app/clock.ts'
 import { createLeaderboardCache } from './app/leaderboard.ts'
+import { createAds } from './platform/ads.ts'
 import type { Phase } from './ui/App.tsx'
 import './theme/tokens.css'
 import './theme/fonts.css'
@@ -72,7 +73,8 @@ const scheduler = createSaveScheduler({
 const game = createGame({
   devBuild: isDevBuild, engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic, now: clock.now,
   // рейтинг — только с облаком (Telegram); перед чтением отдаём свежий сейв, чтобы своя строка была актуальной
-  leaderboard: cloud ? createLeaderboardCache(() => cloud.leaderboard(), clock.now) : null })
+  leaderboard: cloud ? createLeaderboardCache(() => cloud.leaderboard(), clock.now) : null,
+  ads: createAds({ blockId: import.meta.env.VITE_ADSGRAM_BLOCK_ID, devBuild: isDevBuild }) })
 const phase = signal<Phase>('loading')
 
 // Кнопка «Назад» Telegram закрывает меню и листы.

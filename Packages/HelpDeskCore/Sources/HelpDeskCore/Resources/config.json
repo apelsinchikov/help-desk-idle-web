@@ -134,5 +134,10 @@
       30,
       60
     ]
+  },
+  "energy": {
+    "perkId": "energy_drink",
+    "minutesPerCan": 5,
+    "cans": 5
   }
 }

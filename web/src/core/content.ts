@@ -36,6 +36,8 @@ export type GameConfig = {
   saveSeason: number
   /** Перк-компенсация за вайп (в рюкзак). */
   wipeCompensation: string
+  /** Энергетики за рекламу: перк ускорения, минут на банку, сколько банок. */
+  energy: { perkId: string; minutesPerCan: number; cans: number }
   /** Потолки скидок (доля). */
   effects: { levelDiscountCap: number; gradeDiscountCap: number }
   /** Сообщения внизу экрана: сколько висит заявка (seconds) и тост (toastSeconds), как часто заявки, сколько их в банке. */

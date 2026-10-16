@@ -18,6 +18,8 @@ import type { Reward } from '../core/track.ts'
 import type { Slot } from '../core/content.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
 import type { LeaderboardCache } from './leaderboard.ts'
+import type { Ads } from '../platform/ads.ts'
+import { energyCans } from '../core/energy.ts'
 
 export type CloudStatus =
   | { kind: 'disabled' }
@@ -28,6 +30,8 @@ export type CloudStatus =
 export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop' | 'quests' | 'leaderboard'
 
 const TICK_MS = 100
+/** Шуток про «хватит пить энергетики» в строках: energy.joke.1…N. */
+export const ENERGY_JOKES = 8
 
 export function createGame(o: {
   engine: GameEngine
@@ -43,6 +47,8 @@ export function createGame(o: {
   devBuild?: boolean
   /** Рейтинг (только с облаком). */
   leaderboard?: LeaderboardCache | null
+  /** Реклама за награду (энергетики); null — рекламы нет. */
+  ads?: Ads | null
 }) {
   const now = o.now ?? Date.now
   const { engine, scheduler } = o
@@ -50,6 +56,10 @@ export function createGame(o: {
   const version = signal(0)
   const buyMode = signal<BuyMode>('one')
   const offlineReport = signal<OfflineReport | null>(null)
+  /** Все банки полные — номер шутки для облачка у кнопки (UI сам прячет через пару секунд). */
+  const energyJoke = signal<number | null>(null)
+  /** Идёт показ рекламы — кнопка ждёт. */
+  const adBusy = signal(false)
   /** Итог перемотки для окна «Время перемотано». */
   const rewindReport = signal<{ minutes: number; earned: number } | null>(null)
   const route = signal<Route>('jobs')
@@ -96,6 +106,8 @@ export function createGame(o: {
     buyMode,
     offlineReport,
     rewindReport,
+    energyJoke,
+    adBusy,
     route,
     language,
     cloudStatus: o.cloudStatus,
@@ -197,6 +209,27 @@ export function createGame(o: {
       if (!due) return
       messages.value = [{ kind: 'ticket', index: nextTicket(engine.state, cfg.tickets) }]
       lastTicketAt = now()
+    },
+
+    /** «Ускорить»: банки полные — шутка; иначе реклама, досмотрел — +5 минут ускорения. */
+    async watchAd(): Promise<void> {
+      if (adBusy.value) return
+      if (!energyCans(engine.content, engine.state, now()).canDrink) {
+        energyJoke.value = Math.floor(Math.random() * ENERGY_JOKES) + 1
+        return
+      }
+      if (!o.ads) {
+        game.pushToast({ key: 'energy.noAds', args: [] })
+        return
+      }
+      adBusy.value = true
+      try {
+        const result = await o.ads.show()
+        if (result === 'done') game.act('purchase', () => { if (engine.drinkEnergy()) game.haptic('success') })
+        else if (result === 'unavailable') game.pushToast({ key: 'energy.unavailable', args: [] })
+      } finally {
+        adBusy.value = false
+      }
     },
 
     /** Окно вайпа прочитано. */
