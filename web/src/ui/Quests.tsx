@@ -37,15 +37,15 @@ export function Quests() {
           <h1 class="sheet__title">{t('menu.quests')}</h1>
           <button class="sheet__close" aria-label={t('common.close')} onClick={() => game.navigate('jobs')}>✕</button>
         </div>
-        <div class="quests__stars">⭐ {state.stars}</div>
+        <div class="quests__stars">🎫 {t('quests.closed')}: {state.stars}</div>
       </div>
       <div class="sheet__body">
         <p class="quests__about">{t('track.about')}</p>
         {past.map((s) => (
-          <div key={s} class="track track--done"><span class="track__at">✓ {s} ⭐</span><span>{t('track.got')}</span></div>
+          <div key={s} class="track track--done"><span class="track__at">✓ {s} 🎫</span><span>{t('track.got')}</span></div>
         ))}
         {rows.map(({ s, text }) => (
-          <div key={s} class="track"><span class="track__at">{s} ⭐</span><span>{text}</span></div>
+          <div key={s} class="track"><span class="track__at">{s} 🎫</span><span>{text}</span></div>
         ))}
         <div class="track track--locked"><span class="track__at">🔒</span><span>{t('track.later')}</span></div>
       </div>

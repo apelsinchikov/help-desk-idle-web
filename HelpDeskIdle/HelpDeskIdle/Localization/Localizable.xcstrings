@@ -232,13 +232,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empty for now. Perks come with stars: 5, 15, 25…"
+            "value": "Empty for now. Perks come for closed tickets: 5, 15, 25…"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пока пусто. Перки дают за звёзды: 5, 15, 25…"
+            "value": "Пока пусто. Перки дают за закрытые тикеты: 5, 15, 25…"
           }
         }
       }
@@ -963,13 +963,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Three quests are always on the main screen. Each one is a star, and stars bring perks and items. Don’t like a quest? Replace it once every 4 hours."
+            "value": "Three quests are always on the main screen. Each one closes a ticket 🎫, and closed tickets bring perks and items. Don’t like a quest? Replace it once every 4 hours."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "На главном экране всегда три задания. За каждое — звезда, а звёзды приносят перки и вещи. Не нравится задание — замени его, раз в 4 часа можно."
+            "value": "На главном экране всегда три задания. Каждое — закрытый тикет 🎫, а тикеты приносят перки и вещи. Не нравится задание — замени его, раз в 4 часа можно."
           }
         }
       }
@@ -2782,13 +2782,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Collect %1$lld ⭐ (now %2$lld)"
+            "value": "Close %1$lld 🎫 tickets (now %2$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Набери %1$lld ⭐ (сейчас %2$lld)"
+            "value": "Закрой %1$lld 🎫 тикетов (сейчас %2$lld)"
           }
         }
       }
@@ -3258,13 +3258,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reward: +1 ⭐"
+            "value": "Reward: +1 🎫 closed ticket"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Награда: +1 ⭐"
+            "value": "Награда: +1 🎫 закрытый тикет"
           }
         }
       }
@@ -3299,6 +3299,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Купи улучшение"
+          }
+        }
+      }
+    },
+    "quests.closed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Closed tickets"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрыто тикетов"
           }
         }
       }
@@ -5587,13 +5604,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quest done! +1 ⭐ (total %1$lld)"
+            "value": "Ticket closed! +1 🎫 (total %1$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Задание выполнено! +1 ⭐ (всего %1$lld)"
+            "value": "Тикет закрыт! +1 🎫 (всего %1$lld)"
           }
         }
       }
@@ -5604,13 +5621,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Every quest gives a star. Every 5 ⭐ — a perk; items come in order: common every 10 ⭐, rare every 20, epic every 40, legendary every 80; every 50 ⭐ — a rewind too."
+            "value": "Every quest closes a ticket 🎫. Every 5 🎫 — a perk; items come in order: common every 10 🎫, rare every 20, epic every 40, legendary every 80; every 50 🎫 — a rewind too."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Каждое задание — звезда. Каждые 5 ⭐ — перк; вещи идут по порядку: обычные — каждые 10 ⭐, редкие — каждые 20, эпические — 40, легендарные — 80; каждые 50 ⭐ — ещё и перемотка."
+            "value": "Каждое задание — закрытый тикет 🎫. Каждые 5 🎫 — перк; вещи идут по порядку: обычные — каждые 10 🎫, редкие — каждые 20, эпические — 40, легендарные — 80; каждые 50 🎫 — ещё и перемотка."
           }
         }
       }
@@ -6199,13 +6216,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nothing here yet. The first item comes at 10 ⭐"
+            "value": "Nothing here yet. The first item comes at 10 🎫"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пока пусто. Первая вещь — за 10 ⭐"
+            "value": "Пока пусто. Первая вещь — за 10 🎫"
           }
         }
       }
