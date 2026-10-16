@@ -5,7 +5,7 @@
   "managerMinRank": 50,
   "promotionFactor": 2,
   "effects": {
-    "levelDiscountCap": 0.5,
+    "levelDiscountCap": 0.6,
     "gradeDiscountCap": 0.5
   },
   "messages": {

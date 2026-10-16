@@ -77,7 +77,7 @@ test('stage 2b wardrobe items: 7 per rarity, one per slot, stats by the spec tab
     { id: 'helpdesk_cap', slot: 'head', rarity: 'common', stat: 'speed', value: 0.5, iconKey: 'slot_head' },
   )
   const values: Record<string, number[]> = {
-    speed: [0.5, 1, 1.5, 2], levelDiscount: [0.03, 0.05, 0.1, 0.15], gradeDiscount: [0.05, 0.1, 0.15, 0.2], salary: [0.1, 0.15, 0.2, 0.3],
+    speed: [0.5, 1, 1.5, 2], levelDiscount: [0.03, 0.05, 0.08, 0.1], gradeDiscount: [0.05, 0.1, 0.15, 0.2], salary: [0.1, 0.15, 0.2, 0.3],
   }
   const rarities = ['common', 'rare', 'epic', 'legendary'] as const
   rarities.forEach((rarity, r) => {
@@ -100,7 +100,7 @@ test('stage 2b chests and config', () => {
   assert.deepEqual(c.chests[2].items, [{ rarity: 'rare', chance: 0.7 }, { rarity: 'epic', chance: 0.25 }, { rarity: 'legendary', chance: 0.005 }])
   assert.deepEqual(c.chests.map((ch) => ch.perks), [[1, 1], [3, 5], [5, 9], [9, 15]])
   assert.equal(c.chests[0].currency, 'techcoin')
-  assert.equal(c.config.effects.levelDiscountCap, 0.5)
+  assert.equal(c.config.effects.levelDiscountCap, 0.6)
   assert.deepEqual(c.config.messages, { seconds: 20, ticketEverySeconds: 180, tickets: 50 })
   assert.deepEqual(c.config.track.tiers.map((t) => t.fromStars), [0, 50, 100, 150])
   assert.deepEqual(c.config.track.tiers[0], { fromStars: 0, minutes: [5], speed: [1], levelDiscount: [0.15], salary: [0.1], rewind: [10] })

@@ -25,12 +25,23 @@ test('two identical perks both count', () => {
   assert.equal(statTotals(c, s, 0).speed, 2)
 })
 
-test('level discount is capped at 50%', () => {
+test('level discount from items and perks together is capped at 60%', () => {
   const s = fresh()
   s.items.owned.push('corp_card')
   s.items.equipped.accessory = 'corp_card'
   s.perks.active.push({ id: 'level_25_5', until: 10_000 }, { id: 'level_25_10', until: 10_000 })
-  assert.equal(statTotals(c, s, 0).levelDiscount, 0.5)
+  assert.equal(statTotals(c, s, 0).levelDiscount, 0.6)
+})
+
+test('the best wardrobe for levels stays under the cap, and item totals show what applies', () => {
+  const s = fresh()
+  const best: Record<string, { id: string; v: number }> = {}
+  for (const item of c.items) if (item.stat === 'levelDiscount' && item.value > (best[item.slot]?.v ?? 0)) best[item.slot] = { id: item.id, v: item.value }
+  for (const [slot, { id }] of Object.entries(best)) { s.items.owned.push(id); (s.items.equipped as any)[slot] = id }
+  const total = itemTotals(c, s).levelDiscount
+  assert.ok(total < 0.5, `вещами одними: ${total}`)
+  s.items.equipped.top = 'founder_hoodie'
+  assert.ok(itemTotals(c, s).levelDiscount <= 0.6)
 })
 
 test('a perk stops counting at its until moment', () => {
