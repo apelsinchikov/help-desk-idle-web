@@ -7,6 +7,7 @@ import { compareEquip } from '../core/items.ts'
 import type { CompareRow } from '../core/items.ts'
 import { itemTotals, perkTotals } from '../core/modifiers.ts'
 import { activeEffects } from '../core/perks.ts'
+import { Chibi } from './Chibi.tsx'
 import { timer, useGame } from './context.ts'
 import { Icon } from './Icon.tsx'
 import { perkIcon, perkLabel, statLabel, statTotal, statValue } from './labels.ts'
@@ -52,18 +53,18 @@ export function Wardrobe() {
 
 const LEFT: Slot[] = ['head', 'glasses', 'accessory', 'watch']
 const RIGHT: Slot[] = ['top', 'pants', 'shoes']
-/** Где вещь видна на человечке (проценты от рамки фигуры). */
-const ON_BODY: Record<Slot, { x: number; y: number }> = {
-  head: { x: 50, y: 6 }, glasses: { x: 50, y: 17 }, accessory: { x: 38, y: 40 }, top: { x: 62, y: 42 },
-  watch: { x: 17, y: 55 }, pants: { x: 50, y: 72 }, shoes: { x: 50, y: 94 },
-}
 
-/** Человечек: слева и справа ячейки слотов, надетое видно и в ячейке, и на фигуре. */
+/** Человечек: слева и справа ячейки слотов, в центре — чиби в надетом (цвет вещи — по редкости). */
 function Doll({ onSlot }: { onSlot: (itemId: string) => void }) {
   const { engine } = useGame()
   const { equipped } = engine.state.items
-  const cell = (slot: Slot) => {
+  const worn: Partial<Record<Slot, ItemDefinition>> = {}
+  for (const slot of SLOTS) {
     const item = equipped[slot] ? engine.content.item(equipped[slot]!) : undefined
+    if (item) worn[slot] = item
+  }
+  const cell = (slot: Slot) => {
+    const item = worn[slot]
     return (
       <button key={slot} class={`slot ${item ? `rarity--${item.rarity}` : 'slot--empty'}`} title={t(`slot.${slot}`)}
         onClick={() => item && onSlot(item.id)}>
@@ -75,19 +76,7 @@ function Doll({ onSlot }: { onSlot: (itemId: string) => void }) {
   return (
     <div class="doll">
       <div class="doll__col">{LEFT.map(cell)}</div>
-      <div class="doll__figure">
-        <svg viewBox="0 0 120 200" class="doll__svg" aria-hidden="true">
-          <circle cx="60" cy="30" r="22" />
-          <rect x="34" y="56" width="52" height="74" rx="16" />
-          <rect x="14" y="60" width="16" height="62" rx="8" />
-          <rect x="90" y="60" width="16" height="62" rx="8" />
-          <rect x="38" y="126" width="18" height="62" rx="8" />
-          <rect x="64" y="126" width="18" height="62" rx="8" />
-        </svg>
-        {SLOTS.filter((s) => equipped[s]).map((s) => (
-          <span key={s} class="doll__worn" style={{ left: `${ON_BODY[s].x}%`, top: `${ON_BODY[s].y}%` }}><ItemIcon slot={s} /></span>
-        ))}
-      </div>
+      <div class="doll__figure"><Chibi worn={worn} /></div>
       <div class="doll__col">{RIGHT.map(cell)}</div>
     </div>
   )
