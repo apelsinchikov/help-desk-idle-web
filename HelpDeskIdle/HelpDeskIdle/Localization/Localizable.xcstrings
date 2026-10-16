@@ -2442,13 +2442,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Promote the job to lv. %1$lld first (now %2$lld)"
+            "value": "Reach lv. %1$lld and promote the job (now lv. %2$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сначала повысь работу до ур. %1$lld (сейчас %2$lld)"
+            "value": "Прокачай до ур. %1$lld и пройди повышение (сейчас ур. %2$lld)"
           }
         }
       }
@@ -2612,13 +2612,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Promote any job to lv. %1$lld (now %2$lld)"
+            "value": "Get any job to lv. %1$lld and promote it (now lv. %2$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Повысь любую работу до ур. %1$lld (сейчас %2$lld)"
+            "value": "Прокачай любую работу до ур. %1$lld и пройди повышение (сейчас ур. %2$lld)"
           }
         }
       }
