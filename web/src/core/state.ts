@@ -34,8 +34,8 @@ export type GameState = {
   quests: { active: Quest[]; rerollAt: number; seq: number }
   /** Счётчики для заданий: сборы тапом, наймы, улучшения, заработано всего. */
   stats: { collects: number; hires: number; upgrades: number; earned: number }
-  /** Рюкзак (id → сколько штук) и включённые перки (до какого момента, мс). */
-  perks: { inventory: Record<string, number>; active: { id: string; until: number }[] }
+  /** Рюкзак (id → сколько штук), включённые перки (до какого момента, мс), сколько перков пришло с прошлого захода в рюкзак. */
+  perks: { inventory: Record<string, number>; active: { id: string; until: number }[]; fresh: number }
   /** Вещи: полученные (в порядке получения), надетые по слотам, уже просмотренные в шкафу. */
   items: { owned: string[]; equipped: Partial<Record<Slot, string>>; seen: string[] }
   /** Зерно генератора наград: награды не «перебрасываются» перезагрузкой. */
@@ -76,7 +76,7 @@ export function newStage2b(seed: number) {
     track: { claimed: 0 },
     quests: { active: [] as Quest[], rerollAt: 0, seq: 0 },
     stats: { collects: 0, hires: 0, upgrades: 0, earned: 0 },
-    perks: { inventory: {} as Record<string, number>, active: [] as { id: string; until: number }[] },
+    perks: { inventory: {} as Record<string, number>, active: [] as { id: string; until: number }[], fresh: 0 },
     items: { owned: [] as string[], equipped: {} as Partial<Record<Slot, string>>, seen: [] as string[] },
     rngSeed: seed,
   }

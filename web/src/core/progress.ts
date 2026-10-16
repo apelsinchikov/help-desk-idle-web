@@ -54,7 +54,7 @@ export function buyableCounts(engine: GameEngine): { managers: number; upgrades:
   return {
     managers: content.jobs.filter((j) => engine.canHireManager(j.id)).length,
     upgrades: content.upgrades.filter((u) => engine.canBuyUpgrade(u.id)).length,
-    perks: inventoryCount(engine.state),
+    perks: engine.state.perks.fresh,
     items: engine.state.items.owned.filter((id) => !engine.state.items.seen.includes(id)).length,
   }
 }

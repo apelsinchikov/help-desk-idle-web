@@ -55,7 +55,7 @@ button:disabled { cursor: default; }
 /* Нижняя панель */
 .bottom { display: flex; gap: 10px; padding: 8px 16px calc(4px + var(--safe-bottom)); background: var(--background); }
 .bottom__menu, .bottom__shop { position: relative; flex: 1; min-height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 800; }
-.bottom__menu { background: var(--ink); color: var(--on-accent); }
+.bottom__menu { background: var(--nav); color: var(--on-accent); }
 .bottom__shop { background: var(--shop); color: var(--on-accent); }
 .bottom__shop small { font-size: 12px; }
 .badge { position: absolute; top: -8px; right: 8px; padding: 2px 7px; border-radius: 99px; background: var(--upgrades); color: var(--on-accent); font-size: 12px; font-weight: 800; }
@@ -167,7 +167,7 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .gallery__item b { font-size: 14px; color: var(--ink); }
 .gallery__item--got { background: color-mix(in srgb, var(--achievements) 25%, var(--card)); color: var(--ink); }
 .gallery__item--todo { opacity: .5; }
-.message { position: fixed; left: 16px; right: 16px; bottom: calc(76px + var(--safe-bottom)); max-width: 528px; margin: 0 auto; z-index: 40; padding: 12px 14px; border-radius: 14px; background: var(--ink); color: var(--on-accent); font-size: 14px; font-weight: 700; text-align: center; animation: toast-in .25s ease-out; cursor: pointer; }
+.message { position: fixed; left: 16px; right: 16px; bottom: calc(76px + var(--safe-bottom)); max-width: 528px; margin: 0 auto; z-index: 40; padding: 12px 14px; border-radius: 14px; background: var(--nav); color: var(--on-accent); font-size: 14px; font-weight: 700; text-align: center; animation: toast-in .25s ease-out; cursor: pointer; }
 .message--ticket { background: var(--card); color: var(--ink); border: 2px solid var(--line); text-align: left; font-weight: 600; }
 @keyframes toast-in { from { opacity: 0; transform: translateY(12px); } }
 .hint-backdrop { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 55%, transparent); display: flex; align-items: flex-end; justify-content: center; padding: 16px 16px calc(24px + var(--safe-bottom)); }
@@ -313,3 +313,23 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .leader__money { font-variant-numeric: tabular-nums; font-weight: 800; }
 .leaderboard__gap { text-align: center; color: var(--muted); padding: 2px 0 6px; }
 .leaderboard__updated { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 0; }
+
+/* Гардероб: человечек и бонусы */
+.header__avatar-button { padding: 0; background: none; flex: none; }
+.doll { display: grid; grid-template-columns: 64px 1fr 64px; gap: 8px; align-items: center; margin-bottom: 12px; }
+.doll__col { display: flex; flex-direction: column; gap: 8px; }
+.doll .slot { aspect-ratio: auto; height: 64px; flex-direction: column; gap: 2px; padding: 4px; }
+.slot__label { font-size: 9px; font-weight: 700; color: var(--muted); line-height: 1; }
+.doll__figure { position: relative; height: 290px; }
+.doll__svg { width: 100%; height: 100%; fill: var(--track-strong); stroke: var(--locked-border); stroke-width: 2; }
+.doll__worn { position: absolute; transform: translate(-50%, -50%); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+.doll__worn .slot__icon { width: 36px; height: 36px; }
+.doll__worn .slot__emoji { font-size: 26px; }
+.bonuses { padding: 12px; border-radius: 14px; background: var(--card); margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+.bonuses__title { font-size: 13px; font-weight: 800; color: var(--muted); }
+.bonuses__row { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; font-weight: 800; }
+.bonuses__stat small { font-weight: 600; color: var(--muted); font-size: 11px; }
+.bonuses__none { font-size: 13px; color: var(--muted); }
+.bonuses__perk { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+.bonuses__time { font-variant-numeric: tabular-nums; }
+.doll .slot .slot__icon { width: 32px; height: 32px; }

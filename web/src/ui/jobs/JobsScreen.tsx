@@ -2,7 +2,6 @@ import { t } from '../../app/strings.ts'
 import { buyableCounts } from '../../core/progress.ts'
 import { useGame } from '../context.ts'
 import { Header } from './Header.tsx'
-import { EffectsBar } from '../EffectsBar.tsx'
 import { QuestStrip } from '../QuestStrip.tsx'
 import { JobCard } from './JobCard.tsx'
 
@@ -16,7 +15,6 @@ export function JobsScreen() {
     <div class="screen">
       <Header />
       <QuestStrip />
-      <EffectsBar />
       <main class="jobs">
         {engine.content.jobs.map((job) => <JobCard key={job.id} job={job} />)}
       </main>

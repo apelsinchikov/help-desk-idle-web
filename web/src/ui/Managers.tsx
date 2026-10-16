@@ -26,7 +26,9 @@ export function Managers() {
           <span>{money(engine.state.money)}</span>
         </div>
         <p class="managers__intro">{t('managers.intro')}</p>
-        {engine.content.jobs.map((job) => <ManagerRow key={job.id} job={job} />)}
+        {engine.content.jobs.filter((j) => !engine.state.jobs[j.id]?.hasManager).map((job) => <ManagerRow key={job.id} job={job} />)}
+        {engine.content.jobs.some((j) => engine.state.jobs[j.id]?.hasManager) && <div class="group__title">{t('managers.hired')}</div>}
+        {engine.content.jobs.filter((j) => engine.state.jobs[j.id]?.hasManager).map((job) => <ManagerRow key={job.id} job={job} />)}
       </div>
       <SectionHint section="managers" />
     </div>

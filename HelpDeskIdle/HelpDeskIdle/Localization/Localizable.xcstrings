@@ -2521,6 +2521,23 @@
         }
       }
     },
+    "managers.hired": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уже работают"
+          }
+        }
+      }
+    },
     "managers.intro": {
       "extractionState": "manual",
       "localizations": {
@@ -6244,6 +6261,23 @@
         }
       }
     },
+    "wardrobe.itemBonuses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item bonuses (base ×1)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бонусы вещей (база ×1)"
+          }
+        }
+      }
+    },
     "wardrobe.lostStat": {
       "extractionState": "manual",
       "localizations": {
@@ -6291,6 +6325,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Надень вещь — здесь появятся бонусы"
+          }
+        }
+      }
+    },
+    "wardrobe.perkBonuses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perks right now"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перки сейчас"
           }
         }
       }

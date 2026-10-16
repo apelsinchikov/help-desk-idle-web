@@ -14,7 +14,9 @@ export function Backpack() {
   const game = useGame()
   const { engine } = game
   const perks = inventoryCount(engine.state)
-  const newItems = engine.state.items.owned.filter((id) => !engine.state.items.seen.includes(id)).length
+  // новое — на момент открытия; сам рюкзак сразу отмечает всё просмотренным (точка на «Меню» гаснет)
+  const fresh = useFreshItems(() => { if (engine.state.perks.fresh > 0 || engine.state.items.owned.some((id) => !engine.state.items.seen.includes(id))) game.markBackpackSeen() })
+  const newItems = fresh.size
   const [tab, setTab] = useState<'perks' | 'items'>(perks > 0 || newItems === 0 ? 'perks' : 'items')
   return (
     <div class="sheet">
@@ -32,15 +34,10 @@ export function Backpack() {
           </button>
         </div>
       </div>
-      <div class="sheet__body">{tab === 'perks' ? <PerkGrid /> : <ItemsTab />}</div>
+      <div class="sheet__body">{tab === 'perks' ? <PerkGrid /> : <Closet fresh={fresh} />}</div>
       <SectionHint section="backpack" />
     </div>
   )
-}
-
-function ItemsTab() {
-  const fresh = useFreshItems()
-  return <Closet fresh={fresh} />
 }
 
 function PerkGrid() {
