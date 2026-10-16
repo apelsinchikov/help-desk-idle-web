@@ -22,7 +22,30 @@ const cfg = {
 }
 // MS_SMALL > 0: пороги каждые 25 уровней — существующие остаются, на промежуточных «прибыль ×MS_SMALL»
 const small = env('MS_SMALL', 0)
+// MS_SPARSE=1: пороги до 100 — каждые 25, 100–300 — каждые 50, 300–1000 — каждые 100, дальше — каждые 250.
+// MS_FOLD=1: награды выпавших порогов не теряются, а переносятся на ближайший оставшийся порог выше.
+function sparse(list: typeof base.milestones) {
+  const keep = (l: number) => l <= 100 ? l % 25 === 0 : l <= 300 ? l % 50 === 0 : l <= 1000 ? l % 100 === 0 : l % 250 === 0
+  const out: typeof base.milestones = []
+  const carry: Record<string, { speed: number; profit: number }> = {}
+  for (const m of [...list].sort((a, b) => a.level - b.level)) {
+    if (m.jobId === null || keep(m.level)) {
+      const c = m.jobId ? carry[m.jobId] : undefined
+      out.push(m)
+      if (c && env('MS_FOLD', 0)) {
+        if (c.profit !== 1) out.push({ jobId: m.jobId, level: m.level, effect: 'profit' as const, value: c.profit })
+        if (c.speed !== 1) out.push({ jobId: m.jobId, level: m.level, effect: 'speed' as const, value: c.speed })
+        carry[m.jobId!] = { speed: 1, profit: 1 }
+      }
+      continue
+    }
+    const c = (carry[m.jobId] ??= { speed: 1, profit: 1 })
+    c[m.effect] *= m.value
+  }
+  return out
+}
 function milestones() {
+  if (env('MS_SPARSE', 0)) return sparse(base.milestones)
   if (!small) return base.milestones
   const out = [...base.milestones]
   for (const j of base.jobs) {
