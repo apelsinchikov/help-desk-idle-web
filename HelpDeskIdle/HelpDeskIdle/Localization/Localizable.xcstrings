@@ -2062,6 +2062,125 @@
         }
       }
     },
+    "leaderboard.about": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earned over all time. Updates every 5 minutes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заработано за всё время. Обновляется раз в 5 минут."
+          }
+        }
+      }
+    },
+    "leaderboard.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody here yet — be the first!"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока никого — стань первым!"
+          }
+        }
+      }
+    },
+    "leaderboard.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load the leaderboard. Try again later."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось загрузить рейтинг. Попробуй позже."
+          }
+        }
+      }
+    },
+    "leaderboard.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загружаем…"
+          }
+        }
+      }
+    },
+    "leaderboard.telegramOnly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leaderboard is in Telegram"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рейтинг — в Telegram"
+          }
+        }
+      }
+    },
+    "leaderboard.updated": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$lld min ago"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновлено %1$lld мин назад"
+          }
+        }
+      }
+    },
+    "leaderboard.you": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "you"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ты"
+          }
+        }
+      }
+    },
     "loading.status.1": {
       "extractionState": "manual",
       "localizations": {
@@ -2442,13 +2561,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Promote the job to lv. %1$lld first (now %2$lld)"
+            "value": "Reach lv. %1$lld and promote the job (now lv. %2$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сначала повысь работу до ур. %1$lld (сейчас %2$lld)"
+            "value": "Прокачай до ур. %1$lld и пройди повышение (сейчас ур. %2$lld)"
           }
         }
       }
@@ -2589,6 +2708,23 @@
         }
       }
     },
+    "menu.leaderboard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leaderboard"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рейтинг"
+          }
+        }
+      }
+    },
     "menu.lock.earn": {
       "extractionState": "manual",
       "localizations": {
@@ -2612,13 +2748,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Promote any job to lv. %1$lld (now %2$lld)"
+            "value": "Get any job to lv. %1$lld and promote it (now lv. %2$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Повысь любую работу до ур. %1$lld (сейчас %2$lld)"
+            "value": "Прокачай любую работу до ур. %1$lld и пройди повышение (сейчас ур. %2$lld)"
           }
         }
       }

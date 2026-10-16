@@ -96,8 +96,8 @@ test('a locked section says what opens it', () => {
   assert.equal(sectionLock(e, 'achievements'), null)
   assert.deepEqual(sectionLock(e, 'upgrades'), { kind: 'earn', need: 25_000_000, have: 1000 })
   const fresh = makeEngine(makeClock())
-  assert.deepEqual(sectionLock(fresh, 'achievements'), { kind: 'rank', need: 25, best: 0 })
-  assert.deepEqual(sectionLock(fresh, 'managers'), { kind: 'rank', need: 25, best: 0 })
+  assert.deepEqual(sectionLock(fresh, 'achievements'), { kind: 'rank', need: 25, best: 1 })
+  assert.deepEqual(sectionLock(fresh, 'managers'), { kind: 'rank', need: 25, best: 1 })
 })
 
 test('menu alert counts managers and upgrades the player can buy now', () => {
@@ -152,4 +152,9 @@ test('quests section opens with the finished tutorial', () => {
   assert.deepEqual(sectionLock(e, 'quests'), { kind: 'tutorial' })
   e.state.ui.tutorialDone = true
   assert.equal(sectionLock(e, 'quests'), null)
+})
+
+test('lock progress shows the best job level, not the rank: level 25 reached but not promoted yet', () => {
+  const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 25; s.jobs.reboot.rank = 0 })
+  assert.deepEqual(sectionLock(e, 'managers'), { kind: 'rank', need: 25, best: 25 })
 })

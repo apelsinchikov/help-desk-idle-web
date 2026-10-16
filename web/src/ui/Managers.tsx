@@ -61,7 +61,7 @@ function ManagerRow({ job }: { job: JobDefinition }) {
       ) : !open ? (
         <span class="manager__locked">{t('managers.lockedJob')}</span>
       ) : rank < minRank ? (
-        <span class="manager__locked">{t('managers.needRank', minRank, rank)}</span>
+        <span class="manager__locked">{t('managers.needRank', minRank, level)}</span>
       ) : (
         <button
           class={`manager__hire ${canHire ? '' : 'manager__hire--off'}`}

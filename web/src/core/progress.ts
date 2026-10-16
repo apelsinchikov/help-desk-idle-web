@@ -8,7 +8,7 @@ export type Section = 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'w
 
 /** Что нужно, чтобы раздел меню открылся. */
 export type SectionLock =
-  | { kind: 'rank'; need: number; best: number } // повысить любую работу до ур. need (лучшая сейчас — best)
+  | { kind: 'rank'; need: number; best: number } // дойти до ур. need в любой работе и пройти повышение (лучший уровень — best)
   | { kind: 'earn'; need: number; have: number } // заработать за всё время need
   | { kind: 'stars'; need: number; have: number } // набрать need звёзд
   | { kind: 'tutorial' } // пройти обучение
@@ -17,7 +17,9 @@ export type SectionLock =
 export function sectionLock(engine: GameEngine, section: Section): SectionLock | null {
   const { state, content } = engine
   const jobs = Object.values(state.jobs)
-  const best = Math.max(0, ...jobs.map((j) => j.rank))
+  const bestRank = Math.max(0, ...jobs.map((j) => j.rank))
+  // прогресс в подсказке — уровень лучшей работы: «дойди до ур. 25 и пройди повышение (сейчас ур. 18)»
+  const best = Math.max(0, ...jobs.map((j) => j.level))
   switch (section) {
     case 'settings':
       return null
@@ -29,7 +31,7 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
     }
     case 'achievements': {
       const need = Math.min(...content.milestones.filter((m) => m.jobId !== null).map((m) => m.level))
-      return best >= need ? null : { kind: 'rank', need, best }
+      return bestRank >= need ? null : { kind: 'rank', need, best }
     }
     case 'backpack': {
       const has = inventoryCount(state) > 0 || state.perks.active.length > 0 || state.items.owned.length > 0

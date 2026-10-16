@@ -16,6 +16,7 @@ import { detectLanguage } from './app/i18n.ts'
 import { withTimeout } from './app/timeout.ts'
 import { App } from './ui/App.tsx'
 import { createClock } from './app/clock.ts'
+import { createLeaderboardCache } from './app/leaderboard.ts'
 import type { Phase } from './ui/App.tsx'
 import './theme/tokens.css'
 import './theme/fonts.css'
@@ -39,7 +40,7 @@ const engine = new GameEngine(content, state, clock.now)
 // Облако — только в Telegram и только если сборка знает адрес и ключ проекта.
 const cloud = createCloud(
   { url: import.meta.env.VITE_SUPABASE_URL, key: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-  { initData: telegram.initData, userId: telegram.userId },
+  { initData: telegram.initData, userId: telegram.userId, displayName: telegram.displayName },
 )
 const cloudStatus = signal<CloudStatus>({ kind: cloud ? 'syncing' : 'disabled' })
 
@@ -69,7 +70,9 @@ const scheduler = createSaveScheduler({
   now: clock.now,
 })
 const game = createGame({
-  devBuild: isDevBuild, engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic, now: clock.now })
+  devBuild: isDevBuild, engine, scheduler, cloudStatus, language: uiLanguage, haptic: telegram.haptic, now: clock.now,
+  // рейтинг — только с облаком (Telegram); перед чтением отдаём свежий сейв, чтобы своя строка была актуальной
+  leaderboard: cloud ? createLeaderboardCache(() => cloud.leaderboard(), clock.now) : null })
 const phase = signal<Phase>('loading')
 
 // Кнопка «Назад» Telegram закрывает меню и листы.
