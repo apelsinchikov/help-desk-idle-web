@@ -2,7 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { bundledContent as c } from './bundled.ts'
 import { makeClock, makeEngine } from './testkit.ts'
-import { beautify, completeQuests, fillQuests, questProgress, rerollQuest } from './quests.ts'
+import { beautify, completeQuests, estimatedIncome, fillQuests, questProgress, rerollQuest } from './quests.ts'
+import { bulkCost } from './economy.ts'
 import type { Quest } from './state.ts'
 
 const afterTutorial = (edit: (s: any) => void = () => {}) => {
@@ -93,4 +94,16 @@ test('beautify rounds up to two significant digits', () => {
   assert.equal(beautify(12_345), 13_000)
   assert.equal(beautify(300), 300)
   assert.equal(beautify(7), 50)
+})
+
+test('level quests that would take under 5 minutes are not given', () => {
+  // reboot с менеджером: до порога 25 — около 2,5 мин дохода
+  const { e } = afterTutorial((s) => { s.jobs.reboot = { level: 1, rank: 0, hasManager: true, startedAt: 0 } })
+  const job = c.job('reboot')!
+  assert.ok(bulkCost(job.baseCost, job.growthRate, 1, 24) / estimatedIncome(e) < 300)
+  for (let i = 0; i < 20; i++) {
+    e.state.quests.active = []
+    fillQuests(e, 0)
+    assert.ok(!e.state.quests.active.some((q) => q.kind === 'level'))
+  }
 })
