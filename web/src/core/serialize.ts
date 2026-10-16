@@ -98,7 +98,11 @@ function decodeStage2b(value: Record<string, unknown>, content?: GameContent) {
     if (!isObject(q) || !isCount(q.id) || !QUEST_KINDS.includes(q.kind as Quest['kind'])) return null
     if (q.jobId !== null && typeof q.jobId !== 'string') return null
     if (!isNum(q.target) || !isNum(q.base)) return null
-    active.push({ id: q.id, kind: q.kind as Quest['kind'], jobId: q.jobId as string | null, target: q.target, base: q.base })
+    const kind = q.kind as Quest['kind']
+    const jobId = q.jobId as string | null
+    // задание на работу — только с существующей работой; больше трёх — лишние
+    if ((kind === 'level' || kind === 'promote' || kind === 'unlock') && (jobId === null || (content && !content.job(jobId)))) continue
+    if (active.length < 3) active.push({ id: q.id, kind, jobId, target: q.target, base: q.base })
   }
   if (!isObject(stats)) return null
   const { collects, hires, upgrades, earned } = stats
@@ -127,8 +131,8 @@ function decodeStage2b(value: Record<string, unknown>, content?: GameContent) {
     ticketCursor: ui.ticketCursor,
     stage2b: {
       stars,
-      track: { claimed: track.claimed },
-      quests: { active, rerollAt: quests.rerollAt, seq: quests.seq },
+      track: { claimed: Math.min(track.claimed, stars) },
+      quests: { active, rerollAt: quests.rerollAt, seq: Math.max(quests.seq, ...active.map((q) => q.id)) },
       stats: { collects, hires, upgrades, earned },
       perks: { inventory, active: activePerks },
       items: { owned, equipped, seen: items.seen.filter((id) => owned.includes(id)) },

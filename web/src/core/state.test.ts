@@ -148,3 +148,25 @@ test('v3 with broken counters is rejected', () => {
   assert.equal(decodeState({ ...s, perks: { inventory: { speed_100_5: -2 }, active: [] } }, bundledContent), null)
   assert.equal(decodeState({ ...s, quests: { active: [{ id: 1, kind: 'nope', jobId: null, target: 1, base: 0 }], rerollAt: 0, seq: 1 } }, bundledContent), null)
 })
+
+test('v3 quests are cleaned up on load: at most 3, known jobs, job-bound kinds have a job, ids stay unique', () => {
+  const s = newGame(bundledContent, 0, 'ru', 1)
+  s.quests = {
+    active: [
+      { id: 1, kind: 'level', jobId: 'gone_job', target: 25, base: 0 },
+      { id: 2, kind: 'promote', jobId: null, target: 25, base: 0 },
+      { id: 3, kind: 'earn', jobId: null, target: 100, base: 0 },
+      { id: 4, kind: 'collect', jobId: null, target: 30, base: 0 },
+      { id: 9, kind: 'unlock', jobId: 'plug_mouse', target: 1, base: 0 },
+      { id: 10, kind: 'hire', jobId: null, target: 1, base: 0 },
+    ],
+    rerollAt: 0,
+    seq: 2,
+  }
+  s.stars = 4
+  s.track.claimed = 7
+  const d = decodeState(encodeState(s), bundledContent)!
+  assert.deepEqual(d.quests.active.map((q) => q.id), [3, 4, 9])
+  assert.equal(d.quests.seq, 10)
+  assert.equal(d.track.claimed, 4)
+})
