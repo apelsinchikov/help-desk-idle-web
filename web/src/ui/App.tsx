@@ -11,6 +11,7 @@ import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
 import { Shop } from './Shop.tsx'
 import { Quests } from './Quests.tsx'
+import { Leaderboard } from './Leaderboard.tsx'
 import { RewindReport } from './RewindReport.tsx'
 import { WipeNotice } from './WipeNotice.tsx'
 import { Tutorial } from './Tutorial.tsx'
@@ -40,6 +41,7 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'wardrobe' && <Wardrobe />}
       {route === 'shop' && <Shop />}
       {route === 'quests' && <Quests />}
+      {route === 'leaderboard' && <Leaderboard />}
       <MessageSlot />
       <RewindReport />
       <WipeNotice />

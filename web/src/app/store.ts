@@ -17,6 +17,7 @@ import { claimTrack } from '../core/track.ts'
 import type { Reward } from '../core/track.ts'
 import type { Slot } from '../core/content.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
+import type { LeaderboardCache } from './leaderboard.ts'
 
 export type CloudStatus =
   | { kind: 'disabled' }
@@ -24,7 +25,7 @@ export type CloudStatus =
   | { kind: 'synced'; at: number }
   | { kind: 'offline' }
 
-export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop' | 'quests'
+export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop' | 'quests' | 'leaderboard'
 
 const TICK_MS = 100
 
@@ -40,6 +41,8 @@ export function createGame(o: {
   now?: () => number
   /** Тестовая сборка (/dev/): в настройках есть выдача перков и вещей. */
   devBuild?: boolean
+  /** Рейтинг (только с облаком). */
+  leaderboard?: LeaderboardCache | null
 }) {
   const now = o.now ?? Date.now
   const { engine, scheduler } = o
@@ -100,6 +103,7 @@ export function createGame(o: {
     /** Часы игры (с поправкой по серверу). */
     now,
     devBuild: o.devBuild ?? false,
+    leaderboard: o.leaderboard ?? null,
 
     /** Действие игрока: покупки сохраняются сразу, тапы — по интервалу автосейва. */
     act(kind: 'purchase' | 'tap', fn: () => void): void {

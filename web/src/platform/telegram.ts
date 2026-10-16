@@ -1,8 +1,9 @@
 // Обёртка над Telegram Mini Apps SDK (telegram-web-app.js). Вне Telegram всё — no-op.
+import { displayName } from '../app/leaderboard.ts'
 type Inset = { top: number; bottom: number; left: number; right: number }
 type WebApp = {
   initData: string
-  initDataUnsafe: { user?: { id: number; language_code?: string } }
+  initDataUnsafe: { user?: { id: number; language_code?: string; first_name?: string; last_name?: string } }
   version: string
   isVersionAtLeast(v: string): boolean
   ready(): void
@@ -28,6 +29,8 @@ export const telegram = {
   languageCode: inside ? webApp!.initDataUnsafe.user?.language_code : undefined,
   /** Telegram ID игрока (не проверен — для разделения локальных сейвов; проверяет сервер). */
   userId: inside ? webApp!.initDataUnsafe.user?.id : undefined,
+  /** Имя для рейтинга («Евгений А.»). */
+  displayName: inside ? displayName(webApp!.initDataUnsafe.user) : '',
 
   /** Готовность, весь экран, свайп вниз не закрывает игру, цвета шапки под тему A. */
   init(background: string): void {

@@ -45,6 +45,17 @@ export function Menu() {
             <Locked key={item.key} label={t(item.key)} lock={sectionLock(engine, item.section)} />
           ),
         )}
+        {game.leaderboard ? (
+          <button class="menu__item" onClick={() => game.navigate('leaderboard')}>
+            <i class="dot" style={{ background: 'var(--leaderboard)' }} />
+            {t('menu.leaderboard')}
+          </button>
+        ) : (
+          <div class="menu__item menu__item--locked">
+            <span aria-hidden="true">🔒</span>
+            <span class="menu__label">{t('menu.leaderboard')}<span class="menu__req">{t('leaderboard.telegramOnly')}</span></span>
+          </div>
+        )}
         <Locked label={t('menu.reorg')} />
         <button class="menu__item" onClick={() => game.navigate('settings')}>
           <i class="dot" style={{ background: 'var(--muted)' }} />
