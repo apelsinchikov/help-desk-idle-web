@@ -8,6 +8,8 @@ export type JobDefinition = {
   revenue: number
   unlockLevel: number
   managerCost: number
+  /** Сколько повышений нужно для найма менеджера (ранг). Нет — `config.managerMinRank`. */
+  managerMinRank?: number
   iconKey: string
 }
 
@@ -27,7 +29,7 @@ export type GameConfig = {
   /** Цикл короче этого порога (секунды) у работы с менеджером считается «потоком». */
   fastCycleThreshold: number
   /** С какого уровня работы можно нанять менеджера. */
-  managerMinLevel: number
+  managerMinRank: number
   /** Повышение на пороге стоит как столько раз пройденный отрезок уровней (от прошлого порога до этого). */
   promotionFactor: number
 }
@@ -64,6 +66,11 @@ export class GameContent {
 
   upgrade(id: string): UpgradeDefinition | undefined {
     return this.upgrades.find((u) => u.id === id)
+  }
+
+  /** Ранг работы, с которого можно нанять её менеджера. */
+  managerRank(jobId: string): number {
+    return this.job(jobId)?.managerMinRank ?? this.config.managerMinRank
   }
 
   /** Свои пороги работы по возрастанию (25, 50, 100, …). */

@@ -10,7 +10,7 @@ const tables = parseXcstrings(xcstrings)
 
 test('parses both languages from xcstrings', () => {
   assert.equal(tables.en['buy.button'], 'Buy ×%lld')
-  assert.equal(tables.ru['job.ready'], 'Готово — собрать')
+  assert.equal(tables.ru['job.ready'], 'Готово. Заберите оплату')
   assert.equal('%lld' in tables.en, false, 'ключи без локализаций пропускаются')
 })
 

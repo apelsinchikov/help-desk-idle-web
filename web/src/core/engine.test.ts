@@ -86,13 +86,16 @@ test('unlock requires level 25 and money', () => {
   assert.equal(broke.unlock('plug_mouse'), false)
 })
 
-test('manager needs job level 100', () => {
+test('managers of jobs 1-4 need the first promotion, later jobs the second', () => {
   const c = makeClock()
-  const low = makeEngine(c, (s) => { s.jobs.reboot.level = 99; s.jobs.reboot.rank = 50; s.money = 1e6 })
-  assert.equal(low.canHireManager('reboot'), false)
-  assert.equal(low.hireManager('reboot'), false)
-  const ok = makeEngine(c, (s) => { s.jobs.reboot.level = 100; s.jobs.reboot.rank = 50; s.money = 1e6 })
-  assert.equal(ok.hireManager('reboot'), true)
+  const none = makeEngine(c, (s) => { s.jobs.reboot.level = 25; s.jobs.reboot.rank = 0; s.money = 1e6 })
+  assert.equal(none.hireManager('reboot'), false)
+  const early = makeEngine(c, (s) => { s.jobs.escalate = { level: 26, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e6 })
+  assert.equal(early.hireManager('escalate'), true)
+  const late = makeEngine(c, (s) => { s.jobs.works_on_my_machine = { level: 50, rank: 25, hasManager: false, startedAt: 0 }; s.money = 1e7 })
+  assert.equal(late.hireManager('works_on_my_machine'), false)
+  late.state.jobs.works_on_my_machine.rank = 50
+  assert.equal(late.hireManager('works_on_my_machine'), true)
 })
 
 test('manager auto-collects', () => {
@@ -102,7 +105,7 @@ test('manager auto-collects', () => {
   assert.equal(e.state.money, 0)
   c.t += 6000
   const earned = e.advance(c.t)
-  assert.equal(earned, 100 * Math.floor(6 / 0.075))
+  assert.equal(earned, 100 * 1.5 * Math.floor(6 / 0.075), 'ур. 75 — прибыль ×1,5')
   assert.equal(e.state.money, earned)
   assert.equal(e.hireManager('reboot'), false, 'второй раз нанять нельзя')
 })
@@ -112,9 +115,10 @@ test('fast cycle is batched', () => {
   const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 300, rank: 300, hasManager: true, startedAt: c.t } })
   const cycle = 0.6 / 32
   assert.equal(e.cycle('reboot'), cycle)
-  assert.deepEqual(e.status('reboot'), { kind: 'streaming', perSecond: 300 / cycle })
+  const pay = 300 * 1.5 ** 7 // промежуточные пороги 75, 125, 150, 175, 225, 250, 275
+  assert.deepEqual(e.status('reboot'), { kind: 'streaming', perSecond: pay / cycle })
   c.t += 10_000
-  assert.equal(e.advance(c.t), 300 * Math.floor(10 / cycle))
+  assert.equal(e.advance(c.t), pay * Math.floor(10 / cycle))
 })
 
 test('clock moved backwards', () => {

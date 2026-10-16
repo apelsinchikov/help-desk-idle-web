@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { makeClock, makeEngine } from './testkit.ts'
-import { refreshSections, tutorialAck, tutorialAdvance, tutorialView } from './progress.ts'
+import { buyableCounts, refreshSections, sectionLock, tutorialAck, tutorialAdvance, tutorialView } from './progress.ts'
 
 test('fresh game: the job runs by itself, the tutorial first asks to collect', () => {
   const c = makeClock()
@@ -77,8 +77,8 @@ test('sections open by progress and only once', () => {
   const c = makeClock()
   const e = makeEngine(c)
   assert.deepEqual(refreshSections(e), [])
-  e.state.jobs.reboot.level = 100
-  e.state.jobs.reboot.rank = 25
+  e.state.jobs.reboot.level = 51
+  e.state.jobs.reboot.rank = 50
   e.state.lifetimeEarnings = 25_000_000
   assert.deepEqual(refreshSections(e).sort(), ['achievements', 'managers', 'upgrades'])
   assert.deepEqual(refreshSections(e), [])
@@ -88,4 +88,23 @@ test('sections open by progress and only once', () => {
 test('managers section is open for a player who already has a manager', () => {
   const e = makeEngine(makeClock(), (s) => { s.jobs.reboot = { level: 30, rank: 25, hasManager: true, startedAt: 0 } })
   assert.ok(refreshSections(e).includes('managers'))
+})
+
+test('a locked section says what opens it', () => {
+  const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 30; s.jobs.reboot.rank = 25; s.lifetimeEarnings = 1000 })
+  assert.equal(sectionLock(e, 'managers'), null, 'менеджер первых работ — с первого повышения')
+  assert.equal(sectionLock(e, 'achievements'), null)
+  assert.deepEqual(sectionLock(e, 'upgrades'), { kind: 'earn', need: 25_000_000, have: 1000 })
+  const fresh = makeEngine(makeClock())
+  assert.deepEqual(sectionLock(fresh, 'achievements'), { kind: 'rank', need: 25, best: 0 })
+  assert.deepEqual(sectionLock(fresh, 'managers'), { kind: 'rank', need: 25, best: 0 })
+})
+
+test('menu alert counts managers and upgrades the player can buy now', () => {
+  const e = makeEngine(makeClock(), (s) => { s.jobs.reboot.level = 51; s.jobs.reboot.rank = 50; s.money = 10 })
+  assert.deepEqual(buyableCounts(e), { managers: 0, upgrades: 0 })
+  e.state.money = 30_000_000
+  assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 1 })
+  e.state.upgrades.push('reboot_x3')
+  assert.deepEqual(buyableCounts(e), { managers: 1, upgrades: 0 })
 })

@@ -50,6 +50,6 @@ test('milestone speed multiplier', () => {
 
 test('next milestone', () => {
   const ms = bundledContent.milestones
-  assert.equal(nextMilestone('plug_mouse', 64, ms)?.level, 100)
+  assert.equal(nextMilestone('plug_mouse', 64, ms)?.level, 75)
   assert.equal(nextMilestone('plug_mouse', 0, ms)?.level, 25)
 })
