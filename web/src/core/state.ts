@@ -40,6 +40,8 @@ export type GameState = {
   items: { owned: string[]; equipped: Partial<Record<Slot, string>>; seen: string[] }
   /** Зерно генератора наград: награды не «перебрасываются» перезагрузкой. */
   rngSeed: number
+  /** Сезон сейва (config.saveSeason на момент создания). Старый сезон при загрузке — вайп. */
+  season: number
 }
 
 export type QuestKind = 'level' | 'promote' | 'earn' | 'collect' | 'hire' | 'upgrade' | 'unlock'
@@ -57,11 +59,13 @@ export type UiState = {
   hintsSeen: string[]
   /** Следующая заявка в техподдержку из банка (банк проходится целиком без повторов). */
   ticketCursor: number
+  /** Прогресс обнулён вайпом — показать окно с компенсацией (один раз). */
+  wiped: boolean
 }
 
 export const CURRENT_SCHEMA = 3
 
-export const newUiState = (): UiState => ({ tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [], ticketCursor: 0 })
+export const newUiState = (): UiState => ({ tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [], ticketCursor: 0, wiped: false })
 
 export const randomSeed = (): number => Math.floor(Math.random() * 2 ** 32)
 
@@ -95,6 +99,7 @@ export function newGame(content: GameContent, now: number, language: AppLanguage
     upgrades: [],
     ui: newUiState(),
     ...newStage2b(seed),
+    season: content.config.saveSeason,
   }
 }
 

@@ -1,6 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { bundledContent } from './bundled.ts'
+import { GameContent } from './content.ts'
+
+/** Контент «без вайпа» (сезон 1): проверяем саму миграцию схем, а не вайп. */
+const noWipe = new GameContent(bundledContent.jobs, bundledContent.milestones, { ...bundledContent.config, saveSeason: 1 },
+  bundledContent.upgrades, bundledContent.perks, bundledContent.items, bundledContent.chests)
 import { newGame, nextBuyMode } from './state.ts'
 import { decodeState, encodeState } from './serialize.ts'
 
@@ -51,7 +56,7 @@ test('new game has schema 2 fields', () => {
   assert.equal(s.schemaVersion, 3)
   assert.equal(s.jobs.reboot.rank, 0)
   assert.deepEqual(s.upgrades, [])
-  assert.deepEqual(s.ui, { tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [], ticketCursor: 0 })
+  assert.deepEqual(s.ui, { tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [], ticketCursor: 0, wiped: false })
 })
 
 test('v1 save migrates: rank from reached milestones, empty upgrades', () => {
@@ -59,7 +64,7 @@ test('v1 save migrates: rank from reached milestones, empty upgrades', () => {
     x.jobs.reboot.level = 137
     x.jobs.plug_mouse.level = 24
     x.jobs.accounting_printer.level = 25
-  }), bundledContent)!
+  }), noWipe)!
   assert.equal(s.schemaVersion, 3)
   assert.equal(s.jobs.reboot.rank, 125)
   assert.equal(s.jobs.plug_mouse.rank, 0)
@@ -69,7 +74,7 @@ test('v1 save migrates: rank from reached milestones, empty upgrades', () => {
 })
 
 test('v1 save with a manager counts the tutorial as done', () => {
-  const s = decodeState(v1((x) => { x.jobs.reboot.level = 60; x.jobs.reboot.hasManager = true }), bundledContent)!
+  const s = decodeState(v1((x) => { x.jobs.reboot.level = 60; x.jobs.reboot.hasManager = true }), noWipe)!
   assert.equal(s.ui.tutorialDone, true)
 })
 
@@ -126,7 +131,7 @@ test('v2 save migrates to v3 with empty stage 2b state', () => {
 })
 
 test('v1 save migrates all the way to v3', () => {
-  const s = decodeState(v1((x) => { x.jobs.reboot.level = 137 }), bundledContent)!
+  const s = decodeState(v1((x) => { x.jobs.reboot.level = 137 }), noWipe)!
   assert.equal(s.schemaVersion, 3)
   assert.equal(s.jobs.reboot.rank, 125)
   assert.equal(s.stars, 0)
@@ -169,4 +174,48 @@ test('v3 quests are cleaned up on load: at most 3, known jobs, job-bound kinds h
   assert.deepEqual(d.quests.active.map((q) => q.id), [3, 4, 9])
   assert.equal(d.quests.seq, 9, 'новые id — после самого большого из оставшихся')
   assert.equal(d.track.claimed, 4)
+})
+
+test('a new game belongs to the current season and gets no compensation', () => {
+  const s = newGame(bundledContent, 0, 'ru', 1)
+  assert.equal(s.season, bundledContent.config.saveSeason)
+  assert.equal(s.ui.wiped, false)
+  assert.deepEqual(s.perks.inventory, {})
+})
+
+test('a save from an older season is wiped on load: settings and tutorial stay, a 30 min rewind as compensation', () => {
+  const old = newGame(bundledContent, 0, 'en', 1) as any
+  old.money = 1e9
+  old.lifetimeEarnings = 1e12
+  old.jobs.reboot = { level: 300, rank: 300, hasManager: true, startedAt: 0 }
+  old.stars = 40
+  old.items = { owned: ['helpdesk_cap'], equipped: { head: 'helpdesk_cap' }, seen: [] }
+  old.ui.tutorialDone = true
+  old.ui.hintsSeen = ['managers']
+  old.settings.haptics = false
+  old.lastActiveAt = 5_000
+  delete old.season // сейвы до вайпа поля не имеют
+  const d = decodeState(encodeState(old), bundledContent)!
+  assert.equal(d.season, bundledContent.config.saveSeason)
+  assert.equal(d.money, 0)
+  assert.equal(d.lifetimeEarnings, 0)
+  assert.equal(d.jobs.reboot.level, 1)
+  assert.equal(d.stars, 0)
+  assert.deepEqual(d.items.owned, [])
+  assert.deepEqual(d.perks.inventory, { rewind_30: 1 })
+  assert.deepEqual(d.settings, { language: 'en', haptics: false })
+  assert.equal(d.ui.tutorialDone, true)
+  assert.deepEqual(d.ui.hintsSeen, ['managers'])
+  assert.equal(d.ui.wiped, true)
+})
+
+test('a v2 save is wiped too; a current-season save is kept as is', () => {
+  const v2 = JSON.parse(encodeState(newGame(bundledContent, 0, 'ru', 1)))
+  v2.schemaVersion = 2
+  delete v2.season
+  v2.money = 500
+  assert.equal(decodeState(v2, bundledContent)!.money, 0)
+  const now = newGame(bundledContent, 0, 'ru', 1)
+  now.money = 500
+  assert.equal(decodeState(encodeState(now), bundledContent)!.money, 500)
 })

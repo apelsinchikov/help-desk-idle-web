@@ -32,6 +32,10 @@ export type GameConfig = {
   managerMinRank: number
   /** Повышение на пороге стоит как столько раз пройденный отрезок уровней (от прошлого порога до этого). */
   promotionFactor: number
+  /** Сезон сейвов: сейв прошлого сезона при загрузке начинается заново (вайп). */
+  saveSeason: number
+  /** Перк-компенсация за вайп (в рюкзак). */
+  wipeCompensation: string
   /** Потолки скидок (доля). */
   effects: { levelDiscountCap: number; gradeDiscountCap: number }
   /** Сообщения внизу экрана: сколько висит заявка (seconds) и тост (toastSeconds), как часто заявки, сколько их в банке. */

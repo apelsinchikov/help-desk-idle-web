@@ -6294,6 +6294,40 @@
           }
         }
       }
+    },
+    "wipe.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game got quests, perks, a wardrobe and a new economy, so everyone starts over. As a thank-you there is a 30-minute rewind in your backpack — save it until you hire managers: rewind pays only jobs with managers."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В игре появились задания, перки, гардероб и новая экономика, поэтому прогресс у всех начат заново. В благодарность в рюкзаке лежит перемотка на 30 минут — прибереги её, пока не наймёшь менеджеров: перемотка платит только за работы с менеджерами."
+          }
+        }
+      }
+    },
+    "wipe.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New season!"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новый сезон!"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
