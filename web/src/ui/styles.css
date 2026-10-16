@@ -90,6 +90,8 @@ button:disabled { cursor: default; }
 .sheet__title--ink { color: var(--ink); }
 .sheet__close { width: 40px; height: 40px; border-radius: 50%; background: var(--card); color: var(--managers); font-size: 16px; font-weight: 800; }
 .sheet__body { flex: 1; overflow-y: auto; padding: 16px 16px calc(16px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 10px; }
+/* в колонке с прокруткой карточки с overflow: hidden иначе сжимаются и обрезают текст */
+.sheet__body > * { flex-shrink: 0; }
 .tabs { display: flex; gap: 6px; padding: 4px; border-radius: 14px; background: color-mix(in srgb, var(--ink) 18%, transparent); font-size: 14px; font-weight: 800; }
 .tabs span { flex: 1; min-height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; }
 .tabs__active { background: var(--card); color: var(--managers); }
@@ -320,11 +322,29 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .doll__col { display: flex; flex-direction: column; gap: 8px; }
 .doll .slot { aspect-ratio: auto; height: 64px; flex-direction: column; gap: 2px; padding: 4px; }
 .slot__label { font-size: 9px; font-weight: 700; color: var(--muted); line-height: 1; }
-.doll__figure { position: relative; height: 290px; }
-.doll__svg { width: 100%; height: 100%; fill: var(--track-strong); stroke: var(--locked-border); stroke-width: 2; }
-.doll__worn { position: absolute; transform: translate(-50%, -50%); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
-.doll__worn .slot__icon { width: 36px; height: 36px; }
-.doll__worn .slot__emoji { font-size: 26px; }
+.doll__figure { height: 290px; display: flex; align-items: center; justify-content: center; }
+/* Чиби: контур — чернилами, кожа/волосы — токены, надетое — цвет редкости (--paint на слое слота). */
+.chibi { width: 100%; height: 100%; }
+.chibi * { stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.chibi__skin { fill: var(--skin); }
+.chibi__plain { fill: var(--card); }
+.chibi__shorts { fill: var(--chibi-shorts); }
+.chibi__hair { fill: var(--hair); }
+.chibi__eye { fill: var(--ink); stroke: none; }
+.chibi__glint { fill: var(--card); stroke: none; }
+.chibi__blush { fill: var(--blush); stroke: none; opacity: .7; }
+.chibi__mouth { fill: none; stroke-width: 2.5; }
+.chibi__line { fill: none; stroke-width: 2; opacity: .55; }
+.chibi__sole, .chibi__white { fill: var(--card); }
+.chibi__paint { fill: var(--paint); }
+.chibi__flat { stroke: none; }
+.chibi__cord { fill: none; stroke: var(--paint); stroke-width: 4; }
+.chibi__lens { fill: var(--lens); fill-opacity: .35; stroke: var(--paint); stroke-width: 4; }
+.chibi__frame { fill: none; stroke: var(--paint); stroke-width: 4; }
+.rarity-fill--common { --paint: var(--rarity-common); }
+.rarity-fill--rare { --paint: var(--rarity-rare); }
+.rarity-fill--epic { --paint: var(--rarity-epic); }
+.rarity-fill--legendary { --paint: var(--rarity-legendary); }
 .bonuses { padding: 12px; border-radius: 14px; background: var(--card); margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
 .bonuses__title { font-size: 13px; font-weight: 800; color: var(--muted); }
 .bonuses__row { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; font-weight: 800; }
