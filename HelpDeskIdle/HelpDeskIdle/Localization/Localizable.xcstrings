@@ -2623,6 +2623,23 @@
         }
       }
     },
+    "menu.lock.tutorial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish the tutorial"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пройди обучение"
+          }
+        }
+      }
+    },
     "menu.managers": {
       "extractionState": "manual",
       "localizations": {
@@ -5071,6 +5088,91 @@
         }
       }
     },
+    "toast.item": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New item: %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая вещь: %1$@"
+          }
+        }
+      }
+    },
+    "toast.perk.levelDiscount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To backpack: levels −%1$lld%% for %2$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В рюкзак: уровни −%1$lld%% на %2$lld мин"
+          }
+        }
+      }
+    },
+    "toast.perk.rewind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To backpack: rewind %1$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В рюкзак: перемотка %1$lld мин"
+          }
+        }
+      }
+    },
+    "toast.perk.salary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To backpack: salary +%1$lld%% for %2$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В рюкзак: зарплата +%1$lld%% на %2$lld мин"
+          }
+        }
+      }
+    },
+    "toast.perk.speed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To backpack: speed +%1$lld%% for %2$lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В рюкзак: скорость +%1$lld%% на %2$lld мин"
+          }
+        }
+      }
+    },
     "toast.rewind": {
       "extractionState": "manual",
       "localizations": {
@@ -5084,6 +5186,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Перемотка %1$lld мин: +%2$@"
+          }
+        }
+      }
+    },
+    "toast.star": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quest done! +1 ⭐ (total %1$lld)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Задание выполнено! +1 ⭐ (всего %1$lld)"
           }
         }
       }

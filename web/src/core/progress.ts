@@ -4,13 +4,14 @@ import type { GameEngine } from './engine.ts'
 import type { BuyMode } from './state.ts'
 import { inventoryCount } from './perks.ts'
 
-export type Section = 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe' | 'settings'
+export type Section = 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe' | 'quests' | 'settings'
 
 /** Что нужно, чтобы раздел меню открылся. */
 export type SectionLock =
   | { kind: 'rank'; need: number; best: number } // повысить любую работу до ур. need (лучшая сейчас — best)
   | { kind: 'earn'; need: number; have: number } // заработать за всё время need
   | { kind: 'stars'; need: number; have: number } // набрать need звёзд
+  | { kind: 'tutorial' } // пройти обучение
 
 /** null — раздел уже можно открыть; иначе условие открытия. Единый источник правды для меню и refreshSections. */
 export function sectionLock(engine: GameEngine, section: Section): SectionLock | null {
@@ -34,6 +35,8 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
       const has = inventoryCount(state) > 0 || state.perks.active.length > 0
       return has ? null : { kind: 'stars', need: content.config.track.perkEvery, have: state.stars }
     }
+    case 'quests':
+      return state.ui.tutorialDone ? null : { kind: 'tutorial' }
     case 'wardrobe':
       return state.items.owned.length > 0 ? null : { kind: 'stars', need: content.config.track.itemEvery, have: state.stars }
     case 'upgrades': {
@@ -57,7 +60,7 @@ export function buyableCounts(engine: GameEngine): { managers: number; upgrades:
 /** Дописывает в ui.sections разделы, которые пора открыть; возвращает только новые. */
 export function refreshSections(engine: GameEngine): Section[] {
   const { state } = engine
-  const sections: Section[] = ['settings', 'managers', 'achievements', 'upgrades', 'backpack', 'wardrobe']
+  const sections: Section[] = ['settings', 'quests', 'managers', 'achievements', 'upgrades', 'backpack', 'wardrobe']
   const open = Object.fromEntries(sections.map((s) => [s, sectionLock(engine, s) === null])) as Record<Section, boolean>
   const added: Section[] = []
   for (const section of Object.keys(open) as Section[]) {

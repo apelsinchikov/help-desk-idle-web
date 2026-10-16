@@ -12,6 +12,9 @@ import type { Milestone } from '../core/content.ts'
 import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
 import { grantPerk } from '../core/perks.ts'
 import { nextItem } from '../core/items.ts'
+import { completeQuests, fillQuests, rerollQuest } from '../core/quests.ts'
+import { claimTrack } from '../core/track.ts'
+import type { Reward } from '../core/track.ts'
 import type { Slot } from '../core/content.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
 
@@ -53,8 +56,30 @@ export function createGame(o: {
   let lastShownAt = now()
   let timer: ReturnType<typeof setInterval> | null = null
 
-  /** После любого изменения: разделы меню, шаги обучения, перерисовка. */
+  /** Тост о награде трека. */
+  const rewardToast = (r: Reward): AchievementText => {
+    if (r.kind === 'item') return { key: 'toast.item', args: [`item.${r.itemId}.name`] }
+    const perk = engine.content.perk(r.perkId)!
+    return perk.kind === 'rewind'
+      ? { key: 'toast.perk.rewind', args: [perk.minutes] }
+      : { key: `toast.perk.${perk.kind}`, args: [Math.round(perk.value * 100), perk.minutes] }
+  }
+
+  /** Задания: выдать, засчитать, наградить звёздами и треком. Звезда — сохранение сразу. */
+  const questsTick = () => {
+    const at = now()
+    fillQuests(engine, at)
+    const gained = completeQuests(engine, at)
+    if (gained === 0) return
+    game.pushToast({ key: 'toast.star', args: [engine.state.stars] })
+    for (const r of claimTrack(engine)) game.pushToast(rewardToast(r))
+    game.haptic('success')
+    scheduler.changed('purchase')
+  }
+
+  /** После любого изменения: задания, разделы меню, шаги обучения, перерисовка. */
   const bump = () => {
+    questsTick()
     refreshSections(engine)
     tutorialAdvance(engine, route.value, buyMode.value)
     version.value++
@@ -113,6 +138,11 @@ export function createGame(o: {
         const item = nextItem(engine.content, engine.state)
         if (item) engine.grantItem(item.id)
       })
+    },
+
+    /** Заменить задание (бесплатно раз в 4 ч). */
+    rerollQuest(questId: number): void {
+      game.act('purchase', () => rerollQuest(engine, questId, now()))
     },
 
     equip(itemId: string): void {

@@ -140,3 +140,10 @@ test('new items not yet looked at count for the menu dot', () => {
   e.state.items.seen.push('helpdesk_cap')
   assert.equal(buyableCounts(e).items, 1)
 })
+
+test('quests section opens with the finished tutorial', () => {
+  const e = makeEngine(makeClock())
+  assert.deepEqual(sectionLock(e, 'quests'), { kind: 'tutorial' })
+  e.state.ui.tutorialDone = true
+  assert.equal(sectionLock(e, 'quests'), null)
+})

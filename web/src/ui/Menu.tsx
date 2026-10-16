@@ -80,5 +80,6 @@ function requirement(lock: SectionLock): string {
     case 'rank': return t('menu.lock.rank', lock.need, lock.best)
     case 'earn': return t('menu.lock.earn', money(lock.need), money(lock.have))
     case 'stars': return t('menu.lock.stars', lock.need, lock.have)
+    case 'tutorial': return t('menu.lock.tutorial')
   }
 }
