@@ -127,6 +127,8 @@ export type OfflineReport = {
   elapsed: number
   /** Заработано за это время (с учётом оффлайн-лимита). */
   earned: number
+  /** За сколько секунд из `elapsed` учтён доход: не больше оффлайн-лимита. */
+  counted: number
   /** Работы без менеджера, ждущие сбора. */
   readyJobs: number
 }

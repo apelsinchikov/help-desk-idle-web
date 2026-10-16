@@ -9,15 +9,17 @@ test('two hours with manager', () => {
   const report = e.resume(c.t)
   assert.equal(report?.earned, 10 * Math.floor(7200 / 0.6))
   assert.equal(report?.elapsed, 7200)
+  assert.equal(report?.counted, 7200)
 })
 
-test('thirty days is capped at 24 hours', () => {
+test('thirty days is capped at 2 hours', () => {
   const c = makeClock()
   const e = makeEngine(c, (s) => { s.jobs.reboot = { level: 10, rank: 0, hasManager: true, startedAt: c.t } })
   c.t += 30 * 86_400_000
   const report = e.resume(c.t)
-  assert.equal(report?.earned, 10 * Math.floor(86_400 / 0.6))
+  assert.equal(report?.earned, 10 * Math.floor(7_200 / 0.6))
   assert.equal(report?.elapsed, 30 * 86_400)
+  assert.equal(report?.counted, 7200, 'экран скажет: учтены только 2 ч')
   assert.ok(Number.isFinite(e.state.money))
 })
 

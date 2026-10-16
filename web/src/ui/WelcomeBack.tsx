@@ -14,6 +14,12 @@ export function WelcomeBack({ report }: { report: OfflineReport }) {
         <div class="welcome__joke">{t('welcome.joke')}</div>
         {report.readyJobs > 0 && <div class="welcome__ready">{t('welcome.ready', report.readyJobs)}</div>}
       </div>
+      {report.counted < report.elapsed && (
+        <div class="welcome__cap">
+          <div>{t('welcome.capped', duration(report.counted))}</div>
+          <button class="welcome__buy" disabled>{t('welcome.buy')}</button>
+        </div>
+      )}
       <button class="welcome__collect" onClick={() => (game.offlineReport.value = null)}>{t('welcome.collect')}</button>
     </div>
   )

@@ -6669,6 +6669,40 @@
         }
       }
     },
+    "welcome.buy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Купить"
+          }
+        }
+      }
+    },
+    "welcome.capped": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earnings were counted for %@ only. To earn offline for longer, buy an upgrade."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заработок учтён только за %@. Чтобы копить оффлайн-доход дольше, нужно приобрести улучшение."
+          }
+        }
+      }
+    },
     "welcome.collect": {
       "extractionState": "manual",
       "localizations": {

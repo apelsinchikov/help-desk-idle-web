@@ -141,6 +141,8 @@ button:disabled { cursor: default; }
 .welcome__earned { font-family: var(--font-display); font-weight: 700; font-size: 30px; color: var(--positive); overflow-wrap: anywhere; }
 .welcome__joke { font-size: 14px; font-weight: 500; }
 .welcome__ready { color: var(--muted); font-size: 12px; font-weight: 500; margin-top: 4px; }
+.welcome__cap { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--night-muted); font-size: 14px; font-weight: 600; line-height: 1.4; }
+.welcome__buy { min-height: 40px; padding: 0 22px; border-radius: 12px; background: var(--track-strong); color: var(--muted); font-size: 15px; font-weight: 800; opacity: .6; }
 .welcome__collect { margin-top: auto; width: 100%; max-width: 420px; min-height: 56px; border-radius: 16px; background: var(--accent); color: var(--on-accent); font-size: 17px; font-weight: 800; }
 
 /* Метка тестовой сборки (ветка dev) */

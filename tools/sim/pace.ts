@@ -3,7 +3,7 @@
 // менеджер → открыть работу → повышение → улучшение; если ближайшая цель дешевле 5 мин дохода — копит на неё,
 // иначе покупает самый выгодный уровень. Играет сессиями: ACTIVE мин в игре, AWAY мин вне игры (доход — только менеджеры).
 // Метрика: самая длинная пауза без заметного события (работа / повышение / менеджер / улучшение) во время игры.
-// Параметры через env: MS_SMALL, MGR_RANK, PROMO_F, UPG_MUL, MGR_MUL, TAP, ACTIVE, AWAY, HOURS (календарные).
+// Параметры через env: OFFLINE_CAP (ч), NIGHT_H (ч сна в сутки), MS_SMALL, MGR_RANK, PROMO_F, UPG_MUL, MGR_MUL, TAP, ACTIVE, AWAY, HOURS (календарные).
 // Запуск из корня репо: node tools/sim/pace.ts
 import { bundledContent as base } from '../../web/src/core/bundled.ts'
 import { GameContent } from '../../web/src/core/content.ts'
@@ -16,6 +16,7 @@ const env = (k: string, d: number) => Number(process.env[k] ?? d)
 const cfg = {
   ...base.config,
   managerMinRank: env('MGR_RANK', base.config.managerMinRank),
+  offlineCapHours: env('OFFLINE_CAP', base.config.offlineCapHours),
   promotionFactor: env('PROMO_F', base.config.promotionFactor),
   track: { ...base.config.track, perkFirst: env('PERK_FIRST', base.config.track.perkFirst), perkEvery: env('PERK_EVERY', base.config.track.perkEvery) },
   quests: { ...base.config.quests, minMinutes: env('Q_MIN', base.config.quests.minMinutes), maxMinutes: env('Q_MAX', base.config.quests.maxMinutes) },
@@ -138,8 +139,15 @@ function decide() {
 }
 
 const sessionMs = (ACTIVE + AWAY) * 60_000
+// NIGHT_H > 0: каждые сутки последние NIGHT_H часов — сон (вне игры одним куском, доход — оффлайн с лимитом)
+const NIGHT_H = env('NIGHT_H', 0), DAY = 24 * 3_600_000
 let nextTap = 0, nextDecide = 0
 while (t < HOURS * 3_600_000) {
+  if (NIGHT_H > 0 && t % DAY >= DAY - NIGHT_H * 3_600_000) {
+    t = (Math.floor(t / DAY) + 1) * DAY
+    e.resume(t)
+    continue
+  }
   const inSession = t % sessionMs < ACTIVE * 60_000
   if (!inSession) {
     // вне игры: прыжок до следующей сессии, доход — только менеджеры (с оффлайн-лимитом)
@@ -165,7 +173,7 @@ const h = (x: number | undefined) => x === undefined ? '—' : x < 1 ? `${Math.r
 const maxGap = (from: number, to: number) => Math.max(0, ...gaps.filter((g) => g.at > from * 60_000 && g.at <= to * 60_000).map((g) => g.gap)) / 60_000
 const tail = (activeMs - lastEvent) / 60_000
 console.log(JSON.stringify({
-  params: { MS_SMALL: small, MGR_RANK: process.env.MGR_TIERS ?? cfg.managerMinRank, CASUAL, SAVE_S, DECIDE_S, MGR_EARLY_MUL: env('MGR_EARLY_MUL', 1), PROMO_F: cfg.promotionFactor, UPG_MUL: env('UPG_MUL', 1), MGR_MUL: env('MGR_MUL', 1), TAP, ACTIVE, AWAY, HOURS },
+  params: { OFFLINE_CAP: cfg.offlineCapHours, NIGHT_H, MS_SMALL: small, MGR_RANK: process.env.MGR_TIERS ?? cfg.managerMinRank, CASUAL, SAVE_S, DECIDE_S, MGR_EARLY_MUL: env('MGR_EARLY_MUL', 1), PROMO_F: cfg.promotionFactor, UPG_MUL: env('UPG_MUL', 1), MGR_MUL: env('MGR_MUL', 1), TAP, ACTIVE, AWAY, HOURS },
   activeHours: +(activeMs / 3_600_000).toFixed(1),
   managers: c.jobs.map((j) => h(firsts[`M${j.order}`])).join(' '),
   jobs: c.jobs.map((j) => h(firsts[`J${j.order}`] ?? (j.order === 1 ? 0 : undefined))).join(' '),

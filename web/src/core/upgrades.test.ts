@@ -8,7 +8,7 @@ test('job upgrade triples its payout', () => {
   assert.equal(e.payout('reboot'), 10)
   assert.equal(e.buyUpgrade('reboot_x3'), true)
   assert.equal(e.payout('reboot'), 30)
-  assert.equal(e.state.money, 1e8 - 25_000_000)
+  assert.equal(e.state.money, 1e8 - 75_000_000)
   assert.equal(e.buyUpgrade('reboot_x3'), false, 'второй раз не купить')
 })
 

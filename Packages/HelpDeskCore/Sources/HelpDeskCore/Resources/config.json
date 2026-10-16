@@ -1,9 +1,9 @@
 {
-  "offlineCapHours": 24,
+  "offlineCapHours": 2,
   "autosaveSeconds": 30,
   "fastCycleThreshold": 0.25,
   "managerMinRank": 50,
-  "promotionFactor": 2,
+  "promotionFactor": 4,
   "saveSeason": 2,
   "wipeCompensation": "rewind_30",
   "effects": {

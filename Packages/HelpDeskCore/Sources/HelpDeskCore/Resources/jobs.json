@@ -7,7 +7,7 @@
     "time": 0.6,
     "revenue": 1,
     "unlockLevel": 25,
-    "managerCost": 1000.0,
+    "managerCost": 3000.0,
     "managerMinRank": 25,
     "iconKey": "reboot"
   },
@@ -19,7 +19,7 @@
     "time": 3,
     "revenue": 60,
     "unlockLevel": 25,
-    "managerCost": 15000.0,
+    "managerCost": 45000.0,
     "managerMinRank": 25,
     "iconKey": "plug_mouse"
   },
@@ -31,7 +31,7 @@
     "time": 6,
     "revenue": 540,
     "unlockLevel": 25,
-    "managerCost": 100000.0,
+    "managerCost": 300000.0,
     "managerMinRank": 25,
     "iconKey": "accounting_printer"
   },
@@ -43,7 +43,7 @@
     "time": 12,
     "revenue": 4320,
     "unlockLevel": 25,
-    "managerCost": 500000.0,
+    "managerCost": 1500000.0,
     "managerMinRank": 25,
     "iconKey": "escalate"
   },
@@ -55,7 +55,7 @@
     "time": 24,
     "revenue": 51840,
     "unlockLevel": 25,
-    "managerCost": 1200000.0,
+    "managerCost": 3600000.0,
     "iconKey": "works_on_my_machine"
   },
   {
@@ -66,7 +66,7 @@
     "time": 48,
     "revenue": 622080,
     "unlockLevel": 25,
-    "managerCost": 10000000.0,
+    "managerCost": 30000000.0,
     "iconKey": "button_color_call"
   },
   {
@@ -77,7 +77,7 @@
     "time": 96,
     "revenue": 7464960,
     "unlockLevel": 25,
-    "managerCost": 111000000.0,
+    "managerCost": 333000000.0,
     "iconKey": "accounting_1c"
   },
   {
@@ -88,7 +88,7 @@
     "time": 192,
     "revenue": 89579520,
     "unlockLevel": 25,
-    "managerCost": 555000000.0,
+    "managerCost": 1665000000.0,
     "iconKey": "friday_deploy"
   },
   {
@@ -99,7 +99,7 @@
     "time": 384,
     "revenue": 1074954240,
     "unlockLevel": 25,
-    "managerCost": 10000000000.0,
+    "managerCost": 30000000000.0,
     "iconKey": "spec_like_apple"
   },
   {
@@ -110,7 +110,7 @@
     "time": 1536,
     "revenue": 12899450880,
     "unlockLevel": 25,
-    "managerCost": 100000000000.0,
+    "managerCost": 300000000000.0,
     "iconKey": "regression"
   },
   {
@@ -121,7 +121,7 @@
     "time": 6144,
     "revenue": 154793410560,
     "unlockLevel": 25,
-    "managerCost": 1000000000000.0,
+    "managerCost": 3000000000000.0,
     "iconKey": "ai_everything"
   },
   {
@@ -132,7 +132,7 @@
     "time": 36864,
     "revenue": 4272298131456,
     "unlockLevel": 25,
-    "managerCost": 10000000000000.0,
+    "managerCost": 30000000000000.0,
     "iconKey": "ddos_rivals"
   }
 ]
