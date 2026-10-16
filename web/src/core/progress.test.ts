@@ -77,8 +77,8 @@ test('sections open by progress and only once', () => {
   const c = makeClock()
   const e = makeEngine(c)
   assert.deepEqual(refreshSections(e), [])
-  e.state.jobs.reboot.level = 100
-  e.state.jobs.reboot.rank = 25
+  e.state.jobs.reboot.level = 51
+  e.state.jobs.reboot.rank = 50
   e.state.lifetimeEarnings = 25_000_000
   assert.deepEqual(refreshSections(e).sort(), ['achievements', 'managers', 'upgrades'])
   assert.deepEqual(refreshSections(e), [])

@@ -3,7 +3,7 @@
 // менеджер → открыть работу → повышение → улучшение; если ближайшая цель дешевле 5 мин дохода — копит на неё,
 // иначе покупает самый выгодный уровень. Играет сессиями: ACTIVE мин в игре, AWAY мин вне игры (доход — только менеджеры).
 // Метрика: самая длинная пауза без заметного события (работа / повышение / менеджер / улучшение) во время игры.
-// Параметры через env: MGR_LEVEL, PROMO_F, UPG_MUL, MGR_MUL, TAP, ACTIVE, AWAY, HOURS (календарные).
+// Параметры через env: MS_SMALL, MGR_RANK, PROMO_F, UPG_MUL, MGR_MUL, TAP, ACTIVE, AWAY, HOURS (календарные).
 // Запуск из корня репо: node tools/sim/pace.ts
 import { bundledContent as base } from '../../web/src/core/bundled.ts'
 import { GameContent } from '../../web/src/core/content.ts'
@@ -11,7 +11,7 @@ import { GameEngine } from '../../web/src/core/engine.ts'
 import { newGame } from '../../web/src/core/state.ts'
 
 const env = (k: string, d: number) => Number(process.env[k] ?? d)
-const cfg = { ...base.config, managerMinLevel: env('MGR_LEVEL', base.config.managerMinLevel), promotionFactor: env('PROMO_F', base.config.promotionFactor) }
+const cfg = { ...base.config, managerMinRank: env('MGR_RANK', base.config.managerMinRank), promotionFactor: env('PROMO_F', base.config.promotionFactor) }
 // MS_SMALL > 0: пороги каждые 25 уровней — существующие остаются, на промежуточных «прибыль ×MS_SMALL»
 const small = env('MS_SMALL', 0)
 function milestones() {
@@ -49,7 +49,7 @@ function goals() {
   const list: { cost: number; act: () => boolean; name: string }[] = []
   for (const j of c.jobs) {
     const js = s.jobs[j.id]
-    if (js.level >= c.config.managerMinLevel && !js.hasManager) list.push({ cost: j.managerCost, act: () => e.hireManager(j.id), name: `M${j.order}` })
+    if (js.rank >= c.config.managerMinRank && !js.hasManager) list.push({ cost: j.managerCost, act: () => e.hireManager(j.id), name: `M${j.order}` })
     if (js.level === 0 && e.canUnlock(j.id)) list.push({ cost: j.baseCost, act: () => e.unlock(j.id), name: `J${j.order}` })
     if (e.atCap(j.id)) list.push({ cost: e.promotionCost(j.id), act: () => !!e.promote(j.id), name: `P` })
   }
@@ -111,7 +111,7 @@ const h = (x: number | undefined) => x === undefined ? '—' : x < 1 ? `${Math.r
 const maxGap = (from: number, to: number) => Math.max(0, ...gaps.filter((g) => g.at > from * 60_000 && g.at <= to * 60_000).map((g) => g.gap)) / 60_000
 const tail = (activeMs - lastEvent) / 60_000
 console.log(JSON.stringify({
-  params: { MS_SMALL: small, MGR_LEVEL: cfg.managerMinLevel, PROMO_F: cfg.promotionFactor, UPG_MUL: env('UPG_MUL', 1), MGR_MUL: env('MGR_MUL', 1), TAP, ACTIVE, AWAY, HOURS },
+  params: { MS_SMALL: small, MGR_RANK: cfg.managerMinRank, PROMO_F: cfg.promotionFactor, UPG_MUL: env('UPG_MUL', 1), MGR_MUL: env('MGR_MUL', 1), TAP, ACTIVE, AWAY, HOURS },
   activeHours: +(activeMs / 3_600_000).toFixed(1),
   managers: c.jobs.map((j) => h(firsts[`M${j.order}`])).join(' '),
   jobs: c.jobs.map((j) => h(firsts[`J${j.order}`] ?? (j.order === 1 ? 0 : undefined))).join(' '),

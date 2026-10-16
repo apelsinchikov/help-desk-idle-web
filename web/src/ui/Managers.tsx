@@ -39,8 +39,9 @@ function ManagerRow({ job }: { job: JobDefinition }) {
   const js = engine.state.jobs[job.id]
   const hired = js?.hasManager ?? false
   const level = js?.level ?? 0
+  const rank = js?.rank ?? 0
   const open = level > 0
-  const minLevel = engine.content.config.managerMinLevel
+  const minRank = engine.content.config.managerMinRank
   const canHire = engine.canHireManager(job.id)
 
   const hire = () => game.act('purchase', () => {
@@ -59,8 +60,8 @@ function ManagerRow({ job }: { job: JobDefinition }) {
         <span class="manager__working">{t('managers.working')}</span>
       ) : !open ? (
         <span class="manager__locked">{t('managers.lockedJob')}</span>
-      ) : level < minLevel ? (
-        <span class="manager__locked">{t('managers.needLevel', minLevel, level)}</span>
+      ) : rank < minRank ? (
+        <span class="manager__locked">{t('managers.needRank', minRank, rank)}</span>
       ) : (
         <button
           class={`manager__hire ${canHire ? '' : 'manager__hire--off'}`}

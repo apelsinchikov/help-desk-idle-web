@@ -61,7 +61,7 @@ test('v1 save migrates: rank from reached milestones, empty upgrades', () => {
     x.jobs.accounting_printer.level = 25
   }), bundledContent)!
   assert.equal(s.schemaVersion, 2)
-  assert.equal(s.jobs.reboot.rank, 100)
+  assert.equal(s.jobs.reboot.rank, 125)
   assert.equal(s.jobs.plug_mouse.rank, 0)
   assert.equal(s.jobs.accounting_printer.rank, 25)
   assert.deepEqual(s.upgrades, [])

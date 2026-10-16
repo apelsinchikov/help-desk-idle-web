@@ -12,7 +12,7 @@ export function refreshSections(engine: GameEngine): Section[] {
   const cheapestUpgrade = content.upgrades[0]?.cost ?? Infinity
   const open: Record<Section, boolean> = {
     settings: true,
-    managers: jobs.some((j) => j.level >= content.config.managerMinLevel || j.hasManager),
+    managers: jobs.some((j) => j.rank >= content.config.managerMinRank || j.hasManager),
     achievements: jobs.some((j) => j.rank > 0),
     upgrades: state.lifetimeEarnings >= cheapestUpgrade,
   }

@@ -27,7 +27,7 @@ export type GameConfig = {
   /** Цикл короче этого порога (секунды) у работы с менеджером считается «потоком». */
   fastCycleThreshold: number
   /** С какого уровня работы можно нанять менеджера. */
-  managerMinLevel: number
+  managerMinRank: number
   /** Повышение на пороге стоит как столько раз пройденный отрезок уровней (от прошлого порога до этого). */
   promotionFactor: number
 }

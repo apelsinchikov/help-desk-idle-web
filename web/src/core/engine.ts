@@ -251,7 +251,7 @@ export class GameEngine {
     const job = this.content.job(jobId)
     const js = this.current.jobs[jobId]
     if (!job || !js) return false
-    return js.level >= this.content.config.managerMinLevel && !js.hasManager && this.current.money >= job.managerCost
+    return js.rank >= this.content.config.managerMinRank && !js.hasManager && this.current.money >= job.managerCost
   }
 
   hireManager(jobId: string): boolean {

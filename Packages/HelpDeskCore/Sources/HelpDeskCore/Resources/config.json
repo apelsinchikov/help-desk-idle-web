@@ -2,6 +2,6 @@
   "offlineCapHours": 24,
   "autosaveSeconds": 30,
   "fastCycleThreshold": 0.25,
-  "managerMinLevel": 100,
+  "managerMinRank": 50,
   "promotionFactor": 2
 }

@@ -1535,19 +1535,19 @@
         }
       }
     },
-    "managers.needLevel": {
+    "managers.needRank": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Needs job lv. %1$lld (now %2$lld)"
+            "value": "Promote the job to lv. %1$lld first (now %2$lld)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нужен ур. %1$lld работы (сейчас %2$lld)"
+            "value": "Сначала повысь работу до ур. %1$lld (сейчас %2$lld)"
           }
         }
       }
