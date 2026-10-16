@@ -17,12 +17,12 @@ const cfg = {
   ...base.config,
   managerMinRank: env('MGR_RANK', base.config.managerMinRank),
   promotionFactor: env('PROMO_F', base.config.promotionFactor),
-  track: { ...base.config.track, perkEvery: env('PERK_EVERY', base.config.track.perkEvery) },
+  track: { ...base.config.track, perkFirst: env('PERK_FIRST', base.config.track.perkFirst), perkEvery: env('PERK_EVERY', base.config.track.perkEvery) },
   quests: { ...base.config.quests, minMinutes: env('Q_MIN', base.config.quests.minMinutes), maxMinutes: env('Q_MAX', base.config.quests.maxMinutes) },
 }
 // MS_SMALL > 0: пороги каждые 25 уровней — существующие остаются, на промежуточных «прибыль ×MS_SMALL»
 const small = env('MS_SMALL', 0)
-// MS_SPARSE=1: пороги до 100 — каждые 25, 100–300 — каждые 50, 300–1000 — каждые 100, дальше — каждые 250.
+// MS_SPARSE=1 (с 2026-10-16 уже в milestones.json, повторно ничего не меняет): пороги до 100 — каждые 25, 100–300 — каждые 50, 300–1000 — каждые 100, дальше — каждые 250.
 // MS_FOLD=1: награды выпавших порогов не теряются, а переносятся на ближайший оставшийся порог выше.
 function sparse(list: typeof base.milestones) {
   const keep = (l: number) => l <= 100 ? l % 25 === 0 : l <= 300 ? l % 50 === 0 : l <= 1000 ? l % 100 === 0 : l % 250 === 0

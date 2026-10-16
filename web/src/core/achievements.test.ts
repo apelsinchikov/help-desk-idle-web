@@ -1,23 +1,43 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { achievementText, promotionLabelKey } from './achievements.ts'
+import { achievementText, groupMilestones, promotionLabelKey } from './achievements.ts'
+import type { Milestone } from './content.ts'
+
+const speed = { effect: 'effect.speed', value: 2 }
 
 test('regular job milestone', () => {
-  assert.deepEqual(achievementText({ jobId: 'reboot', level: 25, effect: 'speed', value: 2 }, 0), {
-    key: 'ach.job', args: ['job.reboot.title', 25, 'effect.speed', 2],
+  assert.deepEqual(achievementText([{ jobId: 'reboot', level: 25, effect: 'speed', value: 2 }], 0), {
+    key: 'ach.job', args: ['job.reboot.title', 25, { rewards: [speed] }],
   })
+})
+
+test('one toast lists every reward of the threshold', () => {
+  const list: Milestone[] = [
+    { jobId: 'reboot', level: 200, effect: 'speed', value: 2 },
+    { jobId: 'reboot', level: 200, effect: 'profit', value: 1.5 },
+  ]
+  assert.deepEqual(achievementText(list, 0).args[2], { rewards: [speed, { effect: 'effect.profit', value: 1.5 }] })
 })
 
 test('accounting jobs speak with Lyudmila', () => {
-  assert.deepEqual(achievementText({ jobId: 'accounting_printer', level: 50, effect: 'speed', value: 2 }, 2), { key: 'ach.lyudmila.50', args: [] })
-  assert.deepEqual(achievementText({ jobId: 'accounting_1c', level: 400, effect: 'speed', value: 2 }, 6), { key: 'ach.lyudmila.400', args: [] })
-  assert.equal(achievementText({ jobId: 'accounting_1c', level: 500, effect: 'profit', value: 4 }, 6).key, 'ach.job', 'нет шутки — обычный текст')
+  assert.deepEqual(achievementText([{ jobId: 'accounting_printer', level: 50, effect: 'speed', value: 2 }], 2), { key: 'ach.lyudmila.50', args: [] })
+  assert.deepEqual(achievementText([{ jobId: 'accounting_1c', level: 400, effect: 'speed', value: 2 }], 6), { key: 'ach.lyudmila.400', args: [] })
+  assert.equal(achievementText([{ jobId: 'accounting_1c', level: 500, effect: 'profit', value: 4 }], 6).key, 'ach.job', 'нет шутки — обычный текст')
 })
 
 test('global milestone', () => {
-  assert.deepEqual(achievementText({ jobId: null, level: 50, effect: 'speed', value: 2 }, -1), {
-    key: 'ach.all', args: [50, 'effect.speed', 2],
+  assert.deepEqual(achievementText([{ jobId: null, level: 50, effect: 'speed', value: 2 }], -1), {
+    key: 'ach.all', args: [50, { rewards: [speed] }],
   })
+})
+
+test('milestones are grouped by job and level', () => {
+  const list: Milestone[] = [
+    { jobId: 'reboot', level: 200, effect: 'speed', value: 2 },
+    { jobId: null, level: 25, effect: 'speed', value: 2 },
+    { jobId: 'reboot', level: 200, effect: 'profit', value: 1.5 },
+  ]
+  assert.deepEqual(groupMilestones(list).map((g) => g.length), [2, 1])
 })
 
 test('promotion labels cycle through 8 phrases', () => {

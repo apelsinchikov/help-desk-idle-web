@@ -1,4 +1,4 @@
-// Трек закрытых тикетов (в коде — stars): перк каждые 5 🎫, вещи по порядку (белая — через 10 🎫, синяя — 20, фиолетовая — 40, оранжевая — 80),
+// Трек закрытых тикетов (в коде — stars): перк каждые 10 🎫 (5, 15, 25…), вещи по порядку (белая — через 10 🎫, синяя — 20, фиолетовая — 40, оранжевая — 80),
 // перемотка на 50, 100, 150…
 import type { GameContent, PerkKind, TrackTier } from './content.ts'
 import type { GameEngine } from './engine.ts'
@@ -15,6 +15,23 @@ export function perkTier(content: GameContent, stars: number): TrackTier {
   return [...tiers].reverse().find((t) => t.fromStars <= stars) ?? tiers[0]
 }
 
+/** Перк — на perkFirst, perkFirst + perkEvery, …: между вещами, которые всегда на десятках. */
+export function isPerkStar(content: GameContent, stars: number): boolean {
+  const { perkFirst, perkEvery } = content.config.track
+  return stars >= perkFirst && (stars - perkFirst) % perkEvery === 0
+}
+
+/** Звёзды, на которых трек что-то выдаёт: `count` штук начиная с `from` (шаг +1) или до `from` вниз (шаг −1). */
+export function rewardStars(content: GameContent, from: number, count: number, step: 1 | -1 = 1): number[] {
+  const itemStars = new Set(itemStarSchedule(content))
+  const { rewindEvery } = content.config.track
+  const out: number[] = []
+  for (let s = from; s > 0 && out.length < count; s += step) {
+    if (itemStars.has(s) || isPerkStar(content, s) || s % rewindEvery === 0) out.push(s)
+  }
+  return step === 1 ? out : out.reverse()
+}
+
 /** На каких звёздах выдаются вещи (по порядку items.json): каждая — через itemStars[редкость] после прошлой. */
 export function itemStarSchedule(content: GameContent): number[] {
   let at = 0
@@ -24,7 +41,7 @@ export function itemStarSchedule(content: GameContent): number[] {
 /** Выдаёт награды за звёзды (track.claimed, stars] и запоминает, что выдано. */
 export function claimTrack(engine: GameEngine): Reward[] {
   const { content, state } = engine
-  const { perkEvery, rewindEvery } = content.config.track
+  const { rewindEvery } = content.config.track
   const itemStars = new Set(itemStarSchedule(content))
   const rewards: Reward[] = []
   for (let s = state.track.claimed + 1; s <= state.stars; s++) {
@@ -37,7 +54,7 @@ export function claimTrack(engine: GameEngine): Reward[] {
       } else {
         rewards.push(givePerk(state, randomPerk(content, state, tier)))
       }
-    } else if (s % perkEvery === 0) {
+    } else if (isPerkStar(content, s)) {
       rewards.push(givePerk(state, randomPerk(content, state, tier)))
     }
     if (s % rewindEvery === 0) rewards.push(givePerk(state, `rewind_${Math.max(...tier.rewind)}`))

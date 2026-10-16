@@ -11,13 +11,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "All jobs ≥ %1$lld: %2$@ ×%3$@"
+            "value": "All jobs ≥ %1$lld: %2$@"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Все работы ≥ %1$lld: %2$@ ×%3$@"
+            "value": "Все работы ≥ %1$lld: %2$@"
           }
         }
       }
@@ -62,13 +62,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "lv. %1$lld → %2$@ ×%3$@"
+            "value": "lv. %1$lld → %2$@"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "ур. %1$lld → %2$@ ×%3$@"
+            "value": "ур. %1$lld → %2$@"
           }
         }
       }
@@ -79,13 +79,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ — lv. %2$lld: %3$@ ×%4$@"
+            "value": "%1$@ — lv. %2$lld: %3$@"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ — ур. %2$lld: %3$@ ×%4$@"
+            "value": "%1$@ — ур. %2$lld: %3$@"
           }
         }
       }

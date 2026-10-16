@@ -66,7 +66,7 @@ test('v1 save migrates: rank from reached milestones, empty upgrades', () => {
     x.jobs.accounting_printer.level = 25
   }), noWipe)!
   assert.equal(s.schemaVersion, 3)
-  assert.equal(s.jobs.reboot.rank, 125)
+  assert.equal(s.jobs.reboot.rank, 100)
   assert.equal(s.jobs.plug_mouse.rank, 0)
   assert.equal(s.jobs.accounting_printer.rank, 25)
   assert.deepEqual(s.upgrades, [])
@@ -133,7 +133,7 @@ test('v2 save migrates to v3 with empty stage 2b state', () => {
 test('v1 save migrates all the way to v3', () => {
   const s = decodeState(v1((x) => { x.jobs.reboot.level = 137 }), noWipe)!
   assert.equal(s.schemaVersion, 3)
-  assert.equal(s.jobs.reboot.rank, 125)
+  assert.equal(s.jobs.reboot.rank, 100)
   assert.equal(s.stars, 0)
 })
 

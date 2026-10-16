@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { formatDuration, formatMoney, formatTimer } from './format.ts'
+import { formatDuration, formatMoney, formatMultiplier, formatTimer } from './format.ts'
 
 test('numbers', () => {
   assert.equal(formatMoney(186_420, 'ru'), '186 420')
@@ -13,6 +13,14 @@ test('numbers', () => {
   assert.equal(formatMoney(0, 'ru'), '0')
   assert.equal(formatMoney(999_950_000, 'ru'), '1 млрд')
   assert.equal(formatMoney(Infinity, 'ru'), '∞')
+})
+
+test('reward multipliers keep three significant digits', () => {
+  assert.equal(formatMultiplier(2, 'ru'), '2')
+  assert.equal(formatMultiplier(1.5, 'ru'), '1,5')
+  assert.equal(formatMultiplier(3.375, 'ru'), '3,38')
+  assert.equal(formatMultiplier(38.4434, 'en'), '38.4')
+  assert.equal(formatMultiplier(153.7734, 'ru'), '154')
 })
 
 test('durations', () => {

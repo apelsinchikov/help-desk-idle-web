@@ -35,7 +35,7 @@ test('promotion queues an achievement toast and saves at once', () => {
   const { engine, game, calls } = setup((s) => { s.jobs.reboot.level = 25; s.money = 1e9; s.lifetimeEarnings = 1e9 })
   game.promote('reboot')
   assert.equal(engine.rank('reboot'), 25)
-  assert.deepEqual(game.messages.value, [{ kind: 'toast', text: { key: 'ach.job', args: ['job.reboot.title', 25, 'effect.speed', 2] } }])
+  assert.deepEqual(game.messages.value, [{ kind: 'toast', text: { key: 'ach.job', args: ['job.reboot.title', 25, { rewards: [{ effect: 'effect.speed', value: 2 }] }] } }])
   assert.deepEqual(calls.changed, ['purchase'])
   assert.ok(engine.state.ui.sections.includes('achievements'), 'раздел открылся после первого повышения')
   game.dismissMessage()
@@ -64,7 +64,7 @@ test('support tickets come every 3 minutes after the tutorial, toasts go first',
   game.checkTicket()
   assert.deepEqual(game.messages.value, [])
   clock.t = 180_000
-  game.pushToast({ key: 'ach.all', args: [25, 'effect.speed', 2] })
+  game.pushToast({ key: 'ach.all', args: [25, { rewards: [{ effect: 'effect.speed', value: 2 }] }] })
   game.checkTicket()
   assert.equal(game.messages.value.length, 1, 'пока висит тост, заявка не приходит')
   game.dismissMessage()
@@ -82,7 +82,7 @@ test('frequent toasts do not starve support tickets', () => {
   const { game } = setup((s) => { s.ui.tutorialDone = true }, clock)
   for (let t = 100_000; t <= 200_000; t += 100_000) {
     clock.t = t
-    game.pushToast({ key: 'ach.all', args: [25, 'effect.speed', 2] })
+    game.pushToast({ key: 'ach.all', args: [25, { rewards: [{ effect: 'effect.speed', value: 2 }] }] })
     clock.t = t + 5_000
     game.dismissMessage()
   }
