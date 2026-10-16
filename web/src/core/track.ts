@@ -1,4 +1,5 @@
-// Трек звёзд: перк каждые 5 ⭐, вещь каждые 10 ⭐ (по порядку, без повторов), перемотка на 50, 100, 150…
+// Трек звёзд: перк каждые 5 ⭐, вещи по порядку (белая — через 10 ⭐, синяя — 20, фиолетовая — 40, оранжевая — 80),
+// перемотка на 50, 100, 150…
 import type { GameContent, PerkKind, TrackTier } from './content.ts'
 import type { GameEngine } from './engine.ts'
 import { nextItem } from './items.ts'
@@ -14,14 +15,21 @@ export function perkTier(content: GameContent, stars: number): TrackTier {
   return [...tiers].reverse().find((t) => t.fromStars <= stars) ?? tiers[0]
 }
 
+/** На каких звёздах выдаются вещи (по порядку items.json): каждая — через itemStars[редкость] после прошлой. */
+export function itemStarSchedule(content: GameContent): number[] {
+  let at = 0
+  return content.items.map((item) => (at += content.config.track.itemStars[item.rarity]))
+}
+
 /** Выдаёт награды за звёзды (track.claimed, stars] и запоминает, что выдано. */
 export function claimTrack(engine: GameEngine): Reward[] {
   const { content, state } = engine
-  const { perkEvery, itemEvery, rewindEvery } = content.config.track
+  const { perkEvery, rewindEvery } = content.config.track
+  const itemStars = new Set(itemStarSchedule(content))
   const rewards: Reward[] = []
   for (let s = state.track.claimed + 1; s <= state.stars; s++) {
     const tier = perkTier(content, s)
-    if (s % itemEvery === 0) {
+    if (itemStars.has(s)) {
       const item = nextItem(content, state)
       if (item) {
         engine.grantItem(item.id)

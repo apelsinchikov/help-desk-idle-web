@@ -36,8 +36,11 @@ export type GameConfig = {
   effects: { levelDiscountCap: number; gradeDiscountCap: number }
   /** Сообщения внизу экрана: сколько висят, как часто заявки, сколько заявок в банке. */
   messages: { seconds: number; ticketEverySeconds: number; tickets: number }
-  /** Трек звёзд: перк каждые perkEvery, вещь каждые itemEvery, перемотка каждые rewindEvery; уровни перков по звёздам. */
-  track: { perkEvery: number; itemEvery: number; rewindEvery: number; weights: Record<PerkKind, number>; tiers: TrackTier[] }
+  /**
+   * Трек звёзд: перк каждые perkEvery; следующая вещь — через itemStars[её редкость] звёзд после прошлой
+   * (редкие дороже); перемотка каждые rewindEvery; уровни перков по звёздам.
+   */
+  track: { perkEvery: number; itemStars: Record<Rarity, number>; rewindEvery: number; weights: Record<PerkKind, number>; tiers: TrackTier[] }
   /** Задания: окно времени на цель, замена раз в rerollHours, сколько сборов для «Собери вручную». */
   quests: { minMinutes: number; maxMinutes: number; rerollHours: number; collect: [number, number] }
 }

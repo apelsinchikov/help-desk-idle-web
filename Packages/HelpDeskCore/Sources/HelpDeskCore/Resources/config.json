@@ -15,7 +15,12 @@
   },
   "track": {
     "perkEvery": 5,
-    "itemEvery": 10,
+    "itemStars": {
+      "common": 10,
+      "rare": 20,
+      "epic": 40,
+      "legendary": 80
+    },
     "rewindEvery": 50,
     "weights": {
       "speed": 30,

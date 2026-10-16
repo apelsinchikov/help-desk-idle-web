@@ -1,5 +1,5 @@
 import { t } from '../app/strings.ts'
-import { perkTier } from '../core/track.ts'
+import { itemStarSchedule, perkTier } from '../core/track.ts'
 import { useGame } from './context.ts'
 import { SectionHint } from './SectionHint.tsx'
 
@@ -8,7 +8,8 @@ export function Quests() {
   const game = useGame()
   const { engine } = game
   const { content, state } = engine
-  const { perkEvery, itemEvery, rewindEvery } = content.config.track
+  const { perkEvery, rewindEvery } = content.config.track
+  const itemStars = new Set(itemStarSchedule(content))
   const upcomingItems = content.items.filter((i) => !state.items.owned.includes(i.id))
   const firstNext = (Math.floor(state.track.claimed / perkEvery) + 1) * perkEvery
   const past = [] as number[]
@@ -19,7 +20,7 @@ export function Quests() {
   let itemIndex = 0
   const rows = next.map((s) => {
     const parts: string[] = []
-    if (s % itemEvery === 0) {
+    if (itemStars.has(s)) {
       const item = upcomingItems[itemIndex++]
       parts.push(item ? t('track.item', t(`item.${item.id}.name`)) : t('track.perk'))
     } else {

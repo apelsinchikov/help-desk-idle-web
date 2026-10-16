@@ -106,5 +106,6 @@ test('stage 2b chests and config', () => {
   assert.deepEqual(c.config.track.tiers[0], { fromStars: 0, minutes: [5], speed: [1], levelDiscount: [0.15], salary: [0.1], rewind: [10] })
   assert.deepEqual(c.config.track.tiers[3].speed, [1, 1.5, 2])
   assert.deepEqual(c.config.track.weights, { speed: 30, salary: 25, levelDiscount: 25, rewind: 20 })
+  assert.deepEqual(c.config.track.itemStars, { common: 10, rare: 20, epic: 40, legendary: 80 })
   assert.deepEqual(c.config.quests, { minMinutes: 5, maxMinutes: 15, rerollHours: 4, collect: [30, 60] })
 })

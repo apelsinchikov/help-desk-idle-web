@@ -38,7 +38,7 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
     case 'quests':
       return state.ui.tutorialDone ? null : { kind: 'tutorial' }
     case 'wardrobe':
-      return state.items.owned.length > 0 ? null : { kind: 'stars', need: content.config.track.itemEvery, have: state.stars }
+      return state.items.owned.length > 0 ? null : { kind: 'stars', need: content.config.track.itemStars.common, have: state.stars }
     case 'upgrades': {
       const need = Math.min(...content.upgrades.map((u) => u.cost))
       return state.lifetimeEarnings >= need ? null : { kind: 'earn', need, have: state.lifetimeEarnings }

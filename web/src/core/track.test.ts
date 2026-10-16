@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { bundledContent as c } from './bundled.ts'
 import { makeClock, makeEngine } from './testkit.ts'
-import { claimTrack, perkTier } from './track.ts'
+import { claimTrack, itemStarSchedule, perkTier } from './track.ts'
 import { decodeState, encodeState } from './serialize.ts'
 import { GameEngine } from './engine.ts'
 
@@ -60,4 +60,23 @@ test('every perk the track hands out exists in perks.json', () => {
     const e = engineWith(400, 0, seed)
     for (const r of claimTrack(e)) if (r.kind === 'perk') assert.ok(c.perk(r.perkId), r.perkId)
   }
+})
+
+test('item stars grow with rarity: common every 10, rare 20, epic 40, legendary 80', () => {
+  const schedule = itemStarSchedule(c)
+  assert.equal(schedule.length, 28)
+  assert.deepEqual(schedule.slice(0, 9), [10, 20, 30, 40, 50, 60, 70, 90, 110])
+  assert.equal(schedule[13], 210)
+  assert.equal(schedule[14], 250)
+  assert.equal(schedule[21], 570)
+  assert.equal(schedule[27], 1050)
+})
+
+test('a ten that is not an item star gives a perk', () => {
+  const e = engineWith(80, 75)
+  for (const item of c.items.slice(0, 7)) e.state.items.owned.push(item.id)
+  assert.deepEqual(claimTrack(e).map((r) => r.kind), ['perk'])
+  const e2 = engineWith(90, 85)
+  for (const item of c.items.slice(0, 7)) e2.state.items.owned.push(item.id)
+  assert.deepEqual(claimTrack(e2), [{ kind: 'item', itemId: 'notabug_glasses' }])
 })

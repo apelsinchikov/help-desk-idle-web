@@ -5417,13 +5417,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Every quest gives a star. Every 5 ⭐ — a perk, every 10 ⭐ — a new item, every 50 ⭐ — a rewind too."
+            "value": "Every quest gives a star. Every 5 ⭐ — a perk; items come in order: common every 10 ⭐, rare every 20, epic every 40, legendary every 80; every 50 ⭐ — a rewind too."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Каждое задание — звезда. Каждые 5 ⭐ — перк, каждые 10 ⭐ — новая вещь, каждые 50 ⭐ — ещё и перемотка."
+            "value": "Каждое задание — звезда. Каждые 5 ⭐ — перк; вещи идут по порядку: обычные — каждые 10 ⭐, редкие — каждые 20, эпические — 40, легендарные — 80; каждые 50 ⭐ — ещё и перемотка."
           }
         }
       }
@@ -6012,13 +6012,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nothing here yet. Items come every 10 ⭐"
+            "value": "Nothing here yet. The first item comes at 10 ⭐"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пока пусто. Вещи дают за каждые 10 ⭐"
+            "value": "Пока пусто. Первая вещь — за 10 ⭐"
           }
         }
       }
