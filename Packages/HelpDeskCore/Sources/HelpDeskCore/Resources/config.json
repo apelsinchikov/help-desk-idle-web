@@ -4,12 +4,15 @@
   "fastCycleThreshold": 0.25,
   "managerMinRank": 50,
   "promotionFactor": 2,
+  "saveSeason": 2,
+  "wipeCompensation": "rewind_30",
   "effects": {
     "levelDiscountCap": 0.6,
     "gradeDiscountCap": 0.5
   },
   "messages": {
     "seconds": 20,
+    "toastSeconds": 10,
     "ticketEverySeconds": 180,
     "tickets": 50
   },

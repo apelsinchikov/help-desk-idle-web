@@ -3,11 +3,12 @@ import { t } from '../app/strings.ts'
 import type { Message } from '../core/messages.ts'
 import { money, useGame } from './context.ts'
 
-/** Одно сообщение внизу экрана: первое из очереди, `config.messages.seconds` секунд, тап — скрыть. */
+/** Одно сообщение внизу экрана: первое из очереди; заявка — `seconds`, тост — `toastSeconds`; тап — скрыть. */
 export function MessageSlot() {
   const game = useGame()
   const first = game.messages.value[0]
-  const seconds = game.engine.content.config.messages.seconds
+  const cfg = game.engine.content.config.messages
+  const seconds = first?.kind === 'ticket' ? cfg.seconds : cfg.toastSeconds
   useEffect(() => {
     if (!first) return
     const timer = setTimeout(() => game.dismissMessage(), seconds * 1000)

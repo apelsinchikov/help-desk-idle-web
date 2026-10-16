@@ -101,7 +101,7 @@ test('stage 2b chests and config', () => {
   assert.deepEqual(c.chests.map((ch) => ch.perks), [[1, 1], [3, 5], [5, 9], [9, 15]])
   assert.equal(c.chests[0].currency, 'techcoin')
   assert.equal(c.config.effects.levelDiscountCap, 0.6)
-  assert.deepEqual(c.config.messages, { seconds: 20, ticketEverySeconds: 180, tickets: 50 })
+  assert.deepEqual(c.config.messages, { seconds: 20, toastSeconds: 10, ticketEverySeconds: 180, tickets: 50 })
   assert.deepEqual(c.config.track.tiers.map((t) => t.fromStars), [0, 50, 100, 150])
   assert.deepEqual(c.config.track.tiers[0], { fromStars: 0, minutes: [5], speed: [1], levelDiscount: [0.15], salary: [0.1], rewind: [10] })
   assert.deepEqual(c.config.track.tiers[3].speed, [1, 1.5, 2])

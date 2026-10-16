@@ -32,10 +32,14 @@ export type GameConfig = {
   managerMinRank: number
   /** Повышение на пороге стоит как столько раз пройденный отрезок уровней (от прошлого порога до этого). */
   promotionFactor: number
+  /** Сезон сейвов: сейв прошлого сезона при загрузке начинается заново (вайп). */
+  saveSeason: number
+  /** Перк-компенсация за вайп (в рюкзак). */
+  wipeCompensation: string
   /** Потолки скидок (доля). */
   effects: { levelDiscountCap: number; gradeDiscountCap: number }
-  /** Сообщения внизу экрана: сколько висят, как часто заявки, сколько заявок в банке. */
-  messages: { seconds: number; ticketEverySeconds: number; tickets: number }
+  /** Сообщения внизу экрана: сколько висит заявка (seconds) и тост (toastSeconds), как часто заявки, сколько их в банке. */
+  messages: { seconds: number; toastSeconds: number; ticketEverySeconds: number; tickets: number }
   /**
    * Трек звёзд: перк каждые perkEvery; следующая вещь — через itemStars[её редкость] звёзд после прошлой
    * (редкие дороже); перемотка каждые rewindEvery; уровни перков по звёздам.

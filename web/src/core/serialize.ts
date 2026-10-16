@@ -2,7 +2,7 @@
 // Схема 1 (этап 1) мигрирует в 2: ранг по уже достигнутым порогам, пустые улучшения, состояние обучения.
 // Схема 2 мигрирует в 3: задания, звёзды, перки и вещи — пустые.
 import type { GameContent } from './content.ts'
-import { CURRENT_SCHEMA, QUEST_KINDS, newStage2b, newUiState, randomSeed } from './state.ts'
+import { CURRENT_SCHEMA, QUEST_KINDS, newGame, newStage2b, newUiState, randomSeed } from './state.ts'
 import type { GameState, JobState, Quest, UiState } from './state.ts'
 import { SLOTS } from './content.ts'
 import type { Slot } from './content.ts'
@@ -62,7 +62,7 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     if (typeof u.tutorialDone !== 'boolean' || !isInt(u.tutorialStep) || u.tutorialStep < 0) return null
     if (!isStrings(u.sections) || !isStrings(u.hintsSeen)) return null
     upgrades = [...value.upgrades]
-    ui = { tutorialDone: u.tutorialDone, tutorialStep: u.tutorialStep, sections: [...u.sections], hintsSeen: [...u.hintsSeen], ticketCursor: 0 }
+    ui = { tutorialDone: u.tutorialDone, tutorialStep: u.tutorialStep, sections: [...u.sections], hintsSeen: [...u.hintsSeen], ticketCursor: 0, wiped: u.wiped === true }
   }
 
   let stage2b = newStage2b(randomSeed())
@@ -73,7 +73,8 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     ui.ticketCursor = parsed.ticketCursor
   }
 
-  return {
+  const season = isInt(value.season) ? value.season : 1
+  const decoded: GameState = {
     schemaVersion: CURRENT_SCHEMA,
     money,
     lifetimeEarnings,
@@ -83,7 +84,21 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     upgrades,
     ui,
     ...stage2b,
+    season,
   }
+  return content && season < content.config.saveSeason ? wipe(decoded, content) : decoded
+}
+
+/** Вайп сейва прошлого сезона: новая игра; остаются настройки, пройденное обучение и подсказки; перк-компенсация. */
+function wipe(old: GameState, content: GameContent): GameState {
+  const fresh = newGame(content, old.lastActiveAt, old.settings.language)
+  fresh.settings = { ...old.settings }
+  fresh.ui.tutorialDone = old.ui.tutorialDone
+  fresh.ui.tutorialStep = old.ui.tutorialStep
+  fresh.ui.hintsSeen = [...old.ui.hintsSeen]
+  fresh.ui.wiped = true
+  if (content.perk(content.config.wipeCompensation)) fresh.perks.inventory[content.config.wipeCompensation] = 1
+  return fresh
 }
 
 /** Поля схемы 3. Неизвестные id перков и вещей (контент поменялся) выбрасываются, если передан `content`. */

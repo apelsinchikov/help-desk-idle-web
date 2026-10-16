@@ -190,6 +190,11 @@ export function createGame(o: {
       lastTicketAt = now()
     },
 
+    /** Окно вайпа прочитано. */
+    ackWipe(): void {
+      game.act('purchase', () => { engine.state.ui.wiped = false })
+    },
+
     ackTutorial(): void {
       game.act('purchase', () => tutorialAck(engine, route.value, buyMode.value))
     },
