@@ -457,9 +457,10 @@ export class GameEngine {
       this.advance(now)
       return null
     }
-    const earned = this.advance(now, this.content.config.offlineCapHours * 3600)
+    const cap = this.content.config.offlineCapHours * 3600
+    const earned = this.advance(now, cap)
     const readyJobs = this.content.jobs.filter((j) => this.status(j.id, now).kind === 'ready').length
-    return { elapsed, earned, readyJobs }
+    return { elapsed, earned, counted: Math.min(elapsed, cap), readyJobs }
   }
 
   /** Начать заново (настройки сохраняются). */
