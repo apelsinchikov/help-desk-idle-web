@@ -6,6 +6,8 @@ import type { AppLanguage } from '../core/format.ts'
 import type { BuyMode, OfflineReport } from '../core/state.ts'
 import { achievementText } from '../core/achievements.ts'
 import type { AchievementText } from '../core/achievements.ts'
+import { nextTicket, ticketDue } from '../core/messages.ts'
+import type { Message } from '../core/messages.ts'
 import type { Milestone } from '../core/content.ts'
 import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
@@ -28,7 +30,10 @@ export function createGame(o: {
   language: Signal<AppLanguage>
   /** Вибро платформы (Telegram); вызывается, только если включено в настройках. */
   haptic?: (kind: 'light' | 'success') => void
+  /** Часы (тесты подменяют). */
+  now?: () => number
 }) {
+  const now = o.now ?? Date.now
   const { engine, scheduler } = o
   /** Растёт после любого изменения состояния: компоненты читают его, затем данные из engine. */
   const version = signal(0)
@@ -37,8 +42,10 @@ export function createGame(o: {
   const route = signal<Route>('jobs')
   const language = o.language
   language.value = engine.state.settings.language
-  /** Очередь тостов достижений; UI показывает первый и снимает dismissToast(). */
-  const toasts = signal<AchievementText[]>([])
+  /** Очередь сообщений внизу экрана (тосты и заявки); UI показывает первое и снимает dismissMessage(). */
+  const messages = signal<Message[]>([])
+  /** Когда закрыли последнее сообщение: следующая заявка — не раньше чем через ticketEverySeconds. */
+  let lastShownAt = now()
   let timer: ReturnType<typeof setInterval> | null = null
 
   /** После любого изменения: разделы меню, шаги обучения, перерисовка. */
@@ -56,7 +63,7 @@ export function createGame(o: {
     route,
     language,
     cloudStatus: o.cloudStatus,
-    toasts,
+    messages,
 
     /** Действие игрока: покупки сохраняются сразу, тапы — по интервалу автосейва. */
     act(kind: 'purchase' | 'tap', fn: () => void): void {
@@ -72,15 +79,38 @@ export function createGame(o: {
       if (gained.length === 0) return
       game.haptic('success')
       const index = engine.content.jobs.findIndex((j) => j.id === jobId)
-      toasts.value = [...toasts.value, ...gained.map((m) => achievementText(m, m.jobId === null ? -1 : index))]
+      for (const m of gained) game.pushToast(achievementText(m, m.jobId === null ? -1 : index))
+    },
+
+    /** Тост встаёт в очередь раньше заявок. */
+    pushToast(text: AchievementText): void {
+      const queue = messages.value
+      const firstTicket = queue.findIndex((m, i) => i > 0 && m.kind === 'ticket')
+      const toast: Message = { kind: 'toast', text }
+      messages.value = firstTicket < 0 ? [...queue, toast] : [...queue.slice(0, firstTicket), toast, ...queue.slice(firstTicket)]
     },
 
     buyUpgrade(upgradeId: string): void {
       game.act('purchase', () => { if (engine.buyUpgrade(upgradeId)) game.haptic('success') })
     },
 
-    dismissToast(): void {
-      toasts.value = toasts.value.slice(1)
+    dismissMessage(): void {
+      messages.value = messages.value.slice(1)
+      lastShownAt = now()
+    },
+
+    /** Тик: пора — добавить заявку в техподдержку. */
+    checkTicket(): void {
+      const cfg = engine.content.config.messages
+      const due = ticketDue({
+        now: now(),
+        lastShownAt,
+        everySeconds: cfg.ticketEverySeconds,
+        queueEmpty: messages.value.length === 0,
+        onJobs: route.value === 'jobs',
+        tutorialDone: engine.state.ui.tutorialDone,
+      })
+      if (due) messages.value = [{ kind: 'ticket', index: nextTicket(engine.state, cfg.tickets) }]
     },
 
     ackTutorial(): void {
@@ -121,6 +151,7 @@ export function createGame(o: {
         const report = engine.resume(Date.now())
         if (report) offlineReport.value = report
         bump()
+        game.checkTicket()
         scheduler.changed('tick')
       }, TICK_MS)
     },

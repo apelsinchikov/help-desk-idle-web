@@ -5,9 +5,9 @@ import { JobsScreen } from './jobs/JobsScreen.tsx'
 import { Loading } from './Loading.tsx'
 import { Achievements } from './Achievements.tsx'
 import { Managers } from './Managers.tsx'
+import { MessageSlot } from './MessageSlot.tsx'
 import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
-import { Toast } from './Toast.tsx'
 import { Tutorial } from './Tutorial.tsx'
 import { Upgrades } from './Upgrades.tsx'
 import { WelcomeBack } from './WelcomeBack.tsx'
@@ -30,7 +30,7 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'settings' && <Settings />}
       {route === 'upgrades' && <Upgrades />}
       {route === 'achievements' && <Achievements />}
-      <Toast />
+      <MessageSlot />
       {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}
       {badge}
