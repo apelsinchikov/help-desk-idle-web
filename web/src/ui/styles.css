@@ -53,8 +53,8 @@ button:disabled { cursor: default; }
 .unlock--off { color: var(--muted); border-color: var(--locked-border); }
 
 /* Нижняя панель */
-.bottom { display: flex; gap: 10px; padding: 8px 16px calc(4px + var(--safe-bottom)); background: var(--background); }
-.bottom__menu, .bottom__shop { position: relative; flex: 1; min-height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 800; }
+.bottom { display: flex; align-items: center; gap: 8px; padding: 8px 16px calc(4px + var(--safe-bottom)); background: var(--background); }
+.bottom__menu, .bottom__shop { position: relative; flex: none; width: 48px; min-height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
 .bottom__menu { background: var(--nav); color: var(--on-accent); }
 .bottom__shop { background: var(--shop); color: var(--on-accent); }
 .bottom__shop small { font-size: 12px; }
@@ -333,3 +333,16 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .bonuses__perk { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
 .bonuses__time { font-variant-numeric: tabular-nums; }
 .doll .slot .slot__icon { width: 32px; height: 32px; }
+
+/* Энергетики */
+.energy { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+.energy__cans { display: flex; flex-direction: column; gap: 2px; flex: none; }
+.energy__row { display: flex; gap: 4px; }
+.can { width: 18px; height: 28px; }
+.energy__timer { font-size: 11px; font-weight: 800; color: var(--alert); font-variant-numeric: tabular-nums; }
+.energy__button { flex: 1; min-width: 0; min-height: 52px; border-radius: 14px; background: var(--energy); color: var(--on-accent); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0 6px; }
+.energy__button--full { background: color-mix(in srgb, var(--energy) 45%, var(--card)); }
+.energy__title { font-size: 15px; font-weight: 800; white-space: nowrap; }
+.energy__sub { font-size: 11px; font-weight: 700; opacity: .9; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.energy__joke { position: absolute; right: 0; bottom: calc(100% + 10px); max-width: 230px; padding: 10px 12px; border-radius: 14px; background: var(--ink); color: var(--on-accent); font-size: 13px; font-weight: 700; z-index: 45; animation: toast-in .2s ease-out; }
+.energy__joke::after { content: ''; position: absolute; right: 40px; bottom: -6px; width: 12px; height: 12px; background: var(--ink); transform: rotate(45deg); }

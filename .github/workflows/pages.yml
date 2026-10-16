@@ -44,6 +44,7 @@ jobs:
           BASE_PATH: /help-desk-idle-web/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_ADSGRAM_BLOCK_ID: ${{ secrets.VITE_ADSGRAM_BLOCK_ID }}
 
       - name: Build dev (browser only, no cloud)
         working-directory: dev/web
