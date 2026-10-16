@@ -52,8 +52,8 @@ export function createGame(o: {
   language.value = engine.state.settings.language
   /** Очередь сообщений внизу экрана (тосты и заявки); UI показывает первое и снимает dismissMessage(). */
   const messages = signal<Message[]>([])
-  /** Когда закрыли последнее сообщение: следующая заявка — не раньше чем через ticketEverySeconds. */
-  let lastShownAt = now()
+  /** Когда показали прошлую заявку: следующая — через ticketEverySeconds, как только место свободно. */
+  let lastTicketAt = now()
   let timer: ReturnType<typeof setInterval> | null = null
 
   /** Тост о награде трека. */
@@ -165,7 +165,6 @@ export function createGame(o: {
 
     dismissMessage(): void {
       messages.value = messages.value.slice(1)
-      lastShownAt = now()
     },
 
     /** Тик: пора — добавить заявку в техподдержку. */
@@ -173,13 +172,15 @@ export function createGame(o: {
       const cfg = engine.content.config.messages
       const due = ticketDue({
         now: now(),
-        lastShownAt,
+        lastShownAt: lastTicketAt,
         everySeconds: cfg.ticketEverySeconds,
         queueEmpty: messages.value.length === 0,
         onJobs: route.value === 'jobs',
         tutorialDone: engine.state.ui.tutorialDone,
       })
-      if (due) messages.value = [{ kind: 'ticket', index: nextTicket(engine.state, cfg.tickets) }]
+      if (!due) return
+      messages.value = [{ kind: 'ticket', index: nextTicket(engine.state, cfg.tickets) }]
+      lastTicketAt = now()
     },
 
     ackTutorial(): void {

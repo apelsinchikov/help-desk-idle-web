@@ -75,3 +75,17 @@ test('support tickets come every 3 minutes after the tutorial, toasts go first',
   game.checkTicket()
   assert.deepEqual(game.messages.value, [], '3 минуты считаются от закрытия последнего сообщения')
 })
+
+test('frequent toasts do not starve support tickets', () => {
+  const clock = { t: 0 }
+  const { game } = setup((s) => { s.ui.tutorialDone = true }, clock)
+  for (let t = 100_000; t <= 200_000; t += 100_000) {
+    clock.t = t
+    game.pushToast({ key: 'ach.all', args: [25, 'effect.speed', 2] })
+    clock.t = t + 5_000
+    game.dismissMessage()
+  }
+  clock.t = 206_000
+  game.checkTicket()
+  assert.deepEqual(game.messages.value, [{ kind: 'ticket', index: 0 }], '3 минуты считаются от прошлой заявки, а не от любого тоста')
+})
