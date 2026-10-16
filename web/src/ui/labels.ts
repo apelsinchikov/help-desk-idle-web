@@ -10,6 +10,12 @@ export function perkLabel(perk: PerkDefinition): string {
   return statLabel(perk.kind, perk.value)
 }
 
+/** Значение стата со знаком: «+50%», «−3%». */
+export function statValue(stat: StatKey, value: number): string {
+  const sign = stat === 'levelDiscount' || stat === 'gradeDiscount' ? '−' : '+'
+  return `${sign}${pct(value)}%`
+}
+
 /** «Скорость +50%», «Уровни −3%», «Грейд −5%», «Зарплата +10%». */
 export function statLabel(stat: StatKey, value: number): string {
   return t(`stat.${stat}`, pct(value))

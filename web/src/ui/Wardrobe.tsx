@@ -1,0 +1,128 @@
+import { useState } from 'preact/hooks'
+import { iconUrl } from '../app/icons.ts'
+import { t } from '../app/strings.ts'
+import { RARITIES, SLOTS } from '../core/content.ts'
+import type { ItemDefinition, Rarity, Slot, StatKey } from '../core/content.ts'
+import { compareEquip } from '../core/items.ts'
+import { itemTotals } from '../core/modifiers.ts'
+import { useGame } from './context.ts'
+import { Icon } from './Icon.tsx'
+import { statLabel, statValue } from './labels.ts'
+import { SectionHint } from './SectionHint.tsx'
+
+const STATS: StatKey[] = ['speed', 'salary', 'levelDiscount', 'gradeDiscount']
+const SLOT_EMOJI: Record<Slot, string> = { head: '🧢', glasses: '👓', top: '🧥', pants: '👖', shoes: '👟', watch: '⌚', accessory: '🪪' }
+
+/** Гардероб: сверху закреплены слоты и суммарные статы, ниже — шкаф с фильтрами. */
+export function Wardrobe() {
+  const game = useGame()
+  const { engine } = game
+  const { owned, equipped } = engine.state.items
+  const [slot, setSlot] = useState<Slot | null>(null)
+  const [rarity, setRarity] = useState<Rarity | null>(null)
+  const [open, setOpen] = useState<string | null>(null)
+  const totals = itemTotals(engine.content, engine.state)
+  const items = owned
+    .map((id) => engine.content.item(id)!)
+    .filter((i) => i && (!slot || i.slot === slot) && (!rarity || i.rarity === rarity))
+    .sort((a, b) => RARITIES.indexOf(b.rarity) - RARITIES.indexOf(a.rarity))
+
+  const toggle = (id: string) => {
+    setOpen(open === id ? null : id)
+    game.markSeen(id)
+  }
+
+  return (
+    <div class="sheet">
+      <div class="sheet__head sheet__head--wardrobe">
+        <div class="sheet__title-row">
+          <h1 class="sheet__title">{t('menu.wardrobe')}</h1>
+          <button class="sheet__close" aria-label={t('common.close')} onClick={() => game.navigate('jobs')}>✕</button>
+        </div>
+      </div>
+      <div class="wardrobe__pinned">
+        <div class="wardrobe__slots">
+          {SLOTS.map((s) => {
+            const item = equipped[s] ? engine.content.item(equipped[s]!) : undefined
+            return (
+              <div key={s} class={`slot ${item ? `rarity--${item.rarity}` : 'slot--empty'}`} title={t(`slot.${s}`)}>
+                <ItemIcon slot={s} />
+              </div>
+            )
+          })}
+        </div>
+        <div class="wardrobe__stats">
+          {STATS.filter((s) => totals[s] > 0).map((s) => (
+            <span key={s} class="wardrobe__stat">
+              {statLabel(s, totals[s])}{s === 'gradeDiscount' && <small> · {t('wardrobe.gradeLater')}</small>}
+            </span>
+          ))}
+          {STATS.every((s) => totals[s] === 0) && <span class="wardrobe__stat wardrobe__stat--none">{t('wardrobe.noStats')}</span>}
+        </div>
+      </div>
+      <div class="sheet__body">
+        <div class="group__title">{t('wardrobe.closet')}</div>
+        <div class="chips">
+          <button class={`chip ${slot === null ? 'chip--on' : ''}`} onClick={() => setSlot(null)}>{t('wardrobe.all')}</button>
+          {SLOTS.map((s) => (
+            <button key={s} class={`chip ${slot === s ? 'chip--on' : ''}`} onClick={() => setSlot(slot === s ? null : s)}>{SLOT_EMOJI[s]}</button>
+          ))}
+        </div>
+        <div class="chips">
+          <button class={`chip ${rarity === null ? 'chip--on' : ''}`} onClick={() => setRarity(null)}>{t('wardrobe.all')}</button>
+          {RARITIES.map((r) => (
+            <button key={r} class={`chip rarity-text--${r} ${rarity === r ? 'chip--on' : ''}`} onClick={() => setRarity(rarity === r ? null : r)}>
+              {t(`rarity.${r}`)}
+            </button>
+          ))}
+        </div>
+        {items.length === 0 && <p class="backpack__empty">{t('wardrobe.empty')}</p>}
+        {items.map((item) => (
+          <ItemCard key={item.id} item={item} open={open === item.id} onToggle={() => toggle(item.id)} />
+        ))}
+      </div>
+      <SectionHint section="wardrobe" />
+    </div>
+  )
+}
+
+function ItemIcon({ slot }: { slot: Slot }) {
+  const src = iconUrl(`slot_${slot}`)
+  return src ? <Icon src={src} class="slot__icon" /> : <span class="slot__emoji" aria-hidden="true">{SLOT_EMOJI[slot]}</span>
+}
+
+function ItemCard({ item, open, onToggle }: { item: ItemDefinition; open: boolean; onToggle: () => void }) {
+  const game = useGame()
+  const { engine } = game
+  const worn = engine.state.items.equipped[item.slot] === item.id
+  const fresh = !engine.state.items.seen.includes(item.id)
+  const cmp = open && !worn ? compareEquip(engine.content, engine.state, item.id) : null
+  return (
+    <div class={`item rarity--${item.rarity}`}>
+      <button class="item__row" onClick={onToggle}>
+        <ItemIcon slot={item.slot} />
+        <div class="item__info">
+          <div class="item__name">{t(`item.${item.id}.name`)}</div>
+          <div class="item__meta">
+            <span class={`rarity-text--${item.rarity}`}>{t(`rarity.${item.rarity}`)}</span> · {t(`slot.${item.slot}`)} · {statLabel(item.stat, item.value)}
+          </div>
+        </div>
+        {worn && <span class="item__worn">{t('wardrobe.equipped')}</span>}
+        {fresh && <span class="menu__new">{t('menu.new')}</span>}
+      </button>
+      {open && (
+        <div class="item__details">
+          {cmp && cmp.rows.map((row) => (
+            <div key={row.stat} class={`cmp cmp--${row.verdict}`}>
+              {t(`statName.${row.stat}`)}: {statValue(row.stat, row.before)} → {statValue(row.stat, row.after)}
+            </div>
+          ))}
+          {cmp?.removes && <div class="cmp cmp--worse">{t('wardrobe.removes', t(`item.${cmp.removes}.name`))}</div>}
+          {worn
+            ? <button class="item__action item__action--off" onClick={() => game.unequip(item.slot)}>{t('wardrobe.unequip')}</button>
+            : <button class="item__action" onClick={() => game.equip(item.id)}>{t('wardrobe.equip')}</button>}
+        </div>
+      )}
+    </div>
+  )
+}

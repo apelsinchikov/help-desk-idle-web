@@ -11,6 +11,7 @@ import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
 import { Tutorial } from './Tutorial.tsx'
 import { Upgrades } from './Upgrades.tsx'
+import { Wardrobe } from './Wardrobe.tsx'
 import { WelcomeBack } from './WelcomeBack.tsx'
 
 export type Phase = 'loading' | 'playing'
@@ -32,6 +33,7 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'upgrades' && <Upgrades />}
       {route === 'achievements' && <Achievements />}
       {route === 'backpack' && <Backpack />}
+      {route === 'wardrobe' && <Wardrobe />}
       <MessageSlot />
       {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}

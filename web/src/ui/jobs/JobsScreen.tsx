@@ -10,7 +10,7 @@ export function JobsScreen() {
   const game = useGame()
   const { engine } = game
   const buyable = buyableCounts(engine)
-  const alert = buyable.managers + buyable.upgrades + buyable.perks > 0
+  const alert = buyable.managers + buyable.upgrades + buyable.perks + buyable.items > 0
   return (
     <div class="screen">
       <Header />

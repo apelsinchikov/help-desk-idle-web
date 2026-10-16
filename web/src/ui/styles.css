@@ -224,3 +224,40 @@ button.tabs__off { color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 .perk__name { font-size: 15px; font-weight: 800; }
 .perk__meta { font-size: 12px; color: var(--muted); }
 .perk__use { padding: 8px 12px; border-radius: 12px; background: var(--backpack); color: var(--on-accent); font-size: 13px; font-weight: 800; }
+
+/* Гардероб */
+.sheet__head--wardrobe { background: var(--wardrobe); }
+.wardrobe__pinned { padding: 12px 16px 4px; background: var(--background); border-bottom: 2px solid var(--line); }
+.wardrobe__slots { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.slot { aspect-ratio: 1; border-radius: 12px; background: var(--card); border: 3px solid var(--rarity-common); display: flex; align-items: center; justify-content: center; }
+.slot--empty { border: 2px dashed var(--locked-border); opacity: .55; }
+.slot__icon { width: 70%; height: 70%; }
+.slot__emoji { font-size: 22px; }
+.wardrobe__stats { display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 10px 2px; font-size: 13px; font-weight: 800; }
+.wardrobe__stat small { font-weight: 600; color: var(--muted); }
+.wardrobe__stat--none { color: var(--muted); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.chip { padding: 6px 10px; border-radius: 99px; background: var(--card); border: 2px solid var(--line); font-size: 13px; font-weight: 700; color: var(--ink); }
+.chip--on { border-color: var(--ink); }
+.rarity--common { border-color: var(--rarity-common); }
+.rarity--rare { border-color: var(--rarity-rare); }
+.rarity--epic { border-color: var(--rarity-epic); }
+.rarity--legendary { border-color: var(--rarity-legendary); }
+.rarity-text--common { color: var(--rarity-common); }
+.rarity-text--rare { color: var(--rarity-rare); }
+.rarity-text--epic { color: var(--rarity-epic); }
+.rarity-text--legendary { color: var(--rarity-legendary); }
+.item { border-radius: 14px; background: var(--card); border: 3px solid; margin-bottom: 8px; overflow: hidden; }
+.item__row { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-align: left; color: var(--ink); }
+.item__row .slot__icon { width: 40px; height: 40px; }
+.item__info { flex: 1; min-width: 0; }
+.item__name { font-size: 15px; font-weight: 800; }
+.item__meta { font-size: 12px; color: var(--muted); }
+.item__worn { font-size: 12px; font-weight: 800; color: var(--positive); }
+.item__details { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+.cmp { font-size: 13px; font-weight: 700; }
+.cmp--better { color: var(--positive); }
+.cmp--worse { color: var(--upgrades); }
+.cmp--same { color: var(--muted); }
+.item__action { align-self: flex-start; margin-top: 6px; padding: 8px 14px; border-radius: 12px; background: var(--wardrobe); color: var(--on-accent); font-size: 14px; font-weight: 800; }
+.item__action--off { background: var(--track-strong); color: var(--ink); }

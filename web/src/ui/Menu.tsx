@@ -3,12 +3,13 @@ import type { Route } from '../app/store.ts'
 import { buyableCounts, sectionLock, type SectionLock } from '../core/progress.ts'
 import { money, useGame } from './context.ts'
 
-type Item = { section: 'managers' | 'achievements' | 'upgrades' | 'backpack'; key: string; color: string }
+type Item = { section: 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe'; key: string; color: string }
 const ITEMS: Item[] = [
   { section: 'managers', key: 'menu.managers', color: 'var(--managers)' },
   { section: 'achievements', key: 'menu.achievements', color: 'var(--achievements)' },
   { section: 'upgrades', key: 'menu.upgrades', color: 'var(--upgrades)' },
   { section: 'backpack', key: 'menu.backpack', color: 'var(--backpack)' },
+  { section: 'wardrobe', key: 'menu.wardrobe', color: 'var(--wardrobe)' },
 ]
 
 /** Меню — колонка кнопок поверх затемнённой игры. Разделы появляются по мере прогресса. */
@@ -17,7 +18,7 @@ export function Menu() {
   const { engine } = game
   const ui = engine.state.ui
   const buyable = buyableCounts(engine)
-  const counts: Partial<Record<Item['section'], number>> = { managers: buyable.managers, upgrades: buyable.upgrades, backpack: buyable.perks }
+  const counts: Partial<Record<Item['section'], number>> = { managers: buyable.managers, upgrades: buyable.upgrades, backpack: buyable.perks, wardrobe: buyable.items }
   const close = () => game.navigate('jobs')
 
   return (
@@ -43,7 +44,6 @@ export function Menu() {
             <Locked key={item.key} label={t(item.key)} lock={sectionLock(engine, item.section)} />
           ),
         )}
-        <Locked label={t('menu.wardrobe')} />
         <Locked label={t('menu.reorg')} />
         <button class="menu__item" onClick={() => game.navigate('settings')}>
           <i class="dot" style={{ background: 'var(--muted)' }} />

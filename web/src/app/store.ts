@@ -11,6 +11,8 @@ import type { Message } from '../core/messages.ts'
 import type { Milestone } from '../core/content.ts'
 import { refreshSections, tutorialAck, tutorialAdvance } from '../core/progress.ts'
 import { grantPerk } from '../core/perks.ts'
+import { nextItem } from '../core/items.ts'
+import type { Slot } from '../core/content.ts'
 import type { SaveScheduler } from './saveScheduler.ts'
 
 export type CloudStatus =
@@ -19,7 +21,7 @@ export type CloudStatus =
   | { kind: 'synced'; at: number }
   | { kind: 'offline' }
 
-export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack'
+export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe'
 
 const TICK_MS = 100
 
@@ -108,7 +110,23 @@ export function createGame(o: {
       if (!game.devBuild) return
       game.act('purchase', () => {
         for (const id of ['speed_100_5', 'salary_10_5', 'level_15_5', 'rewind_10']) grantPerk(engine.state, id)
+        const item = nextItem(engine.content, engine.state)
+        if (item) engine.grantItem(item.id)
       })
+    },
+
+    equip(itemId: string): void {
+      game.act('purchase', () => { if (engine.equip(itemId)) game.haptic('light') })
+    },
+
+    unequip(slot: Slot): void {
+      game.act('purchase', () => engine.unequip(slot))
+    },
+
+    /** Вещь просмотрена в шкафу — метка «новое» и точка на «Меню» гаснут. */
+    markSeen(itemId: string): void {
+      if (engine.state.items.seen.includes(itemId)) return
+      game.act('purchase', () => engine.state.items.seen.push(itemId))
     },
 
     buyUpgrade(upgradeId: string): void {
