@@ -2062,6 +2062,40 @@
         }
       }
     },
+    "job.orbital_dc.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Ping to the Moon: 1.3 s. Fine”"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Пинг до Луны — 1,3 с. Нормально»"
+          }
+        }
+      }
+    },
+    "job.orbital_dc.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data Center in Orbit"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дата-центр на орбите"
+          }
+        }
+      }
+    },
     "job.perSecond": {
       "extractionState": "manual",
       "localizations": {
@@ -2211,6 +2245,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Регресс в ночь до релиза"
+          }
+        }
+      }
+    },
+    "job.rust_rewrite.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“But now it's blazingly fast”"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Зато теперь blazingly fast»"
+          }
+        }
+      }
+    },
+    "job.rust_rewrite.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewrite It All in Rust"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переписать всё на Rust"
           }
         }
       }
@@ -2657,6 +2725,23 @@
         }
       }
     },
+    "manager.orbital_dc.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Astronaut Sysadmin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Космонавт-сисадмин"
+          }
+        }
+      }
+    },
     "manager.plug_mouse.name": {
       "extractionState": "manual",
       "localizations": {
@@ -2704,6 +2789,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "QA-лид Ирина"
+          }
+        }
+      }
+    },
+    "manager.rust_rewrite.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rustacean Gosha"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Растацеан Гоша"
           }
         }
       }
@@ -6278,6 +6380,23 @@
         }
       }
     },
+    "upgrade.orbital_dc_x3.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cooled by outer space"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Охлаждение открытым космосом"
+          }
+        }
+      }
+    },
     "upgrade.plug_mouse_x3.name": {
       "extractionState": "manual",
       "localizations": {
@@ -6325,6 +6444,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Автотесты (зелёные, но ничего не проверяют)"
+          }
+        }
+      }
+    },
+    "upgrade.rust_rewrite_x3.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The borrow checker is happy"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Борроу-чекер доволен"
           }
         }
       }

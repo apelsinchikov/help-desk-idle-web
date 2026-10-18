@@ -13,7 +13,7 @@ test('new game', () => {
   const s = newGame(bundledContent, 0, 'ru')
   assert.equal(s.jobs.reboot.level, 1)
   assert.equal(s.jobs.plug_mouse.level, 0)
-  assert.equal(Object.keys(s.jobs).length, 12)
+  assert.equal(Object.keys(s.jobs).length, 14)
   assert.equal(s.money, 0)
   assert.equal(s.settings.haptics, true)
 })

@@ -134,5 +134,27 @@
     "unlockLevel": 25,
     "managerCost": 30000000000000.0,
     "iconKey": "ddos_rivals"
+  },
+  {
+    "id": "rust_rewrite",
+    "order": 13,
+    "baseCost": 44580502241280,
+    "growthRate": 1.07,
+    "time": 73728,
+    "revenue": 44580502241280,
+    "unlockLevel": 25,
+    "managerCost": 300000000000000.0,
+    "iconKey": "rust_rewrite"
+  },
+  {
+    "id": "orbital_dc",
+    "order": 14,
+    "baseCost": 534966026895360,
+    "growthRate": 1.07,
+    "time": 147456,
+    "revenue": 615210930929664,
+    "unlockLevel": 25,
+    "managerCost": 3000000000000000.0,
+    "iconKey": "orbital_dc"
   }
 ]
