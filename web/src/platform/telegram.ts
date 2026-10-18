@@ -5,10 +5,13 @@ type WebApp = {
   initData: string
   initDataUnsafe: { user?: { id: number; language_code?: string; first_name?: string; last_name?: string } }
   version: string
+  platform: string
   isVersionAtLeast(v: string): boolean
   ready(): void
   expand(): void
   disableVerticalSwipes?(): void
+  requestFullscreen?(): void
+  lockOrientation?(): void
   setHeaderColor?(color: string): void
   setBackgroundColor?(color: string): void
   setBottomBarColor?(color: string): void
@@ -22,6 +25,8 @@ type WebApp = {
 const webApp: WebApp | undefined = (globalThis as { Telegram?: { WebApp?: WebApp } }).Telegram?.WebApp
 const inside = !!webApp && webApp.initData.length > 0
 let backHandler: (() => void) | null = null
+/** Полный экран — только на телефонах: на десктопе он разворачивает окно Telegram целиком. */
+const MOBILE = new Set(['ios', 'android', 'android_x'])
 
 export const telegram = {
   isTelegram: inside,
@@ -32,7 +37,11 @@ export const telegram = {
   /** Имя для рейтинга («Евгений А.»). */
   displayName: inside ? displayName(webApp!.initDataUnsafe.user) : '',
 
-  /** Готовность, весь экран, свайп вниз не закрывает игру, цвета шапки под тему A. */
+  /**
+   * Готовность, весь экран, свайп вниз не закрывает игру, цвета шапки под тему A.
+   * На телефоне (Bot API 8.0+) — полноэкранный режим без шапки Telegram и с портретной ориентацией;
+   * отступы под «чёлку» и кнопки Telegram приходят через safeAreaInset / contentSafeAreaInset.
+   */
   init(background: string): void {
     if (!inside) return
     const app = webApp!
@@ -44,9 +53,14 @@ export const telegram = {
       app.setBackgroundColor?.(background)
     }
     if (app.isVersionAtLeast('7.10')) app.setBottomBarColor?.(background)
+    if (app.isVersionAtLeast('8.0') && MOBILE.has(app.platform)) {
+      app.requestFullscreen?.()
+      if (window.innerHeight > window.innerWidth) app.lockOrientation?.()
+    }
     applySafeArea()
     app.onEvent('safeAreaChanged', applySafeArea)
     app.onEvent('contentSafeAreaChanged', applySafeArea)
+    app.onEvent('fullscreenChanged', applySafeArea)
   },
 
   /** Системная кнопка «Назад» Telegram: показать с обработчиком или спрятать (null). */
@@ -83,6 +97,9 @@ function applySafeArea(): void {
   const top = (app.safeAreaInset?.top ?? 0) + (app.contentSafeAreaInset?.top ?? 0)
   const bottom = (app.safeAreaInset?.bottom ?? 0) + (app.contentSafeAreaInset?.bottom ?? 0)
   const root = document.documentElement.style
+  // 0 — вернуть системный env(): после выхода из полного экрана отступы Telegram обнуляются
   if (top > 0) root.setProperty('--safe-top', `${top}px`)
+  else root.removeProperty('--safe-top')
   if (bottom > 0) root.setProperty('--safe-bottom', `${bottom}px`)
+  else root.removeProperty('--safe-bottom')
 }
