@@ -138,3 +138,41 @@ test('energy: no ad network — a toast, no boost', async () => {
   assert.equal(engine.stats().speed, 0)
   assert.deepEqual(game.messages.value.at(-1), { kind: 'toast', text: { key: 'energy.noAds', args: [] } })
 })
+
+test('reorganization: coins in, a report, saved at once, back to the jobs screen', async () => {
+  const { lifetimeFor } = await import('../core/prestige.ts')
+  const { engine, game, calls } = setup((s) => { s.lifetimeEarnings = lifetimeFor(bundledContent, 12) * 1.001; s.money = 1e9 })
+  game.navigate('reorg')
+  await game.reorganize()
+  assert.equal(engine.state.coins.balance, 12)
+  assert.deepEqual(game.reorgReport.value, { coins: 12 })
+  assert.equal(game.route.value, 'jobs')
+  assert.equal(calls.flush, 1)
+  assert.equal(engine.state.money, 0)
+})
+
+test('welcome back: x2 for an ad credits the offline earnings once more', async () => {
+  const clock = { t: 0 }
+  const { engine, game } = setup((s) => { s.jobs.reboot = { level: 10, rank: 0, hasManager: true, startedAt: 0 } }, clock, { show: async () => 'done' })
+  clock.t = 3_600_000
+  game.onVisible()
+  const report = game.offlineReport.value!
+  const before = engine.state.money
+  await game.doubleOffline()
+  assert.equal(engine.state.money, before + report.earned)
+  assert.equal(game.offlineDoubled.value, true)
+  await game.doubleOffline()
+  assert.equal(engine.state.money, before + report.earned, 'второй раз не удваивается')
+  game.closeOffline()
+  assert.equal(game.offlineReport.value, null)
+  game.stopTicking()
+})
+
+test('welcome back: Buy opens TechCoin upgrades', () => {
+  const { game } = setup()
+  game.offlineReport.value = { elapsed: 30_000, earned: 5, counted: 7200, readyJobs: 0 }
+  game.openCoinUpgrades()
+  assert.equal(game.offlineReport.value, null)
+  assert.equal(game.coinTab.value, 'coins')
+  assert.equal(game.route.value, 'upgrades')
+})

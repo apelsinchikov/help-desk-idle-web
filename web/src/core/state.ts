@@ -11,10 +11,20 @@ export type JobState = {
   startedAt: number | null
 }
 
+export type Theme = 'office' | 'night'
+
 export type PlayerSettings = {
   language: AppLanguage
   haptics: boolean
+  /** Тема оформления: A «Офис и стикеры» или C «Ночная смена». */
+  theme: Theme
 }
+
+/**
+ * TechCoin: `balance` — на счету (дают бонус к прибыли), `claimed` — получено за все реорганизации (растит статус),
+ * `upgrades` — купленные улучшения за монеты, `mentors` — работы с наставником. Реорганизация это не сбрасывает.
+ */
+export type CoinState = { balance: number; claimed: number; upgrades: string[]; mentors: string[] }
 
 /** Всё, что сохраняется. Меняя формат — увеличь `CURRENT_SCHEMA`. */
 export type GameState = {
@@ -42,6 +52,9 @@ export type GameState = {
   rngSeed: number
   /** Сезон сейва (config.saveSeason на момент создания). Старый сезон при загрузке — вайп. */
   season: number
+  coins: CoinState
+  /** Сколько раз игрок реорганизовал отдел. */
+  reorgs: number
 }
 
 export type QuestKind = 'level' | 'promote' | 'earn' | 'collect' | 'hire' | 'upgrade' | 'unlock'
@@ -63,7 +76,9 @@ export type UiState = {
   wiped: boolean
 }
 
-export const CURRENT_SCHEMA = 3
+export const CURRENT_SCHEMA = 4
+
+export const newCoins = (): CoinState => ({ balance: 0, claimed: 0, upgrades: [], mentors: [] })
 
 export const newUiState = (): UiState => ({ tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [], ticketCursor: 0, wiped: false })
 
@@ -95,11 +110,13 @@ export function newGame(content: GameContent, now: number, language: AppLanguage
     lifetimeEarnings: 0,
     jobs,
     lastActiveAt: now,
-    settings: { language, haptics: true },
+    settings: { language, haptics: true, theme: 'office' },
     upgrades: [],
     ui: newUiState(),
     ...newStage2b(seed),
     season: content.config.saveSeason,
+    coins: newCoins(),
+    reorgs: 0,
   }
 }
 

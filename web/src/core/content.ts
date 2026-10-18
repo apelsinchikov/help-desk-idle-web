@@ -10,6 +10,8 @@ export type JobDefinition = {
   managerCost: number
   /** Сколько повышений нужно для найма менеджера (ранг). Нет — `config.managerMinRank`. */
   managerMinRank?: number
+  /** Наставник за TechCoin: цена в монетах (скидка на уровни этой работы навсегда). */
+  mentorCost: number
   iconKey: string
 }
 
@@ -49,7 +51,28 @@ export type GameConfig = {
   track: { perkFirst: number; perkEvery: number; itemStars: Record<Rarity, number>; rewindEvery: number; weights: Record<PerkKind, number>; tiers: TrackTier[] }
   /** Задания: окно времени на цель, замена раз в rerollHours, сколько сборов для «Собери вручную». */
   quests: { minMinutes: number; maxMinutes: number; rerollHours: number; collect: [number, number] }
+  /**
+   * Реорганизация (престиж, Pecorella Part III — формула AdCap): всего монет `⌊coinFactor · √(lifetime / coinScale)⌋`;
+   * каждая монета на счету — `+coinBonus` к прибыли, статус компании g (по монетам за все реорганизации, порог
+   * `statusBase · statusStep^(g−1)`) добавляет `statusBonus` за монету; наставник — скидка `mentorDiscount` на уровни работы.
+   */
+  prestige: {
+    coinFactor: number
+    coinScale: number
+    /** Показатель степени: 0,5 — корень AdCap, 1/3 — кубический корень Cookie Clicker (мягче обратная связь). */
+    coinPower: number
+    coinBonus: number
+    statusBase: number
+    statusStep: number
+    statusBonus: number
+    statuses: number
+    mentorDiscount: number
+  }
 }
+
+/** Улучшение за TechCoin (навсегда, реорганизация не сбрасывает). `requires` — предыдущая ступень. */
+export type CoinUpgradeKind = 'offline' | 'profit' | 'coinBonus' | 'keepManagers'
+export type CoinUpgradeDefinition = { id: string; kind: CoinUpgradeKind; value: number; cost: number; requires?: string }
 
 /** Четыре стата бонусов: вещи и перки складываются внутри стата. */
 export type StatKey = 'speed' | 'salary' | 'levelDiscount' | 'gradeDiscount'
@@ -69,6 +92,8 @@ export type ChestDefinition = {
   items: { rarity: Rarity; chance: number }[]
   perks: [number, number]
   perkTier: number
+  /** Цена в своей валюте (у сундуков за TechCoin); нет — пока не продаётся. */
+  price?: number
 }
 export type TrackTier = {
   fromStars: number
@@ -100,6 +125,8 @@ export class GameContent {
   /** В порядке выдачи за звёзды. */
   readonly items: readonly ItemDefinition[]
   readonly chests: readonly ChestDefinition[]
+  /** Улучшения за TechCoin в порядке показа. */
+  readonly coinUpgrades: readonly CoinUpgradeDefinition[]
 
   constructor(
     jobs: readonly JobDefinition[],
@@ -109,6 +136,7 @@ export class GameContent {
     perks: readonly PerkDefinition[] = [],
     items: readonly ItemDefinition[] = [],
     chests: readonly ChestDefinition[] = [],
+    coinUpgrades: readonly CoinUpgradeDefinition[] = [],
   ) {
     this.jobs = [...jobs].sort((a, b) => a.order - b.order)
     this.milestones = milestones.map((m) => ({ ...m, jobId: m.jobId ?? null }))
@@ -117,6 +145,15 @@ export class GameContent {
     this.perks = perks
     this.items = items
     this.chests = chests
+    this.coinUpgrades = coinUpgrades
+  }
+
+  coinUpgrade(id: string): CoinUpgradeDefinition | undefined {
+    return this.coinUpgrades.find((u) => u.id === id)
+  }
+
+  chest(id: string): ChestDefinition | undefined {
+    return this.chests.find((c) => c.id === id)
   }
 
   perk(id: string): PerkDefinition | undefined {

@@ -2,11 +2,12 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { bundledContent } from './bundled.ts'
 
-test('bundled content has 12 jobs in order', () => {
+test('bundled content has 14 jobs in order', () => {
   const c = bundledContent
-  assert.equal(c.jobs.length, 12)
+  assert.equal(c.jobs.length, 14)
   assert.equal(c.jobs[0].id, 'reboot')
-  assert.equal(c.jobs.at(-1)!.id, 'ddos_rivals')
+  assert.equal(c.jobs.at(-1)!.id, 'orbital_dc')
+  assert.equal(c.previousJob('rust_rewrite')!.id, 'ddos_rivals')
   assert.equal(c.job('plug_mouse')!.baseCost, 60)
   assert.equal(c.job('ddos_rivals')!.time, 36864)
   assert.equal(c.previousJob('plug_mouse')!.id, 'reboot')
@@ -28,7 +29,7 @@ test('stage 2a balance config and cash upgrades', () => {
   const c = bundledContent
   assert.equal(c.config.managerMinRank, 50)
   assert.equal(c.config.promotionFactor, 4)
-  assert.equal(c.upgrades.length, 13)
+  assert.equal(c.upgrades.length, 15)
   assert.deepEqual(
     { id: c.upgrades[0].id, jobId: c.upgrades[0].jobId, cost: c.upgrades[0].cost },
     { id: 'reboot_x3', jobId: 'reboot', cost: 75_000_000 },
@@ -62,7 +63,7 @@ test('thresholds: every 25 up to 100, every 50 up to 300, every 100 up to 1000, 
 
 test('manager rank: jobs 1-4 after the first promotion, the rest after the second', () => {
   const c = bundledContent
-  assert.deepEqual(c.jobs.map((j) => c.managerRank(j.id)), [25, 25, 25, 25, 50, 50, 50, 50, 50, 50, 50, 50])
+  assert.deepEqual(c.jobs.map((j) => c.managerRank(j.id)), [25, 25, 25, 25, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50])
 })
 
 test('stage 2b perks catalog', () => {

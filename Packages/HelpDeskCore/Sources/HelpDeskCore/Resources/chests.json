@@ -1,5 +1,5 @@
 [
-  {"id": "hr_gift", "currency": "techcoin", "items": [{"rarity": "common", "chance": 0.3}], "perks": [1, 1], "perkTier": 1},
+  {"id": "hr_gift", "currency": "techcoin", "items": [{"rarity": "common", "chance": 0.3}], "perks": [1, 1], "perkTier": 1, "price": 15},
   {"id": "corporate_party", "currency": "cookies", "items": [{"rarity": "common", "chance": 0.5}, {"rarity": "rare", "chance": 0.05}], "perks": [3, 5], "perkTier": 2},
   {"id": "funding_round", "currency": "cookies", "items": [{"rarity": "rare", "chance": 0.7}, {"rarity": "epic", "chance": 0.25}, {"rarity": "legendary", "chance": 0.005}], "perks": [5, 9], "perkTier": 3},
   {"id": "ipo", "currency": "cookies", "items": [{"rarity": "epic", "chance": 0.95}, {"rarity": "legendary", "chance": 0.05}], "perks": [9, 15], "perkTier": 4}

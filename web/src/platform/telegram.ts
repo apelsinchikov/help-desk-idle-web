@@ -63,6 +63,17 @@ export const telegram = {
     app.onEvent('fullscreenChanged', applySafeArea)
   },
 
+  /** Цвета шапки, фона и нижней панели Telegram под тему (смена темы в настройках). */
+  setColors(background: string): void {
+    if (!inside) return
+    const app = webApp!
+    if (app.isVersionAtLeast('6.1')) {
+      app.setHeaderColor?.(background)
+      app.setBackgroundColor?.(background)
+    }
+    if (app.isVersionAtLeast('7.10')) app.setBottomBarColor?.(background)
+  },
+
   /** Системная кнопка «Назад» Telegram: показать с обработчиком или спрятать (null). */
   onBack(cb: (() => void) | null): void {
     if (!inside || !webApp!.isVersionAtLeast('6.1')) return

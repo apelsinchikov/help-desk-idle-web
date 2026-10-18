@@ -3,8 +3,9 @@
 import type { GameEngine } from './engine.ts'
 import type { BuyMode } from './state.ts'
 import { inventoryCount } from './perks.ts'
+import { coinUpgradeOpen, lifetimeFor, reorgRecommended } from './prestige.ts'
 
-export type Section = 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe' | 'quests' | 'settings'
+export type Section = 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe' | 'quests' | 'reorg' | 'settings'
 
 /** Что нужно, чтобы раздел меню открылся. */
 export type SectionLock =
@@ -41,6 +42,11 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
       return state.ui.tutorialDone ? null : { kind: 'tutorial' }
     case 'wardrobe':
       return state.items.owned.length > 0 ? null : { kind: 'stars', need: content.config.track.itemStars.common, have: state.stars }
+    case 'reorg': {
+      // открывается с первой монетой, которую можно получить (и навсегда — после первой реорганизации)
+      const need = lifetimeFor(content, 1)
+      return state.coins.claimed > 0 || state.lifetimeEarnings >= need ? null : { kind: 'earn', need, have: state.lifetimeEarnings }
+    }
     case 'upgrades': {
       const need = Math.min(...content.upgrades.map((u) => u.cost))
       return state.lifetimeEarnings >= need ? null : { kind: 'earn', need, have: state.lifetimeEarnings }
@@ -49,11 +55,13 @@ export function sectionLock(engine: GameEngine, section: Section): SectionLock |
 }
 
 /** Что можно купить или включить прямо сейчас — для точки на кнопке меню и чисел у пунктов. */
-export function buyableCounts(engine: GameEngine): { managers: number; upgrades: number; perks: number; items: number } {
-  const { content } = engine
+export function buyableCounts(engine: GameEngine): { managers: number; upgrades: number; perks: number; items: number; reorg: number } {
+  const { content, state } = engine
+  const coinUps = content.coinUpgrades.filter((u) => coinUpgradeOpen(state, u) && engine.canBuyCoinUpgrade(u.id)).length
   return {
     managers: content.jobs.filter((j) => engine.canHireManager(j.id)).length,
-    upgrades: content.upgrades.filter((u) => engine.canBuyUpgrade(u.id)).length,
+    upgrades: content.upgrades.filter((u) => engine.canBuyUpgrade(u.id)).length + coinUps,
+    reorg: reorgRecommended(content, state) ? 1 : 0,
     perks: engine.state.perks.fresh,
     items: engine.state.items.owned.filter((id) => !engine.state.items.seen.includes(id)).length,
   }
@@ -62,7 +70,7 @@ export function buyableCounts(engine: GameEngine): { managers: number; upgrades:
 /** Дописывает в ui.sections разделы, которые пора открыть; возвращает только новые. */
 export function refreshSections(engine: GameEngine): Section[] {
   const { state } = engine
-  const sections: Section[] = ['settings', 'quests', 'managers', 'achievements', 'upgrades', 'backpack', 'wardrobe']
+  const sections: Section[] = ['settings', 'quests', 'managers', 'achievements', 'upgrades', 'backpack', 'wardrobe', 'reorg']
   const open = Object.fromEntries(sections.map((s) => [s, sectionLock(engine, s) === null])) as Record<Section, boolean>
   const added: Section[] = []
   for (const section of Object.keys(open) as Section[]) {

@@ -20,6 +20,8 @@ import type { SaveScheduler } from './saveScheduler.ts'
 import type { LeaderboardCache } from './leaderboard.ts'
 import type { Ads } from '../platform/ads.ts'
 import { energyCans } from '../core/energy.ts'
+import type { ChestReward } from '../core/chests.ts'
+import type { Theme } from '../core/state.ts'
 
 export type CloudStatus =
   | { kind: 'disabled' }
@@ -27,7 +29,9 @@ export type CloudStatus =
   | { kind: 'synced'; at: number }
   | { kind: 'offline' }
 
-export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop' | 'quests' | 'leaderboard'
+export type Route = 'jobs' | 'menu' | 'managers' | 'settings' | 'upgrades' | 'achievements' | 'backpack' | 'wardrobe' | 'shop' | 'quests' | 'leaderboard' | 'reorg'
+/** Вкладка «За деньги» / «За TechCoin» в улучшениях и менеджерах. */
+export type CoinTab = 'cash' | 'coins'
 
 const TICK_MS = 100
 /** Шуток про «хватит пить энергетики» в строках: energy.joke.1…N. */
@@ -63,6 +67,14 @@ export function createGame(o: {
   /** Итог перемотки для окна «Время перемотано». */
   const rewindReport = signal<{ minutes: number; earned: number } | null>(null)
   const route = signal<Route>('jobs')
+  /** Какая вкладка открыта в «Улучшениях» и «Менеджерах» (экран «С возвращением» ведёт сразу к TechCoin). */
+  const coinTab = signal<CoinTab>('cash')
+  /** Что выпало из сундука — окно с наградой. */
+  const chestReward = signal<ChestReward | null>(null)
+  /** Итог реорганизации — окно «Новый отдел». */
+  const reorgReport = signal<{ coins: number } | null>(null)
+  /** Оффлайн-доход уже удвоен рекламой (кнопка гаснет). */
+  const offlineDoubled = signal(false)
   const language = o.language
   language.value = engine.state.settings.language
   /** Очередь сообщений внизу экрана (тосты и заявки); UI показывает первое и снимает dismissMessage(). */
@@ -106,6 +118,11 @@ export function createGame(o: {
     buyMode,
     offlineReport,
     rewindReport,
+    coinTab,
+    chestReward,
+    reorgReport,
+    offlineDoubled,
+    ads: o.ads ?? null,
     energyJoke,
     adBusy,
     route,
@@ -232,6 +249,69 @@ export function createGame(o: {
       }
     },
 
+    /** Реорганизация: монеты на счёт, забег заново; сохраняем сразу (локально и в облако). */
+    async reorganize(): Promise<void> {
+      let coins: number | null = null
+      game.act('purchase', () => { coins = engine.reorganize() })
+      if (coins === null) return
+      game.haptic('success')
+      reorgReport.value = { coins }
+      route.value = 'jobs'
+      await scheduler.flush()
+    },
+
+    buyCoinUpgrade(id: string): void {
+      game.act('purchase', () => { if (engine.buyCoinUpgrade(id)) game.haptic('success') })
+    },
+
+    hireMentor(jobId: string): void {
+      game.act('purchase', () => { if (engine.hireMentor(jobId)) game.haptic('success') })
+    },
+
+    openChest(chestId: string): void {
+      let reward: ChestReward | null = null
+      game.act('purchase', () => { reward = engine.openChest(chestId) })
+      if (!reward) return
+      game.haptic('success')
+      chestReward.value = reward
+    },
+
+    /** Экран «С возвращением» → «Купить» часы оффлайна: улучшения, вкладка TechCoin. */
+    openCoinUpgrades(): void {
+      offlineReport.value = null
+      coinTab.value = 'coins'
+      game.navigate('upgrades')
+    },
+
+    /** «Забрать ×2» за рекламу: оффлайн-доход начисляется ещё раз. */
+    async doubleOffline(): Promise<void> {
+      const report = offlineReport.value
+      if (!report || offlineDoubled.value || adBusy.value || !o.ads || !(report.earned > 0)) return
+      adBusy.value = true
+      try {
+        const result = await o.ads.show()
+        if (result === 'done') {
+          game.act('purchase', () => engine.bonusOffline(report.earned))
+          offlineDoubled.value = true
+          game.haptic('success')
+        } else if (result === 'unavailable') {
+          game.pushToast({ key: 'energy.unavailable', args: [] })
+        }
+      } finally {
+        adBusy.value = false
+      }
+    },
+
+    /** Закрыть «С возвращением». */
+    closeOffline(): void {
+      offlineReport.value = null
+      offlineDoubled.value = false
+    },
+
+    setTheme(theme: Theme): void {
+      game.act('purchase', () => engine.updateSettings({ theme }))
+    },
+
     /** Окно вайпа прочитано. */
     ackWipe(): void {
       game.act('purchase', () => { engine.state.ui.wiped = false })
@@ -273,7 +353,7 @@ export function createGame(o: {
         // resume, а не advance: большой разрыв между тиками (замороженный WebView, перевод часов)
         // проходит через оффлайн-лимит и показывает «С возвращением».
         const report = engine.resume(now())
-        if (report) offlineReport.value = report
+        if (report) { offlineReport.value = report; offlineDoubled.value = false }
         bump()
         game.checkTicket()
         scheduler.changed('tick')
@@ -296,7 +376,7 @@ export function createGame(o: {
     onVisible(): void {
       if (timer !== null) return
       const report = engine.resume(now())
-      if (report) offlineReport.value = report
+      if (report) { offlineReport.value = report; offlineDoubled.value = false }
       bump()
       game.startTicking()
     },

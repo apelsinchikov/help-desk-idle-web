@@ -41,6 +41,16 @@ export function Settings() {
               ))}
             </div>
           </div>
+          <div class="row">
+            <span>{t('settings.theme')}</span>
+            <div class="segmented">
+              {(['office', 'night'] as const).map((theme) => (
+                <button key={theme} class={engine.state.settings.theme === theme ? 'segmented__on' : ''} onClick={() => game.setTheme(theme)}>
+                  {t(`settings.theme.${theme}`)}
+                </button>
+              ))}
+            </div>
+          </div>
           <label class="row">
             <span>{t('settings.haptics')}</span>
             <input

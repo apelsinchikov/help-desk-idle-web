@@ -1,9 +1,9 @@
 // GameState ⇄ JSON. Битый, чужой или «из будущего» сейв → null (игра не падает).
 // Схема 1 (этап 1) мигрирует в 2: ранг по уже достигнутым порогам, пустые улучшения, состояние обучения.
-// Схема 2 мигрирует в 3: задания, звёзды, перки и вещи — пустые.
+// Схема 2 мигрирует в 3: задания, звёзды, перки и вещи — пустые. Схема 3 → 4: TechCoin пустые, тема «Офис».
 import type { GameContent } from './content.ts'
-import { CURRENT_SCHEMA, QUEST_KINDS, newGame, newStage2b, newUiState, randomSeed } from './state.ts'
-import type { GameState, JobState, Quest, UiState } from './state.ts'
+import { CURRENT_SCHEMA, QUEST_KINDS, newCoins, newGame, newStage2b, newUiState, randomSeed } from './state.ts'
+import type { CoinState, GameState, JobState, Quest, UiState } from './state.ts'
 import { SLOTS } from './content.ts'
 import type { Slot } from './content.ts'
 
@@ -73,6 +73,15 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     ui.ticketCursor = parsed.ticketCursor
   }
 
+  let coins = newCoins()
+  let reorgs = 0
+  if (schemaVersion >= 4) {
+    const parsed = decodeCoins(value.coins, content)
+    if (!parsed || !isCount(value.reorgs)) return null
+    coins = parsed
+    reorgs = value.reorgs
+  }
+
   const season = isInt(value.season) ? value.season : 1
   const decoded: GameState = {
     schemaVersion: CURRENT_SCHEMA,
@@ -80,11 +89,13 @@ export function decodeState(raw: unknown, content?: GameContent): GameState | nu
     lifetimeEarnings,
     jobs: parsedJobs,
     lastActiveAt,
-    settings: { language: settings.language, haptics: settings.haptics },
+    settings: { language: settings.language, haptics: settings.haptics, theme: settings.theme === 'night' ? 'night' : 'office' },
     upgrades,
     ui,
     ...stage2b,
     season,
+    coins,
+    reorgs,
   }
   return content && season < content.config.saveSeason ? wipe(decoded, content) : decoded
 }
@@ -99,6 +110,19 @@ function wipe(old: GameState, content: GameContent): GameState {
   fresh.ui.wiped = true
   if (content.perk(content.config.wipeCompensation)) fresh.perks.inventory[content.config.wipeCompensation] = 1
   return fresh
+}
+
+/** Схема 4: TechCoin. Монет на счету не больше полученных; неизвестные улучшения и работы выбрасываются. */
+function decodeCoins(raw: unknown, content?: GameContent): CoinState | null {
+  if (!isObject(raw)) return null
+  const { balance, claimed, upgrades, mentors } = raw
+  if (!isCount(balance) || !isCount(claimed) || !isStrings(upgrades) || !isStrings(mentors)) return null
+  return {
+    balance: Math.min(balance, claimed),
+    claimed,
+    upgrades: [...new Set(upgrades.filter((id) => !content || !!content.coinUpgrade(id)))],
+    mentors: [...new Set(mentors.filter((id) => !content || !!content.job(id)))],
+  }
 }
 
 /** Поля схемы 3. Неизвестные id перков и вещей (контент поменялся) выбрасываются, если передан `content`. */

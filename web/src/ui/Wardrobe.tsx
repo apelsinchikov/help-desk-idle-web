@@ -98,7 +98,7 @@ function Bonuses() {
         ? <div class="bonuses__none">{t('wardrobe.noStats')}</div>
         : <div class="bonuses__row">{line(items).map((s) => (
             <span key={s} class="bonuses__stat">
-              {t(`statName.${s}`)} {statTotal(s, items[s])}{s === 'gradeDiscount' && <small> · {t('wardrobe.gradeLater')}</small>}
+              {t(`statName.${s}`)} {statTotal(s, items[s])}
             </span>
           ))}</div>}
       {active.length > 0 && (

@@ -13,7 +13,7 @@ test('new game', () => {
   const s = newGame(bundledContent, 0, 'ru')
   assert.equal(s.jobs.reboot.level, 1)
   assert.equal(s.jobs.plug_mouse.level, 0)
-  assert.equal(Object.keys(s.jobs).length, 12)
+  assert.equal(Object.keys(s.jobs).length, 14)
   assert.equal(s.money, 0)
   assert.equal(s.settings.haptics, true)
 })
@@ -35,7 +35,7 @@ test('decodeState rejects broken or future saves', () => {
   const valid = JSON.parse(encodeState(newGame(bundledContent, 0, 'ru')))
   assert.equal(decodeState('{not json'), null)
   assert.equal(decodeState(null), null)
-  assert.equal(decodeState({ ...valid, schemaVersion: 4 }), null)
+  assert.equal(decodeState({ ...valid, schemaVersion: 5 }), null)
   assert.equal(decodeState({ ...valid, money: 'x' }), null)
   assert.equal(decodeState({ ...valid, money: Infinity }), null)
   assert.equal(decodeState({ ...valid, jobs: { reboot: { level: -1, rank: 0, hasManager: false, startedAt: null } } }), null)
@@ -53,7 +53,7 @@ function v1(edit: (s: any) => void = () => {}) {
 
 test('new game has schema 2 fields', () => {
   const s = newGame(bundledContent, 0, 'ru')
-  assert.equal(s.schemaVersion, 3)
+  assert.equal(s.schemaVersion, 4)
   assert.equal(s.jobs.reboot.rank, 0)
   assert.deepEqual(s.upgrades, [])
   assert.deepEqual(s.ui, { tutorialDone: false, tutorialStep: 0, sections: ['settings'], hintsSeen: [], ticketCursor: 0, wiped: false })
@@ -65,7 +65,7 @@ test('v1 save migrates: rank from reached milestones, empty upgrades', () => {
     x.jobs.plug_mouse.level = 24
     x.jobs.accounting_printer.level = 25
   }), noWipe)!
-  assert.equal(s.schemaVersion, 3)
+  assert.equal(s.schemaVersion, 4)
   assert.equal(s.jobs.reboot.rank, 100)
   assert.equal(s.jobs.plug_mouse.rank, 0)
   assert.equal(s.jobs.accounting_printer.rank, 25)
@@ -84,7 +84,7 @@ test('v1 save without content cannot be migrated', () => {
 
 test('broken v2 fields are rejected', () => {
   const ok = JSON.parse(encodeState(newGame(bundledContent, 0, 'ru')))
-  assert.equal(decodeState({ ...ok, schemaVersion: 4 }), null)
+  assert.equal(decodeState({ ...ok, schemaVersion: 5 }), null)
   assert.equal(decodeState({ ...ok, upgrades: [1] }), null)
   assert.equal(decodeState({ ...ok, ui: { ...ok.ui, sections: 'x' } }), null)
   assert.equal(decodeState({ ...ok, jobs: { ...ok.jobs, reboot: { ...ok.jobs.reboot, rank: -1 } } }), null)
@@ -117,11 +117,12 @@ test('round trip v3 with quests, perks and items', () => {
 test('v2 save migrates to v3 with empty stage 2b state', () => {
   const v2 = JSON.parse(encodeState(newGame(bundledContent, 0, 'ru')))
   v2.schemaVersion = 2
-  for (const k of ['stars', 'track', 'quests', 'stats', 'perks', 'items', 'rngSeed']) delete v2[k]
+  for (const k of ['stars', 'track', 'quests', 'stats', 'perks', 'items', 'rngSeed', 'coins', 'reorgs']) delete v2[k]
+  delete v2.settings.theme
   delete v2.ui.ticketCursor
   v2.money = 77
   const s = decodeState(v2, bundledContent)!
-  assert.equal(s.schemaVersion, 3)
+  assert.equal(s.schemaVersion, 4)
   assert.equal(s.money, 77)
   assert.equal(s.stars, 0)
   assert.deepEqual(s.perks, { inventory: {}, active: [], fresh: 0 })
@@ -132,7 +133,7 @@ test('v2 save migrates to v3 with empty stage 2b state', () => {
 
 test('v1 save migrates all the way to v3', () => {
   const s = decodeState(v1((x) => { x.jobs.reboot.level = 137 }), noWipe)!
-  assert.equal(s.schemaVersion, 3)
+  assert.equal(s.schemaVersion, 4)
   assert.equal(s.jobs.reboot.rank, 100)
   assert.equal(s.stars, 0)
 })
@@ -203,7 +204,7 @@ test('a save from an older season is wiped on load: settings and tutorial stay, 
   assert.equal(d.stars, 0)
   assert.deepEqual(d.items.owned, [])
   assert.deepEqual(d.perks.inventory, { rewind_30: 1 })
-  assert.deepEqual(d.settings, { language: 'en', haptics: false })
+  assert.deepEqual(d.settings, { language: 'en', haptics: false, theme: 'office' })
   assert.equal(d.ui.tutorialDone, true)
   assert.deepEqual(d.ui.hintsSeen, ['managers'])
   assert.equal(d.ui.wiped, true)
@@ -218,4 +219,32 @@ test('a v2 save is wiped too; a current-season save is kept as is', () => {
   const now = newGame(bundledContent, 0, 'ru', 1)
   now.money = 500
   assert.equal(decodeState(encodeState(now), bundledContent)!.money, 500)
+})
+
+test('v3 save migrates to v4: no TechCoin yet, office theme', () => {
+  const v3 = JSON.parse(encodeState(newGame(bundledContent, 0, 'ru', 1)))
+  v3.schemaVersion = 3
+  delete v3.coins
+  delete v3.reorgs
+  delete v3.settings.theme
+  v3.lifetimeEarnings = 5e15
+  const s = decodeState(v3, bundledContent)!
+  assert.equal(s.schemaVersion, 4)
+  assert.deepEqual(s.coins, { balance: 0, claimed: 0, upgrades: [], mentors: [] })
+  assert.equal(s.reorgs, 0)
+  assert.equal(s.settings.theme, 'office')
+  assert.equal(s.lifetimeEarnings, 5e15, 'заработанное до реорганизаций идёт в TechCoin')
+})
+
+test('v4 coins round trip; broken coins are rejected, unknown ids dropped, balance not above claimed', () => {
+  const s = newGame(bundledContent, 0, 'ru', 1)
+  s.coins = { balance: 40, claimed: 90, upgrades: ['night_shift_4'], mentors: ['reboot'] }
+  s.reorgs = 2
+  s.settings.theme = 'night'
+  assert.deepEqual(decodeState(encodeState(s), bundledContent), s)
+  const raw = JSON.parse(encodeState(s))
+  assert.equal(decodeState({ ...raw, coins: { ...raw.coins, balance: -1 } }, bundledContent), null)
+  assert.equal(decodeState({ ...raw, reorgs: 'x' }, bundledContent), null)
+  const fixed = decodeState({ ...raw, coins: { balance: 500, claimed: 90, upgrades: ['gone', 'night_shift_4'], mentors: ['gone_job', 'reboot'] } }, bundledContent)!
+  assert.deepEqual(fixed.coins, { balance: 90, claimed: 90, upgrades: ['night_shift_4'], mentors: ['reboot'] })
 })

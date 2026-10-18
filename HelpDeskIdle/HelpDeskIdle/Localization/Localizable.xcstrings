@@ -481,6 +481,23 @@
         }
       }
     },
+    "chest.buyCoins": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy for %1$@ TechCoin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Купить за %1$@ TechCoin"
+          }
+        }
+      }
+    },
     "chest.corporate_party.name": {
       "extractionState": "manual",
       "localizations": {
@@ -545,6 +562,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Раунд инвестиций"
+          }
+        }
+      }
+    },
+    "chest.have": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "you have %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "есть %1$@"
           }
         }
       }
@@ -634,6 +668,57 @@
         }
       }
     },
+    "chest.result.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the chest"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Из сундука выпало"
+          }
+        }
+      }
+    },
+    "chest.result.where": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perks are in your backpack."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перки — в рюкзаке."
+          }
+        }
+      }
+    },
+    "chest.result.whereItem": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The item is in your wardrobe, perks in your backpack."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вещь — в гардеробе, перки — в рюкзаке."
+          }
+        }
+      }
+    },
     "cloud.disabled": {
       "extractionState": "manual",
       "localizations": {
@@ -715,6 +800,278 @@
           "stringUnit": {
             "state": "translated",
             "value": "только в Telegram"
+          }
+        }
+      }
+    },
+    "coins.afterReorg": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "after a reorganization"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "после реорганизации"
+          }
+        }
+      }
+    },
+    "coins.cost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ TechCoin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ TechCoin"
+          }
+        }
+      }
+    },
+    "coins.spendNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every coin on balance gives +%1$@%% profit. Spend it and that bonus goes with it."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Каждая монета на счету даёт +%1$@%% к прибыли. Потратишь — этот бонус уйдёт вместе с монетами."
+          }
+        }
+      }
+    },
+    "coinup.angel_round.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Business Angel"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бизнес-ангел"
+          }
+        }
+      }
+    },
+    "coinup.charisma_1.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CEO Charisma"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Харизма CEO"
+          }
+        }
+      }
+    },
+    "coinup.charisma_2.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CEO Charisma II"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Харизма CEO II"
+          }
+        }
+      }
+    },
+    "coinup.effect.coinBonus": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$lld%% to every coin's bonus"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$lld%% к бонусу каждой монеты"
+          }
+        }
+      }
+    },
+    "coinup.effect.keepManagers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "managers of jobs 1–%1$lld right after a reorganization"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "менеджеры работ 1–%1$lld сразу после реорганизации"
+          }
+        }
+      }
+    },
+    "coinup.effect.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "offline earnings up to %1$lld h"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "оффлайн-доход копится до %1$lld ч"
+          }
+        }
+      }
+    },
+    "coinup.night_shift_12.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24/7 NOC"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Круглосуточный NOC"
+          }
+        }
+      }
+    },
+    "coinup.night_shift_24.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow the Sun"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow the sun"
+          }
+        }
+      }
+    },
+    "coinup.night_shift_4.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Shift"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ночная смена"
+          }
+        }
+      }
+    },
+    "coinup.night_shift_8.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-Call Admin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дежурный админ"
+          }
+        }
+      }
+    },
+    "coinup.sovereign_fund.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sovereign Fund"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Суверенный фонд"
+          }
+        }
+      }
+    },
+    "coinup.venture_fund.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venture Fund"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Венчурный фонд"
+          }
+        }
+      }
+    },
+    "coinup.veteran_team.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veteran Team"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Опытная команда"
           }
         }
       }
@@ -1225,6 +1582,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "На главном экране всегда три задания. Каждое — закрытый тикет 🎫, а тикеты приносят перки и вещи. Не нравится задание — замени его, раз в 4 часа можно."
+          }
+        }
+      }
+    },
+    "hint.reorg": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sometimes it's best to disband everything and start again. Everything you've earned turns into TechCoin, and every coin on balance speeds up the new department. I'll start over too. With coffee."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Иногда лучше всё разогнать и собрать заново. За всё заработанное дают TechCoin, и каждая монета на счету ускоряет новый отдел. Я тоже начну сначала. С кофе."
           }
         }
       }
@@ -2062,6 +2436,40 @@
         }
       }
     },
+    "job.orbital_dc.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Ping to the Moon: 1.3 s. Fine”"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Пинг до Луны — 1,3 с. Нормально»"
+          }
+        }
+      }
+    },
+    "job.orbital_dc.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data Center in Orbit"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дата-центр на орбите"
+          }
+        }
+      }
+    },
     "job.perSecond": {
       "extractionState": "manual",
       "localizations": {
@@ -2211,6 +2619,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Регресс в ночь до релиза"
+          }
+        }
+      }
+    },
+    "job.rust_rewrite.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“But now it's blazingly fast”"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Зато теперь blazingly fast»"
+          }
+        }
+      }
+    },
+    "job.rust_rewrite.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rewrite It All in Rust"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переписать всё на Rust"
           }
         }
       }
@@ -2657,6 +3099,23 @@
         }
       }
     },
+    "manager.orbital_dc.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Astronaut Sysadmin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Космонавт-сисадмин"
+          }
+        }
+      }
+    },
     "manager.plug_mouse.name": {
       "extractionState": "manual",
       "localizations": {
@@ -2704,6 +3163,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "QA-лид Ирина"
+          }
+        }
+      }
+    },
+    "manager.rust_rewrite.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rustacean Gosha"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Растацеан Гоша"
           }
         }
       }
@@ -2908,6 +3384,57 @@
           "stringUnit": {
             "state": "translated",
             "value": "Работает"
+          }
+        }
+      }
+    },
+    "mentor.effect": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "this job's levels cost %1$lld%% less"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "уровни этой работы дешевле на %1$lld%%"
+          }
+        }
+      }
+    },
+    "mentor.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mentor stays forever: their job's levels cost %1$lld%% less. Reorganizations don't fire them."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наставник остаётся навсегда: уровни его работы дешевле на %1$lld%%. Реорганизация его не увольняет."
+          }
+        }
+      }
+    },
+    "mentor.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mentor: %1$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наставник: %1$@"
           }
         }
       }
@@ -3643,6 +4170,431 @@
         }
       }
     },
+    "reorg.advice.first": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tip: do your first reorganization at 10+ TechCoin."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Совет: первую реорганизацию делай, когда наберётся хотя бы 10 TechCoin."
+          }
+        }
+      }
+    },
+    "reorg.advice.go": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good time! The new department will be noticeably faster."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Самое время! Новый отдел будет заметно быстрее."
+          }
+        }
+      }
+    },
+    "reorg.advice.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tip: worth it once you'd get at least half of what you have (%1$@)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Совет: выгодно, когда получишь хотя бы половину того, что уже есть (%1$@)."
+          }
+        }
+      }
+    },
+    "reorg.bonus": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$@ profit · %2$@ per coin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$@ к прибыли · %2$@ за монету"
+          }
+        }
+      }
+    },
+    "reorg.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disband the IT department"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расформировать IT-отдел"
+          }
+        }
+      }
+    },
+    "reorg.claim.after": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profit becomes ×%1$@ (now ×%2$@)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прибыль станет ×%1$@ (сейчас ×%2$@)"
+          }
+        }
+      }
+    },
+    "reorg.claim.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reorganizing gives you"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За реорганизацию получишь"
+          }
+        }
+      }
+    },
+    "reorg.coins": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TechCoin on balance"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TechCoin на счету"
+          }
+        }
+      }
+    },
+    "reorg.confirm.go": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes, +%1$@ TechCoin"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Да, +%1$@ TechCoin"
+          }
+        }
+      }
+    },
+    "reorg.confirm.keep": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You keep: TechCoin and everything bought with them, tickets, perks, items and your leaderboard place."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Останется: TechCoin и всё купленное за них, тикеты, перки, вещи и место в рейтинге."
+          }
+        }
+      }
+    },
+    "reorg.confirm.lose": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting over: money, levels, promotions, managers and cash upgrades."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начнёшь заново: деньги, уровни, повышения, менеджеры и улучшения за деньги."
+          }
+        }
+      }
+    },
+    "reorg.confirm.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disband the department?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расформировать отдел?"
+          }
+        }
+      }
+    },
+    "reorg.done.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coins are in. All profit is now ×%1$@ — starting over goes much faster."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Монеты на счету. Вся прибыль теперь ×%1$@ — с нуля пойдёт гораздо быстрее."
+          }
+        }
+      }
+    },
+    "reorg.done.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The new department is ready!"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новый отдел собран!"
+          }
+        }
+      }
+    },
+    "reorg.nothing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The next coin comes at %1$@ earned in total."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следующая монета — когда заработаешь всего %1$@."
+          }
+        }
+      }
+    },
+    "reorg.status.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garage startup"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гаражный стартап"
+          }
+        }
+      }
+    },
+    "reorg.status.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startup"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стартап"
+          }
+        }
+      }
+    },
+    "reorg.status.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scale-up"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скейлап"
+          }
+        }
+      }
+    },
+    "reorg.status.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corporation"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Корпорация"
+          }
+        }
+      }
+    },
+    "reorg.status.4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multinational"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Транснационал"
+          }
+        }
+      }
+    },
+    "reorg.status.5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monopoly"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Монополия"
+          }
+        }
+      }
+    },
+    "reorg.status.max": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nowhere higher. The antitrust folks are calling."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выше некуда. Антимонопольщики уже звонят."
+          }
+        }
+      }
+    },
+    "reorg.status.next": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To “%1$@”: %2$@ more TechCoin from reorganizations. Every status: +1% per coin."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "До статуса «%1$@» — ещё %2$@ TechCoin за реорганизации. Каждый статус: +1% за монету."
+          }
+        }
+      }
+    },
+    "reorg.status.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Company status"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Статус компании"
+          }
+        }
+      }
+    },
+    "reorg.where": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spend TechCoin in Upgrades and Managers → “For TechCoin” tab, and on the HR gift in the Shop. Spent coins no longer boost profit — choose wisely."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тратить TechCoin: Улучшения и Менеджеры → вкладка «За TechCoin», Магазин → «Подарок от HR». Потраченные монеты бонус к прибыли больше не дают — выбирай с умом."
+          }
+        }
+      }
+    },
     "rewind.noManagers": {
       "extractionState": "manual",
       "localizations": {
@@ -3792,6 +4744,57 @@
           "stringUnit": {
             "state": "translated",
             "value": "Начать заново?"
+          }
+        }
+      }
+    },
+    "settings.theme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theme"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тема"
+          }
+        }
+      }
+    },
+    "settings.theme.night": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night shift"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ночная смена"
+          }
+        }
+      }
+    },
+    "settings.theme.office": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Office"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Офис"
           }
         }
       }
@@ -6278,6 +7281,23 @@
         }
       }
     },
+    "upgrade.orbital_dc_x3.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cooled by outer space"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Охлаждение открытым космосом"
+          }
+        }
+      }
+    },
     "upgrade.plug_mouse_x3.name": {
       "extractionState": "manual",
       "localizations": {
@@ -6325,6 +7345,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Автотесты (зелёные, но ничего не проверяют)"
+          }
+        }
+      }
+    },
+    "upgrade.rust_rewrite_x3.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The borrow checker is happy"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Борроу-чекер доволен"
           }
         }
       }
@@ -6720,6 +7757,40 @@
         }
       }
     },
+    "welcome.double": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "▶ Collect ×2 for an ad"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "▶ Забрать ×2 за рекламу"
+          }
+        }
+      }
+    },
+    "welcome.doubled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doubled!"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удвоено!"
+          }
+        }
+      }
+    },
     "welcome.earned": {
       "extractionState": "manual",
       "localizations": {
@@ -6750,6 +7821,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "пока ты был «на созвоне»"
+          }
+        }
+      }
+    },
+    "welcome.needCoins": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Shift is sold for TechCoin — you get them for a reorganization."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Ночная смена» продаётся за TechCoin — их дают за реорганизацию."
           }
         }
       }

@@ -40,3 +40,40 @@
   --night-accent: #8FB0FF;
   --night-muted: #D6DDF2;
 }
+
+/* Тема C «Ночная смена» (тёмная): те же токены, другие значения. Включается в настройках (data-theme="night"). */
+:root[data-theme="night"] {
+  --background: #141A2E;
+  --card: #1E2640;
+  --ink: #E8ECF7;
+  --muted: #9AA6C4;
+  --line: #2C3656;
+  --track: #262F4D;
+  --track-strong: #313C60;
+  --locked-border: #46527A;
+  --accent: #5E7DFF;
+  --accent-dark: #3F5BD6;
+  --amber: #F5B82E;
+  --amber-stripe: #FFD27A;
+  --positive: #4CC97A;
+  --on-accent: #FFFFFF;
+  --managers: #4F8FE6;
+  --achievements: #D9A21F;
+  --upgrades: #E5632F;
+  --alert: #FF4D52;
+  --reorg: #9B6BE0;
+  --wardrobe: #D2508C;
+  --backpack: #2F9E7C;
+  --nav: #3A4A6B;
+  --energy: #E0443A;
+  --leaderboard: #C9962B;
+  --rarity-common: #A3A9B3;
+  --rarity-rare: #5B8FF0;
+  --rarity-epic: #A879E0;
+  --rarity-legendary: #F09A35;
+  --chibi-shorts: #8C8270;
+  --shop: #C4561F;
+  --night: #0D1222;
+  --night-accent: #8FB0FF;
+  --night-muted: #D6DDF2;
+}

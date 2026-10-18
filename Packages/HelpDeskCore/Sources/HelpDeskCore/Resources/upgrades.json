@@ -89,5 +89,19 @@
     "cost": 3000000000000.0,
     "effect": "profit",
     "value": 3
+  },
+  {
+    "id": "rust_rewrite_x3",
+    "jobId": "rust_rewrite",
+    "cost": 6e18,
+    "effect": "profit",
+    "value": 3
+  },
+  {
+    "id": "orbital_dc_x3",
+    "jobId": "orbital_dc",
+    "cost": 6e20,
+    "effect": "profit",
+    "value": 3
   }
 ]
