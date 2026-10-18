@@ -5,12 +5,12 @@ import { bulkCost } from './economy.ts'
 import { claimable, coinBonus, coinsTotal, companyStatus, lifetimeFor, offlineHours, reorgRecommended } from './prestige.ts'
 import { makeClock, makeEngine } from './testkit.ts'
 
-const { coinFactor, coinScale, coinBonus: base, statusBase, statusStep } = c.config.prestige
+const { coinFactor, coinScale, coinPower, coinBonus: base, statusBase, statusStep } = c.config.prestige
 
-test('TechCoin follow the AdCap square root of lifetime earnings', () => {
+test('TechCoin grow as a root of lifetime earnings (twice the coins for 2^(1/p) times the money)', () => {
   assert.equal(coinsTotal(c, 0), 0)
   assert.equal(coinsTotal(c, coinScale), coinFactor)
-  assert.equal(coinsTotal(c, 4 * coinScale), 2 * coinFactor, '×4 денег — ×2 монет')
+  assert.equal(coinsTotal(c, 2 ** (1 / coinPower) * coinScale), 2 * coinFactor)
   assert.equal(coinsTotal(c, lifetimeFor(c, 37) * 1.0000001), 37)
   assert.equal(coinsTotal(c, lifetimeFor(c, 37) * 0.999), 36)
 })
@@ -150,14 +150,14 @@ test('HR gift chest costs TechCoin and gives a perk (sometimes an item), the sam
   assert.equal(e.openChest('ipo'), null, 'сундуки за печеньки не продаются')
 })
 
-test('reorganization is recommended at 10 coins first, then when it at least doubles the balance', () => {
+test('reorganization is recommended at 10 coins first, then at +50% to the balance', () => {
   const e = makeEngine(makeClock(), (s) => { s.lifetimeEarnings = lifetimeFor(c, 9) * 1.001 })
   assert.equal(reorgRecommended(c, e.state), false)
   e.state.lifetimeEarnings = lifetimeFor(c, 10) * 1.001
   assert.equal(reorgRecommended(c, e.state), true)
   e.state.coins = { balance: 30, claimed: 40, upgrades: [], mentors: [] }
-  e.state.lifetimeEarnings = lifetimeFor(c, 69) * 1.001
+  e.state.lifetimeEarnings = lifetimeFor(c, 54) * 1.001
   assert.equal(reorgRecommended(c, e.state), false)
-  e.state.lifetimeEarnings = lifetimeFor(c, 70) * 1.001
+  e.state.lifetimeEarnings = lifetimeFor(c, 55) * 1.001
   assert.equal(reorgRecommended(c, e.state), true)
 })

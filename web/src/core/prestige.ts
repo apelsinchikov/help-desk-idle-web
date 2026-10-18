@@ -4,11 +4,12 @@
 import type { CoinUpgradeDefinition, GameContent } from './content.ts'
 import type { GameState } from './state.ts'
 
-/** Сколько монет «заработано» за всё время: `⌊coinFactor · √(lifetime / coinScale)⌋`. */
+/** Сколько монет «заработано» за всё время: `⌊coinFactor · (lifetime / coinScale)^coinPower⌋`. */
 export function coinsTotal(content: GameContent, lifetime: number): number {
-  const { coinFactor, coinScale } = content.config.prestige
+  const { coinFactor, coinScale, coinPower } = content.config.prestige
   if (!(lifetime > 0)) return 0
-  return Math.floor(coinFactor * Math.sqrt(lifetime / coinScale))
+  // крошечная поправка: на ровной границе (lifetimeFor) степень даёт 36,999999… вместо 37
+  return Math.floor(coinFactor * (lifetime / coinScale) ** coinPower + 1e-9)
 }
 
 /** Сколько монет даст реорганизация сейчас. */
@@ -18,17 +19,17 @@ export function claimable(content: GameContent, state: GameState): number {
 
 /** Заработок за всё время, с которого появляется монета номер `coins`. */
 export function lifetimeFor(content: GameContent, coins: number): number {
-  const { coinFactor, coinScale } = content.config.prestige
-  return coinScale * (coins / coinFactor) ** 2
+  const { coinFactor, coinScale, coinPower } = content.config.prestige
+  return coinScale * (coins / coinFactor) ** (1 / coinPower)
 }
 
 /**
  * Совет Pecorella: сбрасываться, когда получишь +50…200% к уже имеющимся монетам. Первую реорганизацию советуем
- * с `firstCoins` монет (ощутимые +X% к прибыли), дальше — когда получишь не меньше, чем уже есть на счету.
+ * с `firstCoins` монет (ощутимые +X% к прибыли), дальше — когда получишь хотя бы +50% к монетам на счету.
  */
 export function reorgRecommended(content: GameContent, state: GameState, firstCoins = 10): boolean {
   const claim = claimable(content, state)
-  return state.coins.claimed === 0 ? claim >= firstCoins : claim >= Math.max(1, state.coins.balance)
+  return state.coins.claimed === 0 ? claim >= firstCoins : claim >= Math.max(1, state.coins.balance / 2)
 }
 
 export type CompanyStatus = {

@@ -59,6 +59,8 @@ export type GameConfig = {
   prestige: {
     coinFactor: number
     coinScale: number
+    /** Показатель степени: 0,5 — корень AdCap, 1/3 — кубический корень Cookie Clicker (мягче обратная связь). */
+    coinPower: number
     coinBonus: number
     statusBase: number
     statusStep: number

@@ -150,24 +150,24 @@
   {
     "id": "rust_rewrite",
     "order": 13,
-    "baseCost": 44580502241280,
+    "baseCost": 3715041853440000,
     "growthRate": 1.07,
     "time": 73728,
-    "revenue": 44580502241280,
+    "revenue": 3715041853440000,
     "unlockLevel": 25,
-    "managerCost": 300000000000000.0,
+    "managerCost": 3e16,
     "mentorCost": 300,
     "iconKey": "rust_rewrite"
   },
   {
     "id": "orbital_dc",
     "order": 14,
-    "baseCost": 534966026895360,
+    "baseCost": 371504185344000000,
     "growthRate": 1.07,
     "time": 147456,
-    "revenue": 615210930929664,
+    "revenue": 427229813145599936,
     "unlockLevel": 25,
-    "managerCost": 3000000000000000.0,
+    "managerCost": 3e18,
     "mentorCost": 450,
     "iconKey": "orbital_dc"
   }

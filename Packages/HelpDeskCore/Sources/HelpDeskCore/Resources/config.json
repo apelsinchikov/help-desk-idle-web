@@ -142,8 +142,9 @@
     "cans": 5
   },
   "prestige": {
-    "coinFactor": 150,
-    "coinScale": 1e15,
+    "coinFactor": 10,
+    "coinScale": 2e15,
+    "coinPower": 0.25,
     "coinBonus": 0.02,
     "statusBase": 100,
     "statusStep": 4,

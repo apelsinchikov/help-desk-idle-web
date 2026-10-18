@@ -1,12 +1,12 @@
 [
   {"id": "night_shift_4", "kind": "offline", "value": 4, "cost": 10},
-  {"id": "night_shift_8", "kind": "offline", "value": 8, "cost": 60, "requires": "night_shift_4"},
-  {"id": "night_shift_12", "kind": "offline", "value": 12, "cost": 300, "requires": "night_shift_8"},
-  {"id": "night_shift_24", "kind": "offline", "value": 24, "cost": 1500, "requires": "night_shift_12"},
-  {"id": "veteran_team", "kind": "keepManagers", "value": 4, "cost": 40},
-  {"id": "angel_round", "kind": "profit", "value": 3, "cost": 30},
-  {"id": "venture_fund", "kind": "profit", "value": 3, "cost": 500, "requires": "angel_round"},
-  {"id": "sovereign_fund", "kind": "profit", "value": 3, "cost": 8000, "requires": "venture_fund"},
-  {"id": "charisma_1", "kind": "coinBonus", "value": 0.01, "cost": 200},
+  {"id": "night_shift_8", "kind": "offline", "value": 8, "cost": 50, "requires": "night_shift_4"},
+  {"id": "night_shift_12", "kind": "offline", "value": 12, "cost": 200, "requires": "night_shift_8"},
+  {"id": "night_shift_24", "kind": "offline", "value": 24, "cost": 800, "requires": "night_shift_12"},
+  {"id": "veteran_team", "kind": "keepManagers", "value": 4, "cost": 60},
+  {"id": "angel_round", "kind": "profit", "value": 3, "cost": 150},
+  {"id": "venture_fund", "kind": "profit", "value": 3, "cost": 1500, "requires": "angel_round"},
+  {"id": "sovereign_fund", "kind": "profit", "value": 3, "cost": 15000, "requires": "venture_fund"},
+  {"id": "charisma_1", "kind": "coinBonus", "value": 0.01, "cost": 300},
   {"id": "charisma_2", "kind": "coinBonus", "value": 0.01, "cost": 3000, "requires": "charisma_1"}
 ]
