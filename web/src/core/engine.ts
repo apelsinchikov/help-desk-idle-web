@@ -8,6 +8,10 @@ import { statTotals } from './modifiers.ts'
 import { energyCans } from './energy.ts'
 import type { Stats } from './modifiers.ts'
 import type { BuyMode, GameState, JobStatus, OfflineReport, PlayerSettings } from './state.ts'
+import { claimable, coinProfitMultiplier, coinUpgradeOpen, keptManagers, mentorDiscount, offlineHours } from './prestige.ts'
+import { rollChest } from './chests.ts'
+import type { ChestReward } from './chests.ts'
+import { grantPerk } from './perks.ts'
 
 export class GameEngine {
   readonly content: GameContent
@@ -72,13 +76,15 @@ export class GameEngine {
   /**
    * Повышение стоит как `promotionFactor` × пройденный отрезок уровней (от прошлого порога до текущего) —
    * соразмерно кривой цен этой работы (Pecorella, Part I: множители держат доход рядом с ценами).
+   * Вещи со статом «Грейд» дают скидку (с потолком `gradeDiscountCap`).
    */
   promotionCost(jobId: string): number {
     const job = this.content.job(jobId)
     if (!job) return Infinity
     const from = this.rank(jobId)
     const to = Math.min(this.cap(jobId), this.level(jobId))
-    return this.content.config.promotionFactor * bulkCost(job.baseCost, job.growthRate, from, to - from)
+    const base = this.content.config.promotionFactor * bulkCost(job.baseCost, job.growthRate, from, to - from)
+    return base * (1 - this.stats().gradeDiscount)
   }
 
   /** Множитель прибыли от купленных улучшений (своё ×3, «Кофемашина» ×3 всем). */
@@ -111,12 +117,13 @@ export class GameEngine {
     const job = this.content.job(jobId)
     if (!job) return 0
     const profit = profitMultiplier(jobId, this.ranks(), this.content.milestones) * this.upgradeMultiplier(jobId)
+      * coinProfitMultiplier(this.content, this.current)
     return payout(job.revenue, this.level(jobId), profit) * (1 + this.stats(at).salary)
   }
 
-  /** Множитель цены уровней (скидка вещей и перков). Повышение на пороге — без скидки. */
-  private priceFactor(): number {
-    return 1 - this.stats().levelDiscount
+  /** Множитель цены уровней: скидка вещей и перков × скидка наставника этой работы. Повышение — отдельно. */
+  private priceFactor(jobId: string): number {
+    return (1 - this.stats().levelDiscount) * (1 - mentorDiscount(this.content, this.current, jobId))
   }
 
   nextMilestone(jobId: string): Milestone | undefined {
@@ -190,7 +197,7 @@ export class GameEngine {
     if (this.atCap(jobId)) return { count: 0, cost: this.promotionCost(jobId) }
     const owned = this.level(jobId)
     const room = this.cap(jobId) - owned
-    const f = this.priceFactor()
+    const f = this.priceFactor(jobId)
     const price = (n: number) => bulkCost(job.baseCost, job.growthRate, owned, n) * f
     let count: number
     switch (mode) {
@@ -457,10 +464,96 @@ export class GameEngine {
       this.advance(now)
       return null
     }
-    const cap = this.content.config.offlineCapHours * 3600
+    const cap = offlineHours(this.content, this.current) * 3600
     const earned = this.advance(now, cap)
     const readyJobs = this.content.jobs.filter((j) => this.status(j.id, now).kind === 'ready').length
     return { elapsed, earned, counted: Math.min(elapsed, cap), readyJobs }
+  }
+
+  /** Удвоить оффлайн-доход (досмотрел рекламу на экране «С возвращением»). */
+  bonusOffline(amount: number): void {
+    this.credit(amount)
+  }
+
+  // MARK: - Реорганизация
+
+  /**
+   * Реорганизация: монеты за всё заработанное сверх прошлых сбросов → на счёт; деньги, уровни, менеджеры и улучшения
+   * за деньги — заново. Остаются: TechCoin и всё купленное за них, тикеты и трек, перки, вещи, статистика, настройки,
+   * обучение. «Опытная команда» сразу нанимает менеджеров первых работ. Возвращает полученные монеты или null.
+   */
+  reorganize(): number | null {
+    const now = this.now()
+    this.advance(now)
+    const claim = claimable(this.content, this.current)
+    if (claim < 1) return null
+    const old = this.current
+    const fresh = newGame(this.content, now, old.settings.language, old.rngSeed)
+    const keep = keptManagers(this.content, old)
+    this.content.jobs.slice(0, keep).forEach((job) => { fresh.jobs[job.id].hasManager = true })
+    this.current = {
+      ...fresh,
+      settings: old.settings,
+      ui: { ...old.ui, wiped: false },
+      lifetimeEarnings: old.lifetimeEarnings,
+      stars: old.stars,
+      track: old.track,
+      quests: { active: [], rerollAt: old.quests.rerollAt, seq: old.quests.seq },
+      stats: old.stats,
+      perks: old.perks,
+      items: old.items,
+      rngSeed: old.rngSeed,
+      season: old.season,
+      coins: { ...old.coins, balance: old.coins.balance + claim, claimed: old.coins.claimed + claim },
+      reorgs: old.reorgs + 1,
+    }
+    return claim
+  }
+
+  canBuyCoinUpgrade(id: string): boolean {
+    const up = this.content.coinUpgrade(id)
+    return !!up && coinUpgradeOpen(this.current, up) && this.current.coins.balance >= up.cost
+  }
+
+  /** Купить за монеты: монеты уходят со счёта — бонус за них тоже (решение игрока, Pecorella Part III). */
+  buyCoinUpgrade(id: string): boolean {
+    const up = this.content.coinUpgrade(id)
+    if (!up || !this.canBuyCoinUpgrade(id)) return false
+    this.advance(this.now()) // прошлое — по старому множителю
+    this.current.coins.balance -= up.cost
+    this.current.coins.upgrades.push(id)
+    return true
+  }
+
+  canHireMentor(jobId: string): boolean {
+    const job = this.content.job(jobId)
+    return !!job && !this.current.coins.mentors.includes(jobId) && this.current.coins.balance >= job.mentorCost
+  }
+
+  hireMentor(jobId: string): boolean {
+    const job = this.content.job(jobId)
+    if (!job || !this.canHireMentor(jobId)) return false
+    this.advance(this.now())
+    this.current.coins.balance -= job.mentorCost
+    this.current.coins.mentors.push(jobId)
+    return true
+  }
+
+  canOpenChest(chestId: string): boolean {
+    const chest = this.content.chest(chestId)
+    return !!chest && chest.currency === 'techcoin' && chest.price !== undefined && this.current.coins.balance >= chest.price
+  }
+
+  /** Сундук за TechCoin: вещи — в шкаф (метка «новое»), перки — в рюкзак. */
+  openChest(chestId: string): ChestReward | null {
+    const chest = this.content.chest(chestId)
+    if (!chest || !this.canOpenChest(chestId)) return null
+    this.advance(this.now())
+    this.current.coins.balance -= chest.price!
+    const reward = rollChest(this.content, this.current, chest)
+    for (const id of reward.items) this.grantItem(id)
+    for (const id of reward.perks) grantPerk(this.current, id)
+    return reward
   }
 
   /** Начать заново (настройки сохраняются). */

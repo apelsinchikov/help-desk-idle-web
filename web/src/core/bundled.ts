@@ -6,8 +6,9 @@ import upgrades from '../../../Packages/HelpDeskCore/Sources/HelpDeskCore/Resour
 import perks from '../../../Packages/HelpDeskCore/Sources/HelpDeskCore/Resources/perks.json' with { type: 'json' }
 import items from '../../../Packages/HelpDeskCore/Sources/HelpDeskCore/Resources/items.json' with { type: 'json' }
 import chests from '../../../Packages/HelpDeskCore/Sources/HelpDeskCore/Resources/chests.json' with { type: 'json' }
+import coinUpgrades from '../../../Packages/HelpDeskCore/Sources/HelpDeskCore/Resources/coinUpgrades.json' with { type: 'json' }
 import { GameContent } from './content.ts'
-import type { ChestDefinition, GameConfig, ItemDefinition, JobDefinition, Milestone, PerkDefinition, UpgradeDefinition } from './content.ts'
+import type { ChestDefinition, CoinUpgradeDefinition, GameConfig, ItemDefinition, JobDefinition, Milestone, PerkDefinition, UpgradeDefinition } from './content.ts'
 
 export const bundledContent = new GameContent(
   jobs as JobDefinition[],
@@ -17,4 +18,5 @@ export const bundledContent = new GameContent(
   perks as PerkDefinition[],
   items as ItemDefinition[],
   chests as ChestDefinition[],
+  coinUpgrades as CoinUpgradeDefinition[],
 )

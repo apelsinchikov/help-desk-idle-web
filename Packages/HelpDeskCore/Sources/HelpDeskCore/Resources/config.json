@@ -140,5 +140,15 @@
     "perkId": "energy_drink",
     "minutesPerCan": 5,
     "cans": 5
+  },
+  "prestige": {
+    "coinFactor": 150,
+    "coinScale": 1e15,
+    "coinBonus": 0.02,
+    "statusBase": 100,
+    "statusStep": 4,
+    "statusBonus": 0.01,
+    "statuses": 5,
+    "mentorDiscount": 0.25
   }
 }

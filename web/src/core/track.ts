@@ -69,7 +69,7 @@ function givePerk(state: GameState, perkId: string): Reward {
 }
 
 /** Тип — по весам, сила и длительность — случайные из открытого уровня. */
-function randomPerk(content: GameContent, state: GameState, tier: TrackTier): string {
+export function randomPerk(content: GameContent, state: GameState, tier: TrackTier): string {
   const weights = content.config.track.weights
   const kinds = Object.keys(weights) as PerkKind[]
   const total = kinds.reduce((sum, k) => sum + weights[k], 0)

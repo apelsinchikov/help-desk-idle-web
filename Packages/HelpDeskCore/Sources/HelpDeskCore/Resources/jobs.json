@@ -8,6 +8,7 @@
     "revenue": 1,
     "unlockLevel": 25,
     "managerCost": 3000.0,
+    "mentorCost": 2,
     "managerMinRank": 25,
     "iconKey": "reboot"
   },
@@ -20,6 +21,7 @@
     "revenue": 60,
     "unlockLevel": 25,
     "managerCost": 45000.0,
+    "mentorCost": 3,
     "managerMinRank": 25,
     "iconKey": "plug_mouse"
   },
@@ -32,6 +34,7 @@
     "revenue": 540,
     "unlockLevel": 25,
     "managerCost": 300000.0,
+    "mentorCost": 5,
     "managerMinRank": 25,
     "iconKey": "accounting_printer"
   },
@@ -44,6 +47,7 @@
     "revenue": 4320,
     "unlockLevel": 25,
     "managerCost": 1500000.0,
+    "mentorCost": 8,
     "managerMinRank": 25,
     "iconKey": "escalate"
   },
@@ -56,6 +60,7 @@
     "revenue": 51840,
     "unlockLevel": 25,
     "managerCost": 3600000.0,
+    "mentorCost": 12,
     "iconKey": "works_on_my_machine"
   },
   {
@@ -67,6 +72,7 @@
     "revenue": 622080,
     "unlockLevel": 25,
     "managerCost": 30000000.0,
+    "mentorCost": 18,
     "iconKey": "button_color_call"
   },
   {
@@ -78,6 +84,7 @@
     "revenue": 7464960,
     "unlockLevel": 25,
     "managerCost": 333000000.0,
+    "mentorCost": 27,
     "iconKey": "accounting_1c"
   },
   {
@@ -89,6 +96,7 @@
     "revenue": 89579520,
     "unlockLevel": 25,
     "managerCost": 1665000000.0,
+    "mentorCost": 40,
     "iconKey": "friday_deploy"
   },
   {
@@ -100,6 +108,7 @@
     "revenue": 1074954240,
     "unlockLevel": 25,
     "managerCost": 30000000000.0,
+    "mentorCost": 60,
     "iconKey": "spec_like_apple"
   },
   {
@@ -111,6 +120,7 @@
     "revenue": 12899450880,
     "unlockLevel": 25,
     "managerCost": 300000000000.0,
+    "mentorCost": 90,
     "iconKey": "regression"
   },
   {
@@ -122,6 +132,7 @@
     "revenue": 154793410560,
     "unlockLevel": 25,
     "managerCost": 3000000000000.0,
+    "mentorCost": 135,
     "iconKey": "ai_everything"
   },
   {
@@ -133,6 +144,7 @@
     "revenue": 4272298131456,
     "unlockLevel": 25,
     "managerCost": 30000000000000.0,
+    "mentorCost": 200,
     "iconKey": "ddos_rivals"
   },
   {
@@ -144,6 +156,7 @@
     "revenue": 44580502241280,
     "unlockLevel": 25,
     "managerCost": 300000000000000.0,
+    "mentorCost": 300,
     "iconKey": "rust_rewrite"
   },
   {
@@ -155,6 +168,7 @@
     "revenue": 615210930929664,
     "unlockLevel": 25,
     "managerCost": 3000000000000000.0,
+    "mentorCost": 450,
     "iconKey": "orbital_dc"
   }
 ]
