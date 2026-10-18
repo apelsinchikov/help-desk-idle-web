@@ -27,8 +27,6 @@ const MIN_LOADING_MS = 1400
 const CLOUD_TIMEOUT_MS = 4000
 const CLOCK_TIMEOUT_MS = 2000
 
-telegram.init(getComputedStyle(document.documentElement).getPropertyValue('--background').trim())
-
 const content = bundledContent
 const isDevBuild = import.meta.env.VITE_CHANNEL === 'dev'
 // Сейвы тестовой сборки отдельно от рабочих (один домен github.io); в Telegram — по аккаунту.
@@ -37,6 +35,11 @@ const localSave = createLocalSave(undefined, saveAccount)
 const clock = createClock()
 const state = localSave.load() ?? newGame(content, clock.now(), detectLanguage(telegram.languageCode ?? navigator.language))
 const engine = new GameEngine(content, state, clock.now)
+
+// Тема из сейва — до первого кадра и до цветов шапки Telegram.
+const background = () => getComputedStyle(document.documentElement).getPropertyValue('--background').trim()
+document.documentElement.dataset.theme = state.settings.theme
+telegram.init(background())
 
 // Облако — только в Telegram и только если сборка знает адрес и ключ проекта.
 const cloud = createCloud(
@@ -76,6 +79,15 @@ const game = createGame({
   leaderboard: cloud ? createLeaderboardCache(() => cloud.leaderboard(), clock.now) : null,
   ads: createAds({ blockId: import.meta.env.VITE_ADSGRAM_BLOCK_ID, devBuild: isDevBuild }) })
 const phase = signal<Phase>('loading')
+
+// Смена темы в настройках (или облачный сейв с другой темой): токены и цвета Telegram.
+effect(() => {
+  void game.version.value
+  const theme = engine.state.settings.theme
+  if (document.documentElement.dataset.theme === theme) return
+  document.documentElement.dataset.theme = theme
+  telegram.setColors(background())
+})
 
 // Кнопка «Назад» Telegram закрывает меню и листы.
 effect(() => {

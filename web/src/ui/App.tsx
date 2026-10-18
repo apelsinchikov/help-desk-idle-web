@@ -9,7 +9,8 @@ import { Managers } from './Managers.tsx'
 import { MessageSlot } from './MessageSlot.tsx'
 import { Menu } from './Menu.tsx'
 import { Settings } from './Settings.tsx'
-import { Shop } from './Shop.tsx'
+import { ChestReport, Shop } from './Shop.tsx'
+import { Reorg, ReorgReport } from './Reorg.tsx'
 import { Quests } from './Quests.tsx'
 import { Leaderboard } from './Leaderboard.tsx'
 import { RewindReport } from './RewindReport.tsx'
@@ -42,8 +43,11 @@ export function App({ game, phase, devBuild = false }: { game: Game; phase: Sign
       {route === 'shop' && <Shop />}
       {route === 'quests' && <Quests />}
       {route === 'leaderboard' && <Leaderboard />}
+      {route === 'reorg' && <Reorg />}
       <MessageSlot />
       <RewindReport />
+      <ChestReport />
+      <ReorgReport />
       <WipeNotice />
       {!report && <Tutorial />}
       {report && <WelcomeBack report={report} />}

@@ -3,7 +3,7 @@ import type { Route } from '../app/store.ts'
 import { buyableCounts, sectionLock, type SectionLock } from '../core/progress.ts'
 import { money, useGame } from './context.ts'
 
-type Item = { section: 'quests' | 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe'; key: string; color: string }
+type Item = { section: 'quests' | 'managers' | 'achievements' | 'upgrades' | 'backpack' | 'wardrobe' | 'reorg'; key: string; color: string }
 const ITEMS: Item[] = [
   { section: 'quests', key: 'menu.quests', color: 'var(--accent)' },
   { section: 'managers', key: 'menu.managers', color: 'var(--managers)' },
@@ -11,6 +11,7 @@ const ITEMS: Item[] = [
   { section: 'upgrades', key: 'menu.upgrades', color: 'var(--upgrades)' },
   { section: 'backpack', key: 'menu.backpack', color: 'var(--backpack)' },
   { section: 'wardrobe', key: 'menu.wardrobe', color: 'var(--wardrobe)' },
+  { section: 'reorg', key: 'menu.reorg', color: 'var(--reorg)' },
 ]
 
 /** Меню — колонка кнопок поверх затемнённой игры. Разделы появляются по мере прогресса. */
@@ -19,7 +20,7 @@ export function Menu() {
   const { engine } = game
   const ui = engine.state.ui
   const buyable = buyableCounts(engine)
-  const counts: Partial<Record<Item['section'], number>> = { managers: buyable.managers, upgrades: buyable.upgrades, backpack: buyable.perks, wardrobe: buyable.items }
+  const counts: Partial<Record<Item['section'], number>> = { managers: buyable.managers, upgrades: buyable.upgrades, backpack: buyable.perks, wardrobe: buyable.items, reorg: buyable.reorg }
   const close = () => game.navigate('jobs')
 
   return (
@@ -31,7 +32,7 @@ export function Menu() {
               key={item.key}
               class="menu__item"
               data-tutorial={`menu-${item.section}`}
-              onClick={() => game.navigate(item.section as Route)}
+              onClick={() => { game.coinTab.value = 'cash'; game.navigate(item.section as Route) }}
             >
               <i class="dot" style={{ background: item.color }} />
               {t(item.key)}
@@ -56,7 +57,6 @@ export function Menu() {
             <span class="menu__label">{t('menu.leaderboard')}<span class="menu__req">{t('leaderboard.telegramOnly')}</span></span>
           </div>
         )}
-        <Locked label={t('menu.reorg')} />
         <button class="menu__item" onClick={() => game.navigate('settings')}>
           <i class="dot" style={{ background: 'var(--muted)' }} />
           {t('menu.settings')}
